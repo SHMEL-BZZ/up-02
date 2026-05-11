@@ -20,7 +20,6 @@ def predator_pray():
     """Renders the predator_pray page."""
     return dict(
         title='Predator-pray',
-        message='Your predator-pray page.',
         year=datetime.now().year
     )
 
@@ -30,7 +29,6 @@ def epidemic():
     """Renders the epidemic page."""
     return dict(
         title='Epidemic',
-        message='Your application description page.',
         year=datetime.now().year
     )
 
@@ -40,7 +38,6 @@ def competition():
     """Renders the competition page."""
     return dict(
         title='Competition',
-        message='Your application description page.',
         year=datetime.now().year
     )
 
@@ -50,6 +47,5 @@ def fishing():
     """Renders the fishing page."""
     return dict(
         title='Fishing',
-        message='Your application description page.',
         year=datetime.now().year
     )
