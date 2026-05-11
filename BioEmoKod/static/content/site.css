@@ -1,6 +1,13 @@
+/* стили по умолчанию */
+
+
+/* стиль основной страницы */
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    color: #4D2D18;
+    background: #F2EDDE;
+    font-size: 20px;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -39,4 +46,38 @@ input[type="checkbox"].input-validation-error {
 
 .validation-summary-valid {
     display: none;
+}
+
+/* —озданные стили */
+
+/* —тили дл€ навигационной панели */
+
+/* основной стиль */
+.navbar-inverse {
+    background-color: #4E653D;
+    border-color: #F2EDDE;
+}
+
+/* цвет ссылок по умолчанию */
+.navbar-inverse .navbar-nav > li > a {
+    color: #F2EDDE; 
+}
+
+    /* при наведении на ссылки */
+    .navbar-inverse .navbar-nav > li > a:hover,
+    .navbar-inverse .navbar-nav > li > a:focus {
+        color: #F2EDDE;
+        background-color: #354C2B;
+    }
+
+/* —тиль дл€ заголовка страницы */
+
+.page-header {
+    background: #697E50;
+    color: #F2EDDE;
+    padding: 40px 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 24px;
 }

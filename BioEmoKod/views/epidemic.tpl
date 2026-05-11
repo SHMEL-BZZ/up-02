@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="/static/content/epidemic.css" />
 </head>
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
+<div class="page-header">
+    <h2>{{ title }}.</h2>
+</div>
 
 <p>Use this area to provide additional information.</p>
