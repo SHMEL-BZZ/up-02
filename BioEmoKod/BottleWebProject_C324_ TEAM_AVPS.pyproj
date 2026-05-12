@@ -5,7 +5,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c35f7bd3-e046-4f90-91ac-3ce8ce4842af</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <ProjectTypeGuids>{e614c764-6d9e-4607-9337-b7073809a0bd};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <StartupFile>app.py</StartupFile>
     <SearchPath>
@@ -16,9 +17,9 @@
     <WebBrowserUrl>http://localhost</WebBrowserUrl>
     <PythonDebugWebServerCommandArguments>--debug $(CommandLineArguments)</PythonDebugWebServerCommandArguments>
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
-    <Name>BioEmoKod</Name>
+    <Name>BottleWebProject_C324_ TEAM_AVPS</Name>
     <RootNamespace>BioEmoKod</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,9 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="model\fishing_model.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="routes.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="model\" />
     <Folder Include="static\" />
     <Folder Include="static\content\" />
     <Folder Include="static\fonts\" />
@@ -48,10 +53,41 @@
     <Content Include="static\content\fishing.css" />
     <Content Include="static\content\predator_pray.css" />
     <Content Include="static\content\site.css" />
+    <Content Include="static\fonts\5KASANSDESIGN-BLACK.B3C89036821EFF6F.TTF" />
+    <Content Include="static\fonts\5KASANSDESIGN-REGULAR.8DECC07DF8894152.TTF" />
+    <Content Include="static\fonts\5KASANSDESIGN-SEMIBOLD.96142A7EF7399CA2.TTF" />
     <Content Include="static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="static\fonts\l %281%29_0.ttf" />
+    <Content Include="static\fonts\l %282%29_0.ttf" />
+    <Content Include="static\fonts\l %283%29_0.ttf" />
+    <Content Include="static\fonts\l %284%29_0.ttf" />
+    <Content Include="static\fonts\l %285%29_0.ttf" />
+    <Content Include="static\fonts\l %286%29_0.ttf" />
+    <Content Include="static\fonts\l_0.ttf" />
+    <Content Include="static\fonts\Moderustic-Bold.ttf" />
+    <Content Include="static\fonts\Moderustic-ExtraBold.ttf" />
+    <Content Include="static\fonts\Moderustic-Light.ttf" />
+    <Content Include="static\fonts\Moderustic-Medium.ttf" />
+    <Content Include="static\fonts\Moderustic-Regular.ttf" />
+    <Content Include="static\fonts\Moderustic-SemiBold.ttf" />
+    <Content Include="static\fonts\Moderustic-VariableFont_wght.ttf" />
+    <Content Include="static\fonts\ofont_ru_AV_Fontimer.ttf" />
+    <Content Include="static\fonts\ofont_ru_Gehaks.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Black.otf" />
+    <Content Include="static\fonts\STRomeTrial-Black.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Bold.otf" />
+    <Content Include="static\fonts\STRomeTrial-Bold.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Light.otf" />
+    <Content Include="static\fonts\STRomeTrial-Light.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Medium.otf" />
+    <Content Include="static\fonts\STRomeTrial-Medium.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Regular.otf" />
+    <Content Include="static\fonts\STRomeTrial-Regular.ttf" />
+    <Content Include="static\fonts\STRomeTrial-Thin.otf" />
+    <Content Include="static\fonts\STRomeTrial-Thin.ttf" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />
@@ -75,6 +111,15 @@
     <Content Include="views\layout.tpl" />
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="env1\">
+      <Id>env1</Id>
+      <Version>3.14</Version>
+      <Description>env1 (Python 3.14 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>3.11</Version>
