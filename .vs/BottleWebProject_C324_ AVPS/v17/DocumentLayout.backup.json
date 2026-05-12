@@ -1,0 +1,211 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\admin\\source\\repos\\up-02\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\model\\fishing_model.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\model\\fishing_model.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\routes.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\routes.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\fishing.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\fishing.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\competition.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\competition.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\epidemic.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\epidemic.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\layout.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\layout.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\predator_pray.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\predator_pray.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\index.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\views\\index.tpl||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\static\\content\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{C35F7BD3-E046-4F90-91AC-3CE8CE4842AF}|BioEmoKod\\BioEmoKod.pyproj|solutionrelative:BioEmoKod\\static\\content\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "fishing_model.py",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\model\\fishing_model.py",
+              "RelativeDocumentMoniker": "BioEmoKod\\model\\fishing_model.py",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\model\\fishing_model.py",
+              "RelativeToolTip": "BioEmoKod\\model\\fishing_model.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2026-05-12T08:02:41.549Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "routes.py",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\routes.py",
+              "RelativeDocumentMoniker": "BioEmoKod\\routes.py",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\routes.py",
+              "RelativeToolTip": "BioEmoKod\\routes.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2026-05-11T11:53:33.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "competition.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\competition.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\competition.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\competition.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\competition.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAGAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:14:41.896Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "epidemic.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\epidemic.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\epidemic.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\epidemic.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\epidemic.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAGAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:14:37.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "fishing.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\fishing.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\fishing.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\fishing.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\fishing.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:14:34.317Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "layout.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\layout.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\layout.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\layout.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\layout.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAIAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:14:29.835Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\static\\content\\site.css",
+              "RelativeDocumentMoniker": "BioEmoKod\\static\\content\\site.css",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\static\\content\\site.css",
+              "RelativeToolTip": "BioEmoKod\\static\\content\\site.css",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAFIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-05-11T11:09:22.083Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "index.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\index.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\index.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\index.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\index.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAYAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:01:46.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "predator_pray.tpl",
+              "DocumentMoniker": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\predator_pray.tpl",
+              "RelativeDocumentMoniker": "BioEmoKod\\views\\predator_pray.tpl",
+              "ToolTip": "C:\\Users\\admin\\source\\repos\\up-02\\BioEmoKod\\views\\predator_pray.tpl",
+              "RelativeToolTip": "BioEmoKod\\views\\predator_pray.tpl",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIOSURBVFhH7Zc9iBpREMfnwor4Fa6xtxTEpDSdQexEuMpWrdVSwc7Owtraj1KbgLVyV6pgcyDGSmxtjvMDjYJ5/5e3YpbI\u002BtysJtz94DEz78HOf2feLCzdlP1\u002BfwfbarXumfnGVhDxFXhi6yEajb6oAh6dTqfi9/s/2Ww2F/bMYrfbvQ4Gg\u002BfFYrFjAr5\u002BEPvBayQHiqJ8RC7m8mqrAugayVWOcx0E3Ip3AVICJpMJJRIJisVi3Pb7fXFyOVICCoUC\u002BXw\u002BKpfL5PF4uDWK\u002Bh3Yh0IhvqEFb7parURE1Gg0uF0ul5RMJrl/CrfbfVJkp9Mh9h24U0R8kmq1KrxfYvDASCRCzWaT7Hb7b\u002BeXIN2C4XBIuVyO34dUKiVOLke3BWahtsDwGKqVwGTAIpbBsIBSqcTvAu4GLh1iGXRbgLeazWYi\u002BjOVSoUcDgf3UQmVc6bA8B3AZCARhGIi0IJzJuOv3QFMBiqEyYDNZrPi5Dz\u002B/ykwiq6A\u002BXxOgUDgsOr1\u002BsFvt9t8HcewMuh\u002Bil0uF3W7Xf5g2HA4TLVajZ\u002Bl02lutbEM0i1ARbxeL1/wtbEs0gJQkV6vR6PRiPvaWBZpAfl8njKZDMXjce5rY4B2FYtF7uvx74wh\u002B2EQnvkc51IFPI3H4x/r9VqE5oEc0\u002Bl0w1z8nh1acG\u002BxWB632\u002B1nxGZjtVq/bzabL6wFL2LrzUL0Expc/nuu5w1GAAAAAElFTkSuQmCC",
+              "WhenOpened": "2026-05-11T11:01:43.358Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 88,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
