@@ -26,16 +26,38 @@
 
 /* Увеличиваем размер шрифта для заголовков в аккордеоне */
 .panel-group .panel-title {
-    font-size: 18px;
+    font-size: 20px;
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-    .equal-height-row {
-        display: block;
-    }
 
-    .theory-panel .panel-body {
-        max-height: none;
-    }
+/* Выравнивание шрифтов подписей и полей ввода */
+.form-horizontal .control-label {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.form-control {
+    font-size: 16px;
+}
+
+/* Для всех подписей в форме */
+.form-group label {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+/* Для вспомогательного текста (help-block) */
+.help-block {
+    font-size: 16px;
+}
+
+/* Заголовки внутри расчётной панели */
+.panel-primary h4 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Подписи внутри панели теории */
+.theory-panel .panel-body {
+    font-size: 18px;
 }
