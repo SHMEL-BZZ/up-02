@@ -49,3 +49,12 @@ def fishing():
         title='Fishing',
         year=datetime.now().year
     )
+
+@route('/about')
+@view('about')
+def fishing():
+    """Renders the about page."""
+    return dict(
+        title='About',
+        year=datetime.now().year
+    )

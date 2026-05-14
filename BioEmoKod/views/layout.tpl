@@ -19,6 +19,7 @@
                     <li><a href="/epidemic">Epidemic</a></li>
                     <li><a href="/competition">Competition</a></li>
                     <li><a href="/fishing">Fishing</a></li>
+                    <li><a href="/about">Об авторах</a></li>
                 </ul>
             </div>
         </div>

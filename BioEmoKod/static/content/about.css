@@ -1,0 +1,85 @@
+/* Контейнер для всех авторов */
+.authors-list {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Карточка автора — гибкая строка */
+.author-row {
+    display: flex;
+    align-items: stretch; /* чтобы фото и текст были одинаковой высоты */
+    gap: 1.5rem; /* расстояние между фото и текстом */
+    background: #fff;
+    border: 1px solid #cfb586;
+    border-radius: 24px; /* более мягкие углы */
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 6px 14px rgba(100, 70, 40, 0.08);
+    transition: box-shadow 0.3s, transform 0.2s;
+    height: 200px;
+}
+
+    .author-row:hover {
+        box-shadow: 0 12px 24px rgba(162, 98, 62, 0.15);
+        transform: translateY(-2px);
+    }
+
+/* Фото занимает ровно половину ширины карточки */
+.author-photo {
+    flex: 1; /* равная доля с .author-info */
+    width: 50%; /* запасной вариант */
+    display: flex;
+    background-color: #e9dfce; /* приятный тёплый фон, пока нет картинки */
+    border-radius: 18px;
+    overflow: hidden; /* чтобы картинка не вылезала за округлённые углы */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+    /* Само изображение — полностью заполняет блок, сохраняя пропорции */
+    .author-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* красивое заполнение всей площади */
+        display: block;
+    }
+
+/* Текстовая половина — вторая 50% */
+.author-info {
+    flex: 1;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* вертикальное выравнивание по центру */
+    padding: 0.25rem 0.5rem 0.25rem 0;
+}
+
+/* Имя автора */
+.author-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #a4623e;
+    margin: 0 0 0.6rem 0;
+    letter-spacing: -0.3px;
+    font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Описание вклада */
+.author-contribution {
+    font-size: 1rem;
+    color: #2c2c2c;
+    line-height: 1.5;
+    margin: 0;
+    font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+
+/* Дополнительная красота: если картинки пока нет, показываем инициалы или иконку */
+.author-photo:not(:has(img))::before {
+    content: "📷";
+    font-size: 3rem;
+    opacity: 0.7;
+}
