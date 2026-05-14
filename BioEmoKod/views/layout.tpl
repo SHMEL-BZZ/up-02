@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - My Bottle Application</title>
+    <title>{{ title }} - BioEmoCode</title>
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     <script src="/static/scripts/modernizr-2.6.2.js"></script>
@@ -12,14 +12,17 @@
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home" style="color: white !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin-right: 50px;">BioEmoCode</a>
+            </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/predator_pray">Predator_pray</a></li>
-                    <li><a href="/epidemic">Epidemic</a></li>
-                    <li><a href="/competition">Competition</a></li>
-                    <li><a href="/fishing">Fishing</a></li>
-                    <li><a href="/about">Об авторах</a></li>
+                    <li><a href="/home" style="color: white !important;">Главная</a></li>
+                    <li><a href="/predator_pray" style="color: white !important;">Хищник-жертва</a></li>
+                    <li><a href="/epidemic" style="color: white !important;">Эпидемия</a></li>
+                    <li><a href="/competition" style="color: white !important;">Конкуренция</a></li>
+                    <li><a href="/fishing" style="color: white !important;">Рыболовство</a></li>
+                    <li><a href="/about" style="color: white !important;">Об авторах</a></li>
                 </ul>
             </div>
         </div>
@@ -29,7 +32,7 @@
         {{!base}}
         <hr />
         <footer>
-            <p>&copy; {{ year }} - My Bottle Application</p>
+            <p>&copy; {{ year }} - BioEmoCode</p>
         </footer>
     </div>
 
