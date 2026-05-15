@@ -1,8 +1,15 @@
 % rebase('layout.tpl', title='Главная', year=year)
 
 <div class="page-header">
-    <h1>БиоЭмоКод</h1>
-    <p class="lead">Биологический экспериментальный модульный образец</p>
+    <div class="header-container">
+        <div class="header-image">
+            <img src="/static/img/logo.jpg" alt="BioEmoCode Logo" class="rounded-logo">
+        </div>
+        <div class="header-text">
+            <h1>БиоЭмоКод</h1>
+            <p class="lead">Биологический экспериментальный модульный образец</p>
+        </div>
+    </div>
 </div>
 
 <div class="row">
