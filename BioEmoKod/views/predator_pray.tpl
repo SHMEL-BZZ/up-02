@@ -15,7 +15,7 @@
         <!-- БЛОК ТЕОРИИ (аккордеон) -->
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">📖 Теоретические сведения</h3>
+                <h3 class="panel-title text-center">Теоретические сведения</h3>
             </div>
             <div class="panel-body">
                 <div class="panel-group" id="accordion">
@@ -25,7 +25,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                                    🦊 Модель «Хищник-жертва» (Лотки-Вольтерры)
+                                    Модель «Хищник-жертва» (Лотки-Вольтерры)
                                 </a>
                             </h4>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                                    📐 Система дифференциальных уравнений
+                                    Система дифференциальных уравнений
                                 </a>
                             </h4>
                         </div>
@@ -79,7 +79,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                                    ⚖️ Равновесие и анализ устойчивости
+                                    Равновесие и анализ устойчивости
                                 </a>
                             </h4>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-                                    📊 Примеры сценариев
+                                    Примеры сценариев
                                 </a>
                             </h4>
                         </div>
@@ -138,7 +138,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
-                                    📚 Источники
+                                    Источники
                                 </a>
                             </h4>
                         </div>
@@ -170,7 +170,7 @@
                              class="img-responsive"
                              style="height: 250px; width: 100%; object-fit: cover;"
                              alt="Заяц">
-                        <p class="text-muted" style="margin-top: 10px;">🐇 Жертва (заяц)</p>
+                        <p class="text-muted" style="margin-top: 10px;">Жертва (заяц)</p>
                     </div>
                 </div>
 
@@ -181,7 +181,7 @@
                              class="img-responsive"
                              style="height: 250px; width: 100%; object-fit: cover;"
                              alt="Лиса">
-                        <p class="text-muted" style="margin-top: 10px;">🦊 Хищник (лиса)</p>
+                        <p class="text-muted" style="margin-top: 10px;">Хищник (лиса)</p>
                     </div>
                 </div>
 
@@ -195,7 +195,7 @@
     <div class="col-md-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
+                <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
 
@@ -207,7 +207,7 @@
                         <!-- ЛЕВАЯ КОЛОНКА: Начальные условия + симуляция -->
                         <div class="col-md-6">
 
-                            <h4 class="text-center">📌 Начальные условия</h4>
+                            <h4 class="text-center">Начальные условия</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -233,7 +233,7 @@
 
                             <hr>
 
-                            <h4 class="text-center">⏱️ Параметры симуляции</h4>
+                            <h4 class="text-center">Параметры симуляции</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -261,7 +261,7 @@
                         <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
                         <div class="col-md-6">
 
-                            <h4 class="text-center">⚙️ Параметры модели</h4>
+                            <h4 class="text-center">Параметры модели</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -276,7 +276,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label class="col-sm-6 control-label">Эффективность охоты с:</label>
+                                        <label class="col-sm-6 control-label">Эффективность охоты c:</label>
                                         <div class="col-sm-6">
                                             <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
                                             <span class="help-block">Диапазон: 0.01–0.06</span>
@@ -315,7 +315,7 @@
                     <!-- Кнопка запуска -->
                     <div class="form-group">
                         <div class="col-sm-offset-5 col-sm-2">
-                            <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
+                            <button type="submit" class="btn btn-success btn-block">Запустить расчёт</button>
                         </div>
                     </div>
 
@@ -324,23 +324,35 @@
         </div> <!-- panel-primary -->
     </div> <!-- col-md-12 -->
 </div> <!-- row -->
+
+<!-- Отображение ошибок -->
+% if defined('error') and error:
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger">
+            <strong>Ошибка:</strong> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    </div>
+</div>
+% end
+
 <!-- Результаты расчёта (если есть) -->
 % if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">📈 Результаты моделирования</h3>
+                <h3 class="panel-title text-center">Результаты моделирования</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="text-center">Динамика численности во времени</h4>
-                        <img src="/static/temp/{{ results.get('plot_time', '') }}" class="img-responsive img-thumbnail" alt="График динамики">
-                    </div>
-                    <div class="col-md-6">
-                        <h4 class="text-center">Фазовый портрет</h4>
-                        <img src="/static/temp/{{ results.get('plot_phase', '') }}" class="img-responsive img-thumbnail" alt="Фазовый портрет">
+                    <div class="col-md-12">
+                        <h4 class="text-center">Динамика популяций и фазовый портрет</h4>
+                        <img src="data:image/png;base64,{{ results.get('plot_base64', '') }}" 
+                             class="img-responsive img-thumbnail" 
+                             style="width: 100%;"
+                             alt="Графики динамики и фазовый портрет">
                     </div>
                 </div>
 
@@ -348,9 +360,36 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 class="text-center">📊 Анализ результатов</h4>
+                        <h4 class="text-center">Анализ результатов</h4>
                         <div class="well">
-                            <p><strong>Равновесная численность жертв (x*):</strong> {{ results.get('x_star', 'Н/Д') }}</p>
-                            <p><strong>Равновесная численность хищников (y*):</strong> {{ results.get('y_star', 'Н/Д') }}</p>
-                            <p><strong>Расчётный период колебаний:</strong> {{ results.get('period', 'Н/Д') }} лет</p>
-                            <p><strong>Т
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Равновесная численность жертв (x*):</strong> {{ results.get('x_star', 'Н/Д') }}</p>
+                                    <p><strong>Равновесная численность хищников (y*):</strong> {{ results.get('y_star', 'Н/Д') }}</p>
+                                    <p><strong>Расчётный период колебаний:</strong> {{ results.get('period', 'Н/Д') }} лет</p>
+                                    <p><strong>Тип устойчивости:</strong> {{ results.get('stability_type', 'Н/Д') }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Средняя численность жертв:</strong> {{ results.get('avg_prey', 'Н/Д') }}</p>
+                                    <p><strong>Средняя численность хищников:</strong> {{ results.get('avg_predator', 'Н/Д') }}</p>
+                                    <p><strong>Мин/макс жертв:</strong> {{ results.get('min_prey', 'Н/Д') }} / {{ results.get('max_prey', 'Н/Д') }}</p>
+                                    <p><strong>Мин/макс хищников:</strong> {{ results.get('min_predator', 'Н/Д') }} / {{ results.get('max_predator', 'Н/Д') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Кнопка экспорта -->
+                <div class="text-center">
+                    <form action="/export_csv" method="post" style="display: inline;">
+                        <input type="hidden" name="data_type" value="predator_prey">
+                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                    </form>
+                </div>
+                
+            </div> <!-- panel-body -->
+        </div> <!-- panel-success -->
+    </div> <!-- col-md-12 -->
+</div> <!-- row -->
+% end
