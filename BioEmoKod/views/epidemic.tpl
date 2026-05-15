@@ -275,3 +275,101 @@
         </div>
     </div>
 </div>
+
+<!-- блок: расчётная панель -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
+            </div>
+            <div class="panel-body">
+                <form action="/epidemic" method="post" class="form-horizontal">
+                    
+                    <div class="row">
+                        <!-- колонка 1: Пространство и время -->
+                        <div class="col-md-4">
+                            <h5 style="font-size: 16px; font-weight: bold; margin-top: 0; margin-bottom: 15px; color: #4E653D;">Пространство и время</h5>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Размер сетки n×n:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="grid_size" class="form-control" value="8" min="2" max="10" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">n = 2..10</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Общее число крыс:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="total_rats" class="form-control" value="64" min="1" max="400" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">максимум n²·4</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Длительность (недели):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="weeks" class="form-control" value="52" min="8" max="260" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">8..260</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- колонка 2: Заражение и перемещение -->
+                        <div class="col-md-4">
+                            <h5 style="font-size: 16px; font-weight: bold; margin-top: 0; margin-bottom: 15px; color: #4E653D;">Заражение и перемещение</h5>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Вероятность заражения:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="0.05" name="p_infect" class="form-control" value="0.6" min="0.1" max="0.9" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">0.1..0.9</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Вероятность перемещения:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="0.05" name="p_move" class="form-control" value="0.5" min="0.1" max="0.9" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">0.1..0.9</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- колонка 3: Вакцинация -->
+                        <div class="col-md-4">
+                            <h5 style="font-size: 16px; font-weight: bold; margin-top: 0; margin-bottom: 15px; color: #4E653D;">Вакцинация</h5>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">День начала вакцинации:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="vacc_day" class="form-control" value="30" min="9" max="364" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">9..t·7 (максимум зависит от недель)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-12 control-label" style="font-size: 14px; text-align: left;">Процент вакцинируемых крыс:</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="5" name="vacc_percent" class="form-control" value="50" min="1" max="100" required style="font-size: 14px;">
+                                    <span class="help-block" style="font-size: 11px;">1%..100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- кнопка запуска -->
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn" style="background-color: #468847; border-color: #4E653D; color: white; font-size: 14px; padding: 8px 24px; border-radius: 8px;">
+                                ▶ Запустить расчёт
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
