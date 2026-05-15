@@ -59,9 +59,10 @@ input[type="checkbox"].input-validation-error {
 }
 
 /* цвет ссылок по умолчанию */
-.navbar-inverse .navbar-nav > li > a {
-    color: #F2EDDE; 
-}
+    .navbar-inverse .navbar-nav > li > a {
+        color: #F2EDDE;
+        font-size: 18px;
+    }
 
     /* при наведении на ссылки */
     .navbar-inverse .navbar-nav > li > a:hover,
@@ -80,4 +81,63 @@ input[type="checkbox"].input-validation-error {
     margin-bottom: 30px;
     text-align: center;
     font-size: 24px;
+}
+/* Увеличиваем размер названия сайта */
+.navbar-brand {
+    font-size: 28px !important;
+    font-weight: bold;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+}
+/* Выравнивание высоты панелей */
+.row-equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .row-equal-height .panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .row-equal-height .panel-body {
+        flex: 1;
+    }
+/* Фиксированная минимальная высота для всех панелей */
+.model-panel {
+    min-height: 280px;
+}
+
+@media (max-width: 768px) {
+    .model-panel {
+        min-height: auto;
+    }
+}
+/* Делаем все колонки одной высоты */
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .row-flex [class*="col-"] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Панели растягиваются на всю высоту колонки */
+    .row-flex .panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Тело панели занимает всё свободное место */
+    .row-flex .panel-body {
+        flex: 1;
+    }
+
+/* Опционально: фиксированная минимальная высота для панелей */
+.model-card {
+    height: 100%;
 }
