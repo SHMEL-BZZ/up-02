@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="well" style="padding: 20px;">
-            <h3 style="text-align: left; font-size: 20px; margin-top: 0;">О проекте</h3>
+            <h3 style="font-size: 18px; font-weight: bold; color: #4E653D;">О проекте</h3>
             <p style="font-size: 14px; line-height: 1.5;">
                 <strong>«БиоЭмоКод»</strong> — это веб-приложение для численного моделирования и визуализации динамики 
                 биологических и экологических систем. Комплекс предназначен для исследования нелинейной динамики экосистем, 

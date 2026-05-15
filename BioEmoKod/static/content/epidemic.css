@@ -1,28 +1,134 @@
-/* отступы */
-.mt-1 {
-    margin-top: 5px;
+/* общие стили для текста */
+.epidemic-text {
+    font-size: 14px;
 }
 
-.mt-2 {
+
+/* стили для внутренних заголовков (h5) */
+h5 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #4E653D;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* стили для абзацев и списков */
+.panel-body p {
+    font-size: 14px;
+}
+
+.panel-body ul {
+    font-size: 14px;
+}
+
+/* стили для полей ввода */
+.form-control {
+    font-size: 14px;
+}
+
+.control-label {
+    font-size: 14px;
+    text-align: left;
+}
+
+.help-block {
+    font-size: 11px;
+}
+
+
+/* стили для формул */
+.formula-block {
+    margin-bottom: 30px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.formula-box {
+    background: white;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.formula-box-green {
+    border-left: 4px solid #4E653D;
+}
+
+.formula-box-red {
+    border-left: 4px solid #e74c3c;
+}
+
+.formula-box-success {
+    border-left: 4px solid #5cb85c;
+}
+
+.formula-text {
+    font-size: 16px;
+    text-align: center;
+    margin: 0;
+}
+
+.formula-description {
+    font-size: 9px;
+    color: #666;
+}
+
+/* стили для критериев эффективности */
+.efficiency-box {
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.efficiency-low {
+    background: #d9534f;
+}
+
+.efficiency-medium {
+    background: #f0ad4e;
+}
+
+.efficiency-high {
+    background: #5cb85c;
+}
+
+/* стили для кнопки */
+.btn-run {
+    background-color: #468847;
+    border-color: #4E653D;
+    color: white;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 8px;
+}
+
+/* вспомогательные утилиты */
+.mt-10 {
     margin-top: 10px;
 }
 
-.mt-3 {
-    margin-top: 15px;
-}
-
-.mb-0 {
-    margin-bottom: 0;
-}
-
-.mb-1 {
-    margin-bottom: 5px;
-}
-
-.mb-2 {
+.mb-10 {
     margin-bottom: 10px;
 }
 
-.mb-3 {
+.mb-25 {
+    margin-bottom: 25px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* сброс отступов для h5 внутри расчётной панели */
+.panel-body h5 {
+    margin-top: 0;
     margin-bottom: 15px;
+    padding: 0;
+}
+
+.panel-body h5 {
+    margin-left: 15px;
+    padding-left: 0;
 }

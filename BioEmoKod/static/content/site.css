@@ -217,10 +217,3 @@ input[type="checkbox"].input-validation-error {
 .alert-info {
     font-size: 14px;
 }
-
-/* Уменьшение заголовка "Математические модели" */
-h3 {
-    font-size: 18px;
-    font-weight: bold;
-    color: #4E653D;
-}
