@@ -59,9 +59,10 @@ input[type="checkbox"].input-validation-error {
 }
 
 /* цвет ссылок по умолчанию */
-.navbar-inverse .navbar-nav > li > a {
-    color: #F2EDDE; 
-}
+    .navbar-inverse .navbar-nav > li > a {
+        color: #F2EDDE;
+        font-size: 18px;
+    }
 
     /* при наведении на ссылки */
     .navbar-inverse .navbar-nav > li > a:hover,

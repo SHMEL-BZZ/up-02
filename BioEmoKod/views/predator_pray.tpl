@@ -9,18 +9,18 @@
     <h2>Модель «Хищник-жертва»</h2>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕЙНЕР С FLEX ДЛЯ ВЫРАВНИВАНИЯ ВЫСОТЫ -->
-<div class="row equal-height-row">
-    <!-- ЛЕВАЯ КОЛОНКА: ТЕОРИЯ -->
-    <div class="col-md-5">
-        <div class="panel panel-info theory-panel">
+<!-- Верхняя строка: теория + картинки в колонке -->
+<div class="row">
+    <div class="col-md-8">
+        <!-- БЛОК ТЕОРИИ (аккордеон) -->
+        <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">📖 Теоретические сведения</h3>
             </div>
             <div class="panel-body">
-                
-                <!-- Раскрывающийся блок 1: Описание модели -->
                 <div class="panel-group" id="accordion">
+
+                    <!-- 1. Модель Лотки–Вольтерры -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <!-- Раскрывающийся блок 2: Система уравнений -->
+                    <!-- 2. Система уравнений -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -74,7 +74,7 @@
                         </div>
                     </div>
 
-                    <!-- Раскрывающийся блок 3: Равновесие и устойчивость -->
+                    <!-- 3. Равновесие и устойчивость -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -100,7 +100,7 @@
                         </div>
                     </div>
 
-                    <!-- Раскрывающийся блок 4: Примеры -->
+                    <!-- 4. Примеры сценариев -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -133,7 +133,7 @@
                         </div>
                     </div>
 
-                    <!-- Раскрывающийся блок 5: Литература -->
+                    <!-- 5. Источники -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -152,104 +152,178 @@
                             </div>
                         </div>
                     </div>
+
+                </div> <!-- panel-group -->
+            </div> <!-- panel-body -->
+        </div> <!-- panel-info -->
+    </div> <!-- col-md-8 -->
+
+    <!-- Картинки в колонке справа -->
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body text-center">
+
+                <!-- Картинка жертвы -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <img src="/static/img/bunny.jpg"
+                             class="img-responsive"
+                             style="height: 250px; width: 100%; object-fit: cover;"
+                             alt="Заяц">
+                        <p class="text-muted" style="margin-top: 10px;">🐇 Жертва (заяц)</p>
+                    </div>
                 </div>
 
-            </div>
-        </div>
-    </div>
+                <!-- Картинка хищника -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <img src="/static/img/fox.jpg"
+                             class="img-responsive"
+                             style="height: 250px; width: 100%; object-fit: cover;"
+                             alt="Лиса">
+                        <p class="text-muted" style="margin-top: 10px;">🦊 Хищник (лиса)</p>
+                    </div>
+                </div>
 
-    <!-- ПРАВАЯ КОЛОНКА: РАСЧЁТНАЯ ПАНЕЛЬ -->
-    <div class="col-md-7">
+            </div> <!-- panel-body -->
+        </div> <!-- panel-default -->
+    </div> <!-- col-md-4 -->
+</div> <!-- row -->
+
+<!-- Расчётная панель -->
+<div class="row">
+    <div class="col-md-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
             </div>
             <div class="panel-body">
+
                 <form action="/predator_pray" method="post" class="form-horizontal">
-                    
-                    <!-- Начальные условия -->
-                    <h4 class="text-center">📌 Начальные условия</h4>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">x₀ (численность жертв):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="any" name="x0" class="form-control" value="50" required>
-                            <span class="help-block">Диапазон: 10–100</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">y₀ (численность хищников):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="any" name="y0" class="form-control" value="20" required>
-                            <span class="help-block">Диапазон: 1–50</span>
-                        </div>
-                    </div>
 
-                    <hr>
+                    <!-- Два столбца -->
+                    <div class="row">
 
-                    <!-- Параметры модели -->
-                    <h4 class="text-center">⚙️ Параметры модели</h4>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">α (рождаемость жертв):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="0.01" name="alpha" class="form-control" value="0.8" required>
-                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">c (эффективность охоты):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
-                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">β (смертность хищников):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="0.01" name="beta" class="form-control" value="0.6" required>
-                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">d (вклад жертвы в рост хищников):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="0.01" name="d" class="form-control" value="0.02" required>
-                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                        </div>
-                    </div>
+                        <!-- ЛЕВАЯ КОЛОНКА: Начальные условия + симуляция -->
+                        <div class="col-md-6">
 
-                    <hr>
+                            <h4 class="text-center">📌 Начальные условия</h4>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Число жертв x₀:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="any" name="x0" class="form-control" value="50" required>
+                                            <span class="help-block">Диапазон: 10–100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Число хищников y₀:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="any" name="y0" class="form-control" value="20" required>
+                                            <span class="help-block">Диапазон: 1–50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <!-- Параметры симуляции -->
-                    <h4 class="text-center">⏱️ Параметры симуляции</h4>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">T (длительность, лет):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="1" name="T" class="form-control" value="50" required>
-                            <span class="help-block">Диапазон: 5–50</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-5 control-label">N (количество шагов):</label>
-                        <div class="col-sm-7">
-                            <input type="number" step="100" name="N" class="form-control" value="1000" required>
-                            <span class="help-block">Диапазон: 200–10000</span>
-                        </div>
-                    </div>
+                            <hr>
+
+                            <h4 class="text-center">⏱️ Параметры симуляции</h4>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Длительность T (лет):</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="1" name="T" class="form-control" value="50" required>
+                                            <span class="help-block">Диапазон: 5–50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Число шагов N:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="100" name="N" class="form-control" value="1000" required>
+                                            <span class="help-block">Диапазон: 200–10000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- col-md-6 (левая колонка) -->
+
+                        <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
+                        <div class="col-md-6">
+
+                            <h4 class="text-center">⚙️ Параметры модели</h4>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Рождаемость жертв α:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="0.01" name="alpha" class="form-control" value="0.8" required>
+                                            <span class="help-block">Диапазон: 0.4–1.5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Эффективность охоты с:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
+                                            <span class="help-block">Диапазон: 0.01–0.06</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Смертность хищников β:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="0.01" name="beta" class="form-control" value="0.6" required>
+                                            <span class="help-block">Диапазон: 0.4–1.5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Рост хищников d:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" step="0.01" name="d" class="form-control" value="0.02" required>
+                                            <span class="help-block">Диапазон: 0.01–0.06</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- col-md-6 (правая колонка) -->
+
+                    </div> <!-- row (два столбца) -->
 
                     <hr>
 
                     <!-- Кнопка запуска -->
                     <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-6">
+                        <div class="col-sm-offset-5 col-sm-2">
                             <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
+                </form>
+            </div> <!-- panel-body -->
+        </div> <!-- panel-primary -->
+    </div> <!-- col-md-12 -->
+</div> <!-- row -->
 <!-- Результаты расчёта (если есть) -->
 % if defined('results') and results:
 <div class="row">
@@ -269,9 +343,9 @@
                         <img src="/static/temp/{{ results.get('plot_phase', '') }}" class="img-responsive img-thumbnail" alt="Фазовый портрет">
                     </div>
                 </div>
-                
+
                 <hr>
-                
+
                 <div class="row">
                     <div class="col-md-12">
                         <h4 class="text-center">📊 Анализ результатов</h4>
@@ -279,27 +353,4 @@
                             <p><strong>Равновесная численность жертв (x*):</strong> {{ results.get('x_star', 'Н/Д') }}</p>
                             <p><strong>Равновесная численность хищников (y*):</strong> {{ results.get('y_star', 'Н/Д') }}</p>
                             <p><strong>Расчётный период колебаний:</strong> {{ results.get('period', 'Н/Д') }} лет</p>
-                            <p><strong>Тип устойчивости:</strong> {{ results.get('stability', 'Н/Д') }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Кнопки экспорта -->
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        % if results.get('plot_time'):
-                        <a href="/static/temp/{{ results['plot_time'] }}" download class="btn btn-default">💾 Скачать график динамики (PNG)</a>
-                        % end
-                        % if results.get('plot_phase'):
-                        <a href="/static/temp/{{ results['plot_phase'] }}" download class="btn btn-default">💾 Скачать фазовый портрет (PNG)</a>
-                        % end
-                        % if results.get('csv_file'):
-                        <a href="/static/temp/{{ results['csv_file'] }}" download class="btn btn-default">📥 Скачать данные (CSV)</a>
-                        % end
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-% end
+                            <p><strong>Т
