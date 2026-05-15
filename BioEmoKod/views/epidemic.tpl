@@ -67,117 +67,211 @@
                         </div>
                     </div>
 
-                    <!-- 3. Пример работы приложения -->
+                    <!-- 3. Формулы расчёта -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                                    🖥️ Пример работы приложения
+                                    📐 Формулы расчёта показателей
                                 </a>
                             </h4>
                         </div>
                         <div id="collapse3" class="panel-collapse collapse">
                             <div class="panel-body">
-                                
-                                <!-- ШАГ 1 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 1. Задание пространственных и временных параметров</h5>
-                                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>Размер сетки (n) — например, 8 для сетки размером 8×8 клеток</li>
-                                        <li>Общее число крыс (rats) — например, 64 особи</li>
-                                        <li>Длительность симуляции (t) — например, 52 недели (1 год)</li>
+                                <!-- Блок 1: Эпидемический порог -->
+                                <div style="margin-bottom: 30px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+                                    <h5 style="font-size: 16px; font-weight: bold; color: #4E653D; margin-bottom: 15px;">📊 Расчёт эпидемического порога</h5>
+                                    
+                                    <p style="font-size: 14px;"><strong>Эпидемический порог</strong> — это критический уровень заболеваемости, при превышении которого эпидемия переходит в неуправляемую фазу. Расчёт производится на основе первых 8 недель симуляции (базовый период).</p>
+                                    
+                                    <p style="font-size: 14px; margin-top: 15px;"><strong>Шаг 1. Вычисление среднего арифметического заболеваемости за базовый период</strong></p>
+                                    <div style="background: white; padding: 12px; border-left: 4px solid #4E653D; margin: 10px 0;">
+                                        <p style="font-size: 16px; text-align: center; margin: 0;">
+                                            X̄<sub>баз</sub> = (X₁ + X₂ + ... + Xₙ) / n
+                                        </p>
+                                    </div>
+                                    <p style="font-size: 13px; color: #666;">где:</p>
+                                    <ul style="font-size: 13px; color: #666;">
+                                        <li>X̄<sub>баз</sub> — среднее арифметическое заболеваемости за базовый период</li>
+                                        <li>Xᵢ — количество заражённых за i-ю неделю</li>
+                                        <li>n — количество недель в базовом периоде (n = 8)</li>
                                     </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Поля ввода пространственных и временных параметров</span>
+
+                                    <p style="font-size: 14px; margin-top: 15px;"><strong>Шаг 2. Вычисление стандартного отклонения</strong></p>
+                                    <div style="background: white; padding: 12px; border-left: 4px solid #4E653D; margin: 10px 0;">
+                                        <p style="font-size: 16px; text-align: center; margin: 0;">
+                                            σ<sub>баз</sub> = √[ Σ(Xᵢ - X̄<sub>баз</sub>)² / (n - 1) ]
+                                        </p>
                                     </div>
+                                    <p style="font-size: 13px; color: #666;">где σ<sub>баз</sub> — стандартное (среднеквадратичное) отклонение заболеваемости.</p>
+
+                                    <p style="font-size: 14px; margin-top: 15px;"><strong>Шаг 3. Расчёт порога эпидемии</strong></p>
+                                    <div style="background: white; padding: 12px; border-left: 4px solid #e74c3c; margin: 10px 0;">
+                                        <p style="font-size: 16px; text-align: center; margin: 0;">
+                                            X<sub>порог</sub> = X̄<sub>баз</sub> + 2,507 × σ<sub>баз</sub>
+                                        </p>
+                                    </div>
+                                    <p style="font-size: 13px; color: #666;">где 2,507 — произведение коэффициента Стьюдента (2,365) и статистической поправки (√(1 + 1/n) ≈ 1,06066).</p>
                                 </div>
 
-                                <!-- ШАГ 2 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 2. Задание параметров заражения и перемещения</h5>
-                                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
+                                <!-- Блок 2: Эффективность вакцинации -->
+                                <div style="margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+                                    <h5 style="font-size: 16px; font-weight: bold; color: #4E653D; margin-bottom: 15px;">💉 Расчёт эффективности вакцинации</h5>
+                                    
+                                    <p style="font-size: 14px;">Эффективность вакцинации оценивается путём сравнения двух сценариев развития эпидемии:</p>
                                     <ul style="font-size: 14px;">
-                                        <li>Вероятность перемещения (p_move) — например, 0.5 (50% шанс переместиться в соседнюю клетку)</li>
-                                        <li>Вероятность заражения (p_infect) — например, 0.6 (60% шанс заразиться при контакте с больным)</li>
+                                        <li>Сценарий А — симуляция без вакцинации на всём временном интервале</li>
+                                        <li>Сценарий Б — симуляция с вакцинацией (начиная с заданного пользователем дня)</li>
                                     </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Поля ввода вероятностей перемещения и заражения</span>
-                                    </div>
-                                </div>
 
-                                <!-- ШАГ 3 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 3. Задание параметров вакцинации</h5>
-                                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>День начала вакцинации (day_vac) — например, 58-й день</li>
-                                        <li>Процент вакцинируемых здоровых крыс (v) — например, 50%</li>
+                                    <p style="font-size: 14px; margin-top: 15px;"><strong>Формула расчёта эффективности:</strong></p>
+                                    <div style="background: white; padding: 12px; border-left: 4px solid #5cb85c; margin: 10px 0;">
+                                        <p style="font-size: 16px; text-align: center; margin: 0;">
+                                            Эффективность = (W<sub>без</sub> - W<sub>с</sub>) / W<sub>без</sub> × 100%
+                                        </p>
+                                    </div>
+                                    <p style="font-size: 13px; color: #666;">где:</p>
+                                    <ul style="font-size: 13px; color: #666;">
+                                        <li><W<sub>без</sub> — количество эпидемических недель в сценарии без вакцинации</li>
+                                        <li>W<sub>с</sub> — количество эпидемических недель в сценарии с вакцинацией</li>
                                     </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Поля настройки вакцинации</span>
-                                    </div>
-                                </div>
 
-                                <!-- ШАГ 4 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 4. Запуск расчёта</h5>
-                                    <p style="font-size: 14px;">Нажмите зелёную кнопку <strong>«Запустить расчёт»</strong> внизу расчётной панели.</p>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Кнопка запуска расчёта</span>
+                                    <p style="font-size: 14px; margin-top: 15px;"><strong>Критерии оценки эффективности:</strong></p>
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-md-4 text-center">
+                                            <div style="background: #d9534f; color: white; padding: 8px; border-radius: 8px;">
+                                                <strong>Низкая</strong><br>
+                                                &lt; 50%
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div style="background: #f0ad4e; color: white; padding: 8px; border-radius: 8px;">
+                                                <strong>Средняя</strong><br>
+                                                50% – 80%
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div style="background: #5cb85c; color: white; padding: 8px; border-radius: 8px;">
+                                                <strong>Высокая</strong><br>
+                                                &gt; 80%
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <!-- ШАГ 5 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 5. Просмотр матрицы</h5>
-                                    <p style="font-size: 14px;">После расчёта в блоке «Визуализация матрицы»:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>В каждой клетке отображается количество крыс каждого статуса (S, I, R)</li>
-                                        <li>Цветовое кодирование: 🟢 S, 🔴 I, 🟡 R</li>
-                                    </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Визуализация матрицы n×n</span>
-                                    </div>
-                                </div>
-
-                                <!-- ШАГ 6 -->
-                                <div style="margin-bottom: 25px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 6. Анализ результатов</h5>
-                                    <p style="font-size: 14px;">В блоке «Динамика эпидемии и анализ» представлены:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>График динамики SIR — изменение численности здоровых (S), заражённых (I) и иммунных (R) во времени</li>
-                                        <li>Порог эпидемии — рассчитанный статистически уровень заболеваемости</li>
-                                        <li>Эффективность вакцинации — в процентах (низкая &lt;50%, средняя 50-80%, высокая &gt;80%)</li>
-                                    </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] График динамики SIR и численные показатели</span>
-                                    </div>
-                                </div>
-
-                                <!-- ШАГ 7 -->
-                                <div style="margin-bottom: 10px;">
-                                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 7. Экспорт данных</h5>
-                                    <p style="font-size: 14px;">Нажмите на соответствующие кнопки, чтобы сохранить результаты:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>CSV — численные данные динамики SIR</li>
-                                        <li>PNG — график динамики</li>
-                                    </ul>
-                                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                        <span class="text-muted">[СКРИНШОТ] Кнопки экспорта данных</span>
-                                    </div>
-                                </div>
-
-                                <!-- Итоговое резюме -->
-                                <div class="alert alert-success" style="margin-top: 20px; font-size: 14px;">
-                                    <strong>✅ Итог:</strong> После выполнения всех шагов вы получите полную картину распространения эпидемии, сможете оценить эффективность вакцинации и определить пороговые значения заболеваемости.
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                </div> <!-- panel-group -->
-            </div> <!-- panel-body -->
-        </div> <!-- panel-info -->
-    </div> <!-- col-md-12 -->
-</div> <!-- row -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- блок: пример работы приложения -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">🖥️ Пример работы приложения</h3>
+            </div>
+            <div class="panel-body">
+                
+                <!-- ШАГ 1 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 1. Задание пространственных и временных параметров</h5>
+                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
+                    <ul style="font-size: 14px;">
+                        <li>Размер сетки (n) — например, 8 для сетки размером 8×8 клеток</li>
+                        <li>Общее число крыс (rats) — например, 64 особи</li>
+                        <li>Длительность симуляции (t) — например, 52 недели (1 год)</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Поля ввода пространственных и временных параметров</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 2 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 2. Задание параметров заражения и перемещения</h5>
+                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
+                    <ul style="font-size: 14px;">
+                        <li>Вероятность перемещения (p_move) — например, 0.5 (50% шанс переместиться в соседнюю клетку)</li>
+                        <li>Вероятность заражения (p_infect) — например, 0.6 (60% шанс заразиться при контакте с больным)</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Поля ввода вероятностей перемещения и заражения</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 3 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 3. Задание параметров вакцинации</h5>
+                    <p style="font-size: 14px;">В расчётной панели задайте:</p>
+                    <ul style="font-size: 14px;">
+                        <li>День начала вакцинации (day_vac) — например, 58-й день</li>
+                        <li>Процент вакцинируемых здоровых крыс (v) — например, 50%</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Поля настройки вакцинации</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 4 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 4. Запуск расчёта</h5>
+                    <p style="font-size: 14px;">Нажмите зелёную кнопку <strong>«Запустить расчёт»</strong> внизу расчётной панели.</p>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Кнопка запуска расчёта</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 5 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 5. Просмотр матрицы</h5>
+                    <p style="font-size: 14px;">После расчёта в блоке «Визуализация матрицы»:</p>
+                    <ul style="font-size: 14px;">
+                        <li>В каждой клетке отображается количество крыс каждого статуса (S, I, R)</li>
+                        <li>Цветовое кодирование: 🟢 S, 🔴 I, 🟡 R</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Визуализация матрицы n×n</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 6 -->
+                <div style="margin-bottom: 25px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 6. Анализ результатов</h5>
+                    <p style="font-size: 14px;">В блоке «Динамика эпидемии и анализ» представлены:</p>
+                    <ul style="font-size: 14px;">
+                        <li>График динамики SIR — изменение численности здоровых (S), заражённых (I) и иммунных (R) во времени</li>
+                        <li>Порог эпидемии — рассчитанный статистически уровень заболеваемости</li>
+                        <li>Эффективность вакцинации — в процентах (низкая &lt;50%, средняя 50-80%, высокая &gt;80%)</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] График динамики SIR и численные показатели</span>
+                    </div>
+                </div>
+
+                <!-- ШАГ 7 -->
+                <div style="margin-bottom: 10px;">
+                    <h5 style="font-size: 15px; font-weight: bold; color: #4E653D;">Шаг 7. Экспорт данных</h5>
+                    <p style="font-size: 14px;">Нажмите на соответствующие кнопки, чтобы сохранить результаты:</p>
+                    <ul style="font-size: 14px;">
+                        <li>CSV — численные данные динамики SIR</li>
+                        <li>PNG — график динамики</li>
+                    </ul>
+                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                        <span class="text-muted">[СКРИНШОТ] Кнопки экспорта данных</span>
+                    </div>
+                </div>
+
+                <!-- Итоговое резюме -->
+                <div class="alert alert-success" style="margin-top: 20px; font-size: 14px;">
+                    <strong>✅ Итог:</strong> После выполнения всех шагов вы получите полную картину распространения эпидемии, сможете оценить эффективность вакцинации и определить пороговые значения заболеваемости.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
