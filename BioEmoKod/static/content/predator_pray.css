@@ -1,11 +1,98 @@
-<!DOCTYPE html>
+/* ===================================================
+   ОБЩИЙ ШРИФТ И РАЗМЕР ТЕКСТА
+   =================================================== */
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+/* Базовый шрифт для всей страницы (можно уточнить по нужному семейству) */
+body {
+    font-size: 16px;
+}
 
-</body>
-</html>
+/* Основной текст в панелях и аккордеоне */
+.panel-body,
+.panel-group .panel-body,
+.panel-body p,
+.panel-body ul,
+.panel-body li,
+.panel-body span.help-block {
+    font-size: 16px;
+}
+
+/* Подписи полей ввода внутри расчётной панели */
+.panel-primary .control-label {
+    font-size: 16px;
+}
+
+/* Поля ввода */
+.panel-primary .form-control {
+    font-size: 16px;
+    padding: 6px 10px;
+    height: auto;
+}
+
+/* Подсказки под полями */
+.panel-primary .help-block {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Заголовки разделов внутри расчётной панели */
+.panel-primary h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 0 5px 0;
+}
+
+/* Заголовок самой панели "Расчётная панель" */
+.panel-primary .panel-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Кнопка "Запустить расчёт" */
+.panel-primary .btn {
+    font-size: 16px;
+    padding: 8px 16px;
+}
+
+/* ===================================================
+   АККОРДЕОН (теория)
+   =================================================== */
+
+/* Заголовок аккордеона (строка с названием пункта) */
+.panel-group .panel-title {
+    font-size: 16px;
+}
+
+    .panel-group .panel-title a {
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+/* Шапка панелей аккордеона */
+.panel-group .panel-heading {
+    padding: 8px 12px;
+}
+
+/* Тело панелей аккордеона */
+.panel-group .panel-body {
+    padding: 10px 12px;
+}
+
+/* ===================================================
+   ВСПОМОГАТЕЛЬНЫЕ СТИЛИ
+   =================================================== */
+
+/* Центрирование заголовков (оставляем общий класс) */
+.text-center {
+    text-align: center;
+}
+
+/* Сокращённые отступы для формы */
+.panel-primary .form-group {
+    margin-bottom: 8px;
+}
+
+.panel-primary hr {
+    margin: 10px 0;
+}
