@@ -1,11 +1,28 @@
-<!DOCTYPE html>
+/* отступы */
+.mt-1 {
+    margin-top: 5px;
+}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+.mt-2 {
+    margin-top: 10px;
+}
 
-</body>
-</html>
+.mt-3 {
+    margin-top: 15px;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mb-1 {
+    margin-bottom: 5px;
+}
+
+.mb-2 {
+    margin-bottom: 10px;
+}
+
+.mb-3 {
+    margin-bottom: 15px;
+}
