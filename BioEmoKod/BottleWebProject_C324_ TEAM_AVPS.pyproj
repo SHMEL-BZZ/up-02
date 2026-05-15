@@ -91,6 +91,9 @@
     <Content Include="static\fonts\STRomeTrial-Thin.otf" />
     <Content Include="static\fonts\STRomeTrial-Thin.ttf" />
     <Content Include="static\img\bunny.jpg" />
+    <Content Include="static\img\ex1.jpg" />
+    <Content Include="static\img\ex2.jpg" />
+    <Content Include="static\img\ex3.jpg" />
     <Content Include="static\img\fox.jpg" />
     <Content Include="static\img\kate.jpg" />
     <Content Include="static\img\nika.jpg" />
