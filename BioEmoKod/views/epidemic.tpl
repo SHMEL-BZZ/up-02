@@ -373,3 +373,66 @@
         </div>
     </div>
 </div>
+
+<!-- блок: визуализация матрицы -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">🗺️ Визуализация матрицы</h3>
+            </div>
+            <div class="panel-body">
+                <div class="matrix-layout">
+
+                    <!-- Матрица -->
+                    <div class="matrix-wrapper">
+                        <div class="matrix-container">
+                            <table class="matrix-table">
+                                <tbody>
+                                    % for i in range(10):
+                                        <tr>
+                                            % for j in range(10):
+                                                <td>
+                                                    <div class="cell-content">
+                                                        <span class="stat-s">●</span> S:3<br>
+                                                        <span class="stat-i">●</span> I:1<br>
+                                                        <span class="stat-r">●</span> R:0
+                                                    </div>
+                                                </td>
+                                            % end
+                                        </tr>
+                                    % end
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Легенда -->
+                    <div class="matrix-legend">
+                        <div class="legend-title">Статусы</div>
+                        <div class="legend-item">
+                            <div class="legend-color color-s"></div>
+                            <span class="legend-text">S (здоровые)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color color-i"></div>
+                            <span class="legend-text">I (заражённые)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color color-r"></div>
+                            <span class="legend-text">R (иммунные)</span>
+                        </div>
+                        
+                        <div class="legend-divider"></div>
+                        
+                        <!-- Кнопки управления -->
+                        <div class="legend-buttons">
+                            <button class="btn btn-success btn-sm matrix-btn" disabled>▶ Старт</button>
+                            <button class="btn btn-danger btn-sm matrix-btn" disabled>🔄 Сброс</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -132,3 +132,137 @@ h5 {
     margin-left: 15px;
     padding-left: 0;
 }
+
+/* СТИЛИ ДЛЯ МАТРИЦЫ*/
+
+.matrix-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* обёртка матрицы */
+.matrix-wrapper {
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.matrix-container {
+    text-align: center;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+    .matrix-table td {
+        width: 45px;
+        height: 45px;
+        border: 1px solid #999;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #e8f5e9;
+        transition: background-color 0.2s ease;
+        padding: 2px;
+    }
+
+        .matrix-table td:hover {
+            background-color: #c8e6c9;
+            cursor: pointer;
+        }
+
+/* содержимое ячейки */
+.cell-content {
+    font-size: 8px;
+    line-height: 1.2;
+}
+
+/* цвета статусов */
+.stat-s {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.stat-i {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.stat-r {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+/* вертикальная легенда */
+.matrix-legend {
+    flex-shrink: 0;
+    width: 140px;
+    background-color: transparent;
+    padding: 0;
+}
+
+.legend-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.color-s {
+    background-color: #2ecc71;
+}
+
+.color-i {
+    background-color: #e74c3c;
+}
+
+.color-r {
+    background-color: #f1c40f;
+}
+
+.legend-text {
+    font-size: 12px;
+    color: #333;
+}
+
+.legend-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 12px 0;
+}
+
+/* кнопки в легенде */
+.legend-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.matrix-btn {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 10px;
+}
