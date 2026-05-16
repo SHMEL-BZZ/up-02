@@ -15,7 +15,7 @@
         <!-- БЛОК ТЕОРИИ (аккордеон) -->
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">Теоретические сведения</h3>
+                <h3 class="panel-title text-center">📖 Теоретические сведения</h3>
             </div>
             <div class="panel-body">
                 <div class="panel-group" id="accordion">
@@ -25,7 +25,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                                    Модель «Хищник-жертва» (Лотки-Вольтерры)
+                                    🦊 Модель «Хищник-жертва» (Лотки-Вольтерры)
                                 </a>
                             </h4>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                                    Система дифференциальных уравнений
+                                    📐 Система дифференциальных уравнений
                                 </a>
                             </h4>
                         </div>
@@ -79,7 +79,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                                    Равновесие и анализ устойчивости
+                                    ⚖️ Равновесие и анализ устойчивости
                                 </a>
                             </h4>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-                                    Примеры сценариев
+                                    📊 Примеры сценариев
                                 </a>
                             </h4>
                         </div>
@@ -115,19 +115,19 @@
                                 <ul>
                                     <li>α = 0.8, c = 0.04, β = 0.6, d = 0.02</li>
                                     <li>x₀ = 50, y₀ = 20</li>
-                                    <li><em>Результат:</em> циклические колебания численности</li>
+                                    <li>Результат: циклические колебания численности</li>
                                 </ul>
                                 <p><strong>Пример 2. Вымирание хищников:</strong></p>
                                 <ul>
                                     <li>α = 0.5, c = 0.01, β = 1.2, d = 0.01</li>
                                     <li>x₀ = 30, y₀ = 5</li>
-                                    <li><em>Результат:</em> хищники вымирают из-за высокой смертности</li>
+                                    <li>Результат: хищники вымирают из-за высокой смертности</li>
                                 </ul>
                                 <p><strong>Пример 3. Вымирание жертв:</strong></p>
                                 <ul>
                                     <li>α = 0.4, c = 0.08, β = 0.5, d = 0.01</li>
                                     <li>x₀ = 10, y₀ = 30</li>
-                                    <li><em>Результат:</em> жертвы истребляются хищниками</li>
+                                    <li>Результат: жертвы истребляются хищниками</li>
                                 </ul>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
-                                    Источники
+                                    📚 Источники
                                 </a>
                             </h4>
                         </div>
@@ -153,10 +153,10 @@
                         </div>
                     </div>
 
-                </div> <!-- panel-group -->
-            </div> <!-- panel-body -->
-        </div> <!-- panel-info -->
-    </div> <!-- col-md-8 -->
+                </div> 
+            </div> 
+        </div> 
+    </div>
 
     <!-- Картинки в колонке справа -->
     <div class="col-md-4">
@@ -167,10 +167,9 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/bunny.jpg"
-                             class="img-responsive"
-                             style="height: 250px; width: 100%; object-fit: cover;"
+                             class="img-responsive predator-prey-img"
                              alt="Заяц">
-                        <p class="text-muted" style="margin-top: 10px;">Жертва (заяц)</p>
+                        <p class="text-muted">🐇 Жертва (заяц)</p>
                     </div>
                 </div>
 
@@ -178,24 +177,23 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/fox.jpg"
-                             class="img-responsive"
-                             style="height: 250px; width: 100%; object-fit: cover;"
+                             class="img-responsive predator-prey-img"
                              alt="Лиса">
-                        <p class="text-muted" style="margin-top: 10px;">Хищник (лиса)</p>
+                        <p class="text-muted">🦊 Хищник (лиса)</p>
                     </div>
                 </div>
 
-            </div> <!-- panel-body -->
-        </div> <!-- panel-default -->
-    </div> <!-- col-md-4 -->
-</div> <!-- row -->
+            </div> 
+        </div> 
+    </div> 
+</div> 
 
 <!-- Расчётная панель -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">Расчётная панель</h3>
+                <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
             </div>
             <div class="panel-body">
 
@@ -207,7 +205,7 @@
                         <!-- ЛЕВАЯ КОЛОНКА: Начальные условия + симуляция -->
                         <div class="col-md-6">
 
-                            <h4 class="text-center">Начальные условия</h4>
+                            <h4 class="text-center">📌 Начальные условия</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -233,7 +231,7 @@
 
                             <hr>
 
-                            <h4 class="text-center">Параметры симуляции</h4>
+                            <h4 class="text-center">⏱️ Параметры симуляции</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -256,12 +254,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- col-md-6 (левая колонка) -->
+                        </div>
 
                         <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
                         <div class="col-md-6">
 
-                            <h4 class="text-center">Параметры модели</h4>
+                            <h4 class="text-center">⚙️ Параметры модели</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -306,32 +304,32 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- col-md-6 (правая колонка) -->
+                        </div>
 
-                    </div> <!-- row (два столбца) -->
+                    </div>
 
                     <hr>
 
                     <!-- Кнопка запуска -->
                     <div class="form-group">
-                        <div class="col-sm-offset-5 col-sm-2">
-                            <button type="submit" class="btn btn-success btn-block">Запустить расчёт</button>
+                        <div class="col-sm-offset-4 col-sm-4">
+                            <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
                         </div>
                     </div>
 
                 </form>
-            </div> <!-- panel-body -->
-        </div> <!-- panel-primary -->
-    </div> <!-- col-md-12 -->
-</div> <!-- row -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Отображение ошибок -->
 % if defined('error') and error:
 <div class="row">
     <div class="col-md-12">
         <div class="alert alert-danger">
-            <strong>Ошибка:</strong> {{ error }}
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>⚠️ Ошибка:</strong> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">×</button>
         </div>
     </div>
 </div>
@@ -343,15 +341,14 @@
     <div class="col-md-12">
         <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">Результаты моделирования</h3>
+                <h3 class="panel-title text-center">📈 Результаты моделирования</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-12">
                         <h4 class="text-center">Динамика популяций и фазовый портрет</h4>
                         <img src="data:image/png;base64,{{ results.get('plot_base64', '') }}" 
-                             class="img-responsive img-thumbnail" 
-                             style="width: 100%;"
+                             class="img-responsive img-thumbnail results-plot"
                              alt="Графики динамики и фазовый портрет">
                     </div>
                 </div>
@@ -360,7 +357,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 class="text-center">Анализ результатов</h4>
+                        <h4 class="text-center">📊 Анализ результатов</h4>
                         <div class="well">
                             <div class="row">
                                 <div class="col-md-6">
@@ -384,12 +381,12 @@
                 <div class="text-center">
                     <form action="/export_csv" method="post" style="display: inline;">
                         <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                        <button type="submit" class="btn btn-primary">📥 Экспорт данных в CSV</button>
                     </form>
                 </div>
                 
-            </div> <!-- panel-body -->
-        </div> <!-- panel-success -->
-    </div> <!-- col-md-12 -->
-</div> <!-- row -->
+            </div>
+        </div>
+    </div>
+</div>
 % end

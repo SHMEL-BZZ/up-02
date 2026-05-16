@@ -1,10 +1,9 @@
-/* ===================================================
-   ОБЩИЙ ШРИФТ И РАЗМЕР ТЕКСТА
-   =================================================== */
+/*  ОБЩИЙ ШРИФТ И РАЗМЕР ТЕКСТА*/
 
-/* Базовый шрифт для всей страницы (можно уточнить по нужному семейству) */
+/* Базовый шрифт для всей страницы */
 body {
     font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Основной текст в панелях и аккордеоне */
@@ -13,11 +12,69 @@ body {
 .panel-body p,
 .panel-body ul,
 .panel-body li,
-.panel-body span.help-block {
+.panel-body span.help-block,
+.panel-body div,
+.panel-body strong,
+.panel-body em {
     font-size: 16px;
 }
 
-/* Подписи полей ввода внутри расчётной панели */
+    /* Стили для well блоков внутри аккордеона */
+    .panel-body .well {
+        font-size: 16px;
+    }
+
+        .panel-body .well p,
+        .panel-body .well strong {
+            font-size: 16px;
+        }
+
+/* ПРИМЕРЫ СЦЕНАРИЕВ */
+
+/* Все элементы в блоке примеров сценариев */
+#collapse4 .panel-body,
+#collapse4 .panel-body p,
+#collapse4 .panel-body ul,
+#collapse4 .panel-body li,
+#collapse4 .panel-body strong,
+#collapse4 .panel-body em {
+    font-size: 16px;
+}
+
+    /* Заголовки примеров */
+    #collapse4 .panel-body p strong {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    /* Текст результата */
+    #collapse4 .panel-body li em {
+        font-size: 16px;
+        font-style: italic;
+    }
+
+/* ВСЕ ЗАГОЛОВКИ В ТЕОРИИ */
+
+/* Заголовки панелей аккордеона */
+.panel-group .panel-title {
+    font-size: 16px;
+}
+
+    .panel-group .panel-title a {
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+/* Заголовок "Теоретические сведения" */
+.panel-info .panel-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* РАСЧЁТНАЯ ПАНЕЛЬ (panel-primary)*/
+
+/* Подписи полей ввода */
 .panel-primary .control-label {
     font-size: 16px;
 }
@@ -31,7 +88,7 @@ body {
 
 /* Подсказки под полями */
 .panel-primary .help-block {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 4px;
 }
 
@@ -52,43 +109,10 @@ body {
 .panel-primary .btn {
     font-size: 16px;
     padding: 8px 16px;
+    white-space: nowrap;
 }
 
-/* ===================================================
-   АККОРДЕОН (теория)
-   =================================================== */
-
-/* Заголовок аккордеона (строка с названием пункта) */
-.panel-group .panel-title {
-    font-size: 16px;
-}
-
-    .panel-group .panel-title a {
-        font-size: 16px;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-/* Шапка панелей аккордеона */
-.panel-group .panel-heading {
-    padding: 8px 12px;
-}
-
-/* Тело панелей аккордеона */
-.panel-group .panel-body {
-    padding: 10px 12px;
-}
-
-/* ===================================================
-   ВСПОМОГАТЕЛЬНЫЕ СТИЛИ
-   =================================================== */
-
-/* Центрирование заголовков (оставляем общий класс) */
-.text-center {
-    text-align: center;
-}
-
-/* Сокращённые отступы для формы */
+/* Отступы для формы */
 .panel-primary .form-group {
     margin-bottom: 8px;
 }
@@ -96,3 +120,77 @@ body {
 .panel-primary hr {
     margin: 10px 0;
 }
+
+/* ШАПКИ ПАНЕЛЕЙ АККОРДЕОНА */
+
+.panel-group .panel-heading {
+    padding: 8px 12px;
+}
+
+.panel-group .panel-body {
+    padding: 10px 12px;
+}
+
+/*  ПАНЕЛЬ РЕЗУЛЬТАТОВ (panel-success)*/
+
+/* Заголовок панели результатов */
+.panel-success .panel-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Текст в блоке анализа */
+.panel-success .well p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.panel-success .well strong {
+    font-weight: 600;
+}
+
+/* КАРТИНКИ (блок справа) */
+
+/* Стили для изображений жертвы и хищника */
+.col-md-4 .panel-default img {
+    height: 255px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.col-md-4 .text-muted {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* ОБЩИЕ УТИЛИТЫ */
+
+/* Центрирование заголовков */
+.text-center {
+    text-align: center;
+}
+
+/* Стиль для блока ошибки */
+.alert-danger {
+    font-size: 16px;
+}
+
+    .alert-danger .close {
+        font-size: 20px;
+    }
+
+/* Кнопка экспорта */
+.btn-primary {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+/* МАТЕМАТИЧЕСКИЕ ФОРМУЛЫ*/
+
+/* Единый стиль для математических выражений */
+.panel-body sub,
+.panel-body sup {
+    font-size: 12px;
+}
+
+
