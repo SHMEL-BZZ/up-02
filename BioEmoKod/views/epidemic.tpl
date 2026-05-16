@@ -436,3 +436,74 @@
         </div>
     </div>
 </div>
+
+<!-- блок: результаты симуляции -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">📈 Результаты симуляции</h3>
+            </div>
+            <div class="panel-body">
+                <div class="results-layout">
+                    <!-- SIR график -->
+                    <div class="graph-container">
+                        <div class="graph-placeholder">
+                            <strong>📊 График динамики SIR</strong>
+                            <div class="graph-description">
+                                <span class="stat-s">🟢 S (здоровые)</span> |
+                                <span class="stat-i">🔴 I (заражённые)</span> |
+                                <span class="stat-r">🟡 R (иммунные)</span>
+                            </div>
+                            <div class="graph-area">
+                                <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+                                    <text x="280" y="125" text-anchor="middle" fill="#999" font-size="14">Здесь будет график</text>
+                                </svg>
+                            </div>
+                            <p class="graph-note">Ось X — недели, ось Y — количество крыс</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Результаты -->
+                    <div class="results-container">
+                        <div class="result-card">
+                            <div class="result-title">🧪 Эпидемический порог</div>
+                            <div class="result-value" id="epidemic-threshold">42</div>
+                            <div class="result-unit">заражённых в неделю</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <div class="result-title">💉 Эффективность вакцинации</div>
+                            <div class="result-value" id="vaccine-efficacy">67%</div>
+                            <div class="result-description">
+                                <span class="efficiency-badge efficiency-low">Низкая &lt;50%</span>
+                                <span class="efficiency-badge efficiency-medium">Средняя 50-80%</span>
+                                <span class="efficiency-badge efficiency-high">Высокая &gt;80%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <div class="result-title">📊 Пик заболеваемости</div>
+                            <div class="result-compare">
+                                <div class="compare-item">
+                                    <span class="compare-label">Без вакцинации:</span>
+                                    <span class="compare-value" id="peak-without">78 крыс</span>
+                                    <span class="compare-unit">(неделя 6)</span>
+                                </div>
+                                <div class="compare-item">
+                                    <span class="compare-label">С вакцинацией:</span>
+                                    <span class="compare-value" id="peak-with">34 крыс</span>
+                                    <span class="compare-unit">(неделя 9)</span>
+                                </div>
+                                <div class="compare-item">
+                                    <span class="compare-label">Снижение пика:</span>
+                                    <span class="compare-value reduction">56%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
