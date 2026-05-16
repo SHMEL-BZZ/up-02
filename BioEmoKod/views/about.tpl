@@ -1,5 +1,4 @@
-
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='about')
 
 <!-- специальный стиль для страницы Авторы -->
 <head>

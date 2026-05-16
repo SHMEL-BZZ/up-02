@@ -1,6 +1,4 @@
-﻿/* стили по умолчанию */
-
-
+﻿﻿ /* стили по умолчанию */
 /* стиль основной страницы */
 body {
     padding-top: 50px;
@@ -58,18 +56,18 @@ input[type="checkbox"].input-validation-error {
     border-color: #F2EDDE;
 }
 
-/* цвет ссылок по умолчанию */
+    /* цвет ссылок по умолчанию */
     .navbar-inverse .navbar-nav > li > a {
         color: #F2EDDE;
         font-size: 18px;
     }
 
-    /* при наведении на ссылки */
-    .navbar-inverse .navbar-nav > li > a:hover,
-    .navbar-inverse .navbar-nav > li > a:focus {
-        color: #F2EDDE;
-        background-color: #354C2B;
-    }
+        /* при наведении на ссылки */
+        .navbar-inverse .navbar-nav > li > a:hover,
+        .navbar-inverse .navbar-nav > li > a:focus {
+            color: #F2EDDE;
+            background-color: #354C2B;
+        }
 
 /* Стиль для заголовка страницы */
 
