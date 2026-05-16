@@ -92,6 +92,9 @@
     <Content Include="static\fonts\STRomeTrial-Thin.otf" />
     <Content Include="static\fonts\STRomeTrial-Thin.ttf" />
     <Content Include="static\img\bunny.jpg" />
+    <Content Include="static\img\ex1.jpg" />
+    <Content Include="static\img\ex2.jpg" />
+    <Content Include="static\img\ex3.jpg" />
     <Content Include="static\img\fox.jpg" />
     <Content Include="static\img\kate.jpg" />
     <Content Include="static\img\logo.jpg" />
@@ -135,6 +138,15 @@
       <Id>env2</Id>
       <Version>3.9</Version>
       <Description>env2 (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env3\">
+      <Id>env3</Id>
+      <Version>3.12</Version>
+      <Description>env3 (Python 3.12 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
