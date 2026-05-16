@@ -7,8 +7,9 @@
 </head>
 
 <div class="page-header">
-    <h2>{{ title }}</h2>
+    <h2>Информация об авторах</h2>
 </div>
+
 <div class="authors-list">
 
     <!-- Рита -->
@@ -18,8 +19,9 @@
             <div class="author-name">Скулябина Маргарита</div>
             <div class="author-divider"></div>
             <p class="author-contribution">
-                Разработка клиентской части (frontend). Вёрстка интерфейса, анимации, интеграция с API.
+                Разработка модуля "Модель хищник-жертва". Заполнение содержания главной страницы, создание файла README.
             </p>
+            <span class="help-block">Связаться: skulabkina@gmail.com</span>
         </div>
     </div>
 
@@ -30,8 +32,9 @@
             <div class="author-name">Андреева Екатерина</div>
             <div class="author-divider"></div>
             <p class="author-contribution">
-                Серверная логика и базы данных. Проектирование REST API, безопасность, оптимизация запросов.
+                Разработка модуля "Динамика рыбного промысла". Создание и настройка репозитория на gitgub, определение общей структуры проекта.
             </p>
+            <span class="help-block">Связаться: ekaterinakluch@gmail.com</span>
         </div>
     </div>
 
@@ -42,8 +45,9 @@
             <div class="author-name">Волкова Ника</div>
             <div class="author-divider"></div>
             <p class="author-contribution">
-                UX/UI дизайн и прототипирование. Разработка макетов в Figma, подбор цветовой схемы и шрифтов.
+                Разработка модуля "Конкуренция видов". UX/UI дизайн, подбор цветовой схемы и шрифтов.
             </p>
+            <span class="help-block">Связаться: nikavolk@gmail.com</span>
         </div>
     </div>
 
@@ -54,8 +58,9 @@
             <div class="author-name">Пароменкова Ольга</div>
             <div class="author-divider"></div>
             <p class="author-contribution">
-                Тестирование и документация. Написание автотестов, руководства пользователя, баг-трекинг.
+                Разработка модуля "Распространение эпидемии". UX/UI дизайн, подбор цветовой схемы и шрифтов.
             </p>
+            <span class="help-block">Связаться: paromukolya@gmail.com</span>
         </div>
     </div>
 

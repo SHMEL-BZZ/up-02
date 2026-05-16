@@ -17,7 +17,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/home" style="color: white !important;">Главная</a></li>
                     <li><a href="/predator_pray" style="color: white !important;">Хищник-жертва</a></li>
                     <li><a href="/epidemic" style="color: white !important;">Эпидемия</a></li>
                     <li><a href="/competition" style="color: white !important;">Конкуренция</a></li>
