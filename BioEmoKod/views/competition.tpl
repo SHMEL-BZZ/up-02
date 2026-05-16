@@ -1,12 +1,11 @@
-% rebase('layout.tpl', title='Конкуренция видов', year=2026)
+% rebase('layout.tpl', title=title, year=year)
 
 <!-- специальный стиль для страницы Конкуренция видов -->
 <link rel="stylesheet" type="text/css" href="/static/content/competition.css" />
 
 <!-- Заголовок страницы -->
 <div class="page-header">
-    <h1>🐀 Конкуренция видов</h1>
-    <p>Стохастическая модель взаимодействия серых и белых крыс</p>
+    <h2>Модель «Конкуренция видов»</h2>
 </div>
 
 <!-- навигация по странице-->
@@ -20,7 +19,7 @@
 
 <!-- ТЕОРИЯ -->
 <div id="theory" class="model-card">
-    <h2>📖 Математическая модель конкуренции</h2>
+    <h3>📖 Математическая модель конкуренции</h3>
     
     <p><strong>Классическая модель Лотки-Вольтерры для конкуренции двух видов:</strong></p>
     
@@ -190,16 +189,16 @@
     
     
     <div class="row">
-        <div class="col-md-3"><label>🗂️ Размер поля n</label><input type="number" id="fieldSize" class="form-control" value="8" min="2" max="10"></div>
-        <div class="col-md-3"><label>🐀 Серых крыс</label><input type="number" id="grayRats" class="form-control" value="6" min="0" max="99"></div>
-        <div class="col-md-3"><label>🐁 Белых крыс</label><input type="number" id="whiteRats" class="form-control" value="6" min="0" max="99"></div>
-        <div class="col-md-3"><label>🌾 Начальная рожь</label><input type="number" id="initialRye" class="form-control" value="8" min="1" max="99"></div>
-        <div class="col-md-3"><label>⏱️ Частота ржи (сек)</label><input type="number" id="ryeSpawnIntervalSec" class="form-control" value="6" min="2" max="100"></div>
-        <div class="col-md-3"><label>➕ Новой ржи за раз</label><input type="number" id="ryeSpawnCount" class="form-control" value="1" min="1" max="3"></div>
-        <div class="col-md-3"><label>⏲️ Максимум тактов</label><input type="number" id="maxTicks" class="form-control" value="150" min="10" max="1000"></div>
-        <div class="col-md-3"><label>⚡ Скорость</label>
+        <div class="col-md-3"><label class = "stat-label">🗂️ Размер поля n</label><input type="number" id="fieldSize" class="form-control" value="8" min="2" max="10"></div>
+        <div class="col-md-3"><label class = "stat-label">🐀 Серых крыс</label><input type="number" id="grayRats" class="form-control" value="6" min="0" max="99"></div>
+        <div class="col-md-3"><label class = "stat-label">🐁 Белых крыс</label><input type="number" id="whiteRats" class="form-control" value="6" min="0" max="99"></div>
+        <div class="col-md-3"><label class = "stat-label">🌾 Начальная рожь</label><input type="number" id="initialRye" class="form-control" value="8" min="1" max="99"></div>
+        <div class="col-md-3"><label class = "stat-label">⏱️ Частота ржи (сек)</label><input type="number" id="ryeSpawnIntervalSec" class="form-control" value="6" min="2" max="100"></div>
+        <div class="col-md-3"><label class = "stat-label">➕ Новой ржи за раз</label><input type="number" id="ryeSpawnCount" class="form-control" value="1" min="1" max="3"></div>
+        <div class="col-md-3"><label class = "stat-label">⏲️ Максимум тактов</label><input type="number" id="maxTicks" class="form-control" value="150" min="10" max="1000"></div>
+        <div class="col-md-3"><label class = "stat-label">⚡ Скорость</label>
             <input type="range" id="speedSlider" min="0.1" max="2" step="0.05" value="1" class="form-control">
-            <span id="speedValue">1.00</span>
+            <span id="speedValue" class="stat-label">1.00</span>
         </div>
     </div>
     
@@ -240,4 +239,5 @@
         |h₁-h₂| &lt; 0.3 → мирный разбег, иначе драка
     </div>
 </div>
+
 

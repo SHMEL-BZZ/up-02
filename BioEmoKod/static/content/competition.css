@@ -1,49 +1,4 @@
 /* Стиль для страницы*/
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-    color: #4D2D18;
-    background: #F2EDDE;
-    font-size: 20px;
-}
-
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-input, select, textarea {
-    max-width: 280px;
-}
-
-/* навигация */
-.navbar-inverse {
-    background-color: #4E653D;
-    /*border-color: #F2EDDE;*/
-}
-
-    .navbar-inverse .navbar-nav > li > a {
-        color: #F2EDDE;
-        font-size: 25px;
-    }
-
-        .navbar-inverse .navbar-nav > li > a:hover,
-        .navbar-inverse .navbar-nav > li > a:focus {
-            color: #F2EDDE;
-            background-color: #354C2B;
-        }
-
-
-/* Заголовок станицы*/
-.page-header {
-    background: #697E50;
-    color: #F2EDDE;
-    padding: 40px 30px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    text-align: center;
-    font-size: 24px;
-}
 
 /* Карточки моделей */
 .model-card {
@@ -54,8 +9,6 @@ input, select, textarea {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     height: 100%;
 }
-
-
 
 /* Панель управления */
 .control-panel {
@@ -73,7 +26,7 @@ input, select, textarea {
     padding: 10px 25px;
     margin: 5px;
     border-radius: 30px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     transition: 0.2s;
 }
@@ -111,12 +64,12 @@ input, select, textarea {
 }
 
 .stat-label {
-    font-size: 14px;
+    font-size: 15px;
     color: #4D2D18;
 }
 
 .stat-value {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: bold;
     color: #4E653D;
 }
@@ -129,7 +82,7 @@ input, select, textarea {
     padding: 15px;
     margin: 15px 0;
     font-family: monospace;
-    font-size: 20px;
+    font-size: 14px;
     text-align: center;
 }
 
@@ -138,11 +91,12 @@ input, select, textarea {
     border-radius: 12px;
     padding: 20px;
     margin: 20px 0;
+    font-size: 15px;
 }
 
     .formula-explanation h3 {
         color: #4E653D;
-        font-size: 28px;
+        font-size: 20px;
         margin-top: 0;
         margin-bottom: 15px;
     }
@@ -162,12 +116,12 @@ input, select, textarea {
     width: 100px;
     font-weight: bold;
     color: #4E653D;
-    font-size: 22px;
+    font-size: 15px;
 }
 
 .param-desc {
     flex: 1;
-    font-size: 20px;
+    font-size: 15px;
     color: #4D2D18;
 }
 
@@ -189,7 +143,7 @@ input, select, textarea {
         color: #4E653D;
         /*margin-top: 0;*/
         margin-bottom: 15px;
-        font-size: 26px;
+        font-size: 20px;
     }
 
     .example-step p {
@@ -203,6 +157,7 @@ input, select, textarea {
 
     .example-step li {
         margin: 8px 0;
+        font-size: 15px;
         line-height: 1.4;
     }
 
@@ -255,7 +210,7 @@ input, select, textarea {
 .nav-link {
     display: inline-block;
     padding: 8px 24px;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     color: #4E653D;
     text-decoration: none;
@@ -271,8 +226,6 @@ input, select, textarea {
 
 .nav-separator {
     color: #4E653D;
-    font-size: 18px;
+    font-size: 15px;
     opacity: 0.5;
 }
-
-
