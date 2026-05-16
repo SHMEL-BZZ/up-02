@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='predator_pray')
 
 <!-- специальный стиль для страницы Модель хищник-жертва -->
 <head>
@@ -8,7 +8,15 @@
 <div class="page-header">
     <h2>Модель «Хищник-жертва»</h2>
 </div>
-
+<!-- БЛОК-ЯКОРЬ ДЛЯ БЫСТРОГО ПЕРЕХОДА К РАСЧЁТНОЙ ПАНЕЛИ -->
+<div class="calculation-jump">
+    <div class="calculation-jump__content">
+        <span class="calculation-jump__text">⚡ Хотите провести расчёт?</span>
+        <a href="#calculation-panel" class="calculation-jump__btn">
+            🚀 Перейти к расчётной панели
+        </a>
+    </div>
+</div>
 <!-- Верхняя строка: теория + картинки в колонке -->
 <div class="row">
     <div class="col-md-8">
@@ -191,9 +199,9 @@
 <!-- Расчётная панель -->
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="calculation-panel">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
+                <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
 
@@ -341,7 +349,7 @@
     <div class="col-md-12">
         <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">📈 Результаты моделирования</h3>
+                <h3 class="panel-title text-center">Результаты моделирования</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -357,7 +365,9 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 class="text-center">📊 Анализ результатов</h4>
+                        <div class="panel-heading">
+                            <h4 class="text-center">Анализ результатов</h4>
+                        <div/>
                         <div class="well">
                             <div class="row">
                                 <div class="col-md-6">
@@ -381,7 +391,7 @@
                 <div class="text-center">
                     <form action="/export_csv" method="post" style="display: inline;">
                         <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">📥 Экспорт данных в CSV</button>
+                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
                     </form>
                 </div>
                 

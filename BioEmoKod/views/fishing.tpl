@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='fishing')
 
 <!-- специальный стиль для страницы Популяция рыб-->
 <head>

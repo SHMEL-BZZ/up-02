@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='epidemic')
 
 <!-- Подключение уникальных стилей для страницы эпидемии -->
 <link rel="stylesheet" type="text/css" href="/static/content/epidemic.css" />

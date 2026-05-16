@@ -17,12 +17,24 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/home" style="color: white !important;">Главная</a></li>
-                    <li><a href="/predator_pray" style="color: white !important;">Хищник-жертва</a></li>
-                    <li><a href="/epidemic" style="color: white !important;">Эпидемия</a></li>
-                    <li><a href="/competition" style="color: white !important;">Конкуренция</a></li>
-                    <li><a href="/fishing" style="color: white !important;">Рыболовство</a></li>
-                    <li><a href="/about" style="color: white !important;">Об авторах</a></li>
+                    <li class="{{ 'active' if active_page == 'home' else '' }}">
+                        <a href="/home" style="color: white !important;">Главная</a>
+                    </li>
+                    <li class="{{ 'active' if active_page == 'predator_pray' else '' }}">
+                        <a href="/predator_pray" style="color: white !important;">Хищник-жертва</a>
+                    </li>
+                    <li class="{{ 'active' if active_page == 'epidemic' else '' }}">
+                        <a href="/epidemic" style="color: white !important;">Эпидемия</a>
+                    </li>
+                    <li class="{{ 'active' if active_page == 'competition' else '' }}">
+                        <a href="/competition" style="color: white !important;">Конкуренция</a>
+                    </li>
+                    <li class="{{ 'active' if active_page == 'fishing' else '' }}">
+                        <a href="/fishing" style="color: white !important;">Рыболовство</a>
+                    </li>
+                    <li class="{{ 'active' if active_page == 'about' else '' }}">
+                        <a href="/about" style="color: white !important;">Об авторах</a>
+                    </li>
                 </ul>
             </div>
         </div>

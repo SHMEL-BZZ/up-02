@@ -50,3 +50,14 @@
     line-height: 1.5;
     margin: 0;
 }
+
+.help-block {
+    display: inline-block;
+    font-size: 13px;
+    color: #4a6fa5;
+    background-color: #eef3ff;
+    padding: 4px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}

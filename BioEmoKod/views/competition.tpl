@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='competition')
 
 <!-- специальный стиль для страницы Конкуренция видов-->
 <head>

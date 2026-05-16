@@ -1,5 +1,4 @@
-
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='about')
 
 <!-- специальный стиль для страницы Авторы -->
 <head>
@@ -7,8 +6,9 @@
 </head>
 
 <div class="page-header">
-    <h2>{{ title }}</h2>
+    <h2>Информация об авторах</h2>
 </div>
+
 <div class="authors-list">
 
     <!-- Рита -->
@@ -20,6 +20,7 @@
             <p class="author-contribution">
                 Разработка модуля "Модель хищник-жертва". Заполнение содержания главной страницы, создание файла README.
             </p>
+            <span class="help-block">Связаться: skulabkina@gmail.com</span>
         </div>
     </div>
 
@@ -32,6 +33,7 @@
             <p class="author-contribution">
                 Разработка модуля "Динамика рыбного промысла". Создание и настройка репозитория на gitgub, определение общей структуры проекта.
             </p>
+            <span class="help-block">Связаться: ekaterinakluch@gmail.com</span>
         </div>
     </div>
 
@@ -44,6 +46,7 @@
             <p class="author-contribution">
                 Разработка модуля "Конкуренция видов". UX/UI дизайн, подбор цветовой схемы и шрифтов.
             </p>
+            <span class="help-block">Связаться: nikavolk@gmail.com</span>
         </div>
     </div>
 
@@ -56,6 +59,7 @@
             <p class="author-contribution">
                 Разработка модуля "Распространение эпидемии". UX/UI дизайн, подбор цветовой схемы и шрифтов.
             </p>
+            <span class="help-block">Связаться: paromukolya@gmail.com</span>
         </div>
     </div>
 
