@@ -7,9 +7,14 @@
     <h2>Модель «Распространение эпидемии»</h2>
 </div>
 
-<!-- теоретический блок  -->
+<!-- Кнопка перехода к расчётной панели -->
+<div class="jump-button">
+    <a href="#calculate" class="btn btn-jump">⬇ Перейти к расчётам</a>
+</div>
+
+<!-- теоретический блок -->
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-7">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">📖 Теоретические сведения</h3>
@@ -28,14 +33,14 @@
                         </div>
                         <div id="collapse1" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <p style="font-size: 14px;">Модель описывает распространение инфекции в популяции крыс, обитающих на двумерной сетке n×n. Каждая клетка может содержать до 4 особей.</p>
-                                <p style="font-size: 14px;">Состояния особей:</p>
-                                <ul style="font-size: 14px;">
+                                <p>Модель описывает распространение инфекции в популяции крыс, обитающих на двумерной сетке n×n. Каждая клетка может содержать до 4 особей.</p>
+                                <p>Состояния особей:</p>
+                                <ul>
                                     <li><strong style="color: #2ecc71;">S (Susceptible)</strong> — здоровые, восприимчивые к заражению</li>
                                     <li><strong style="color: #e74c3c;">I (Infectious)</strong> — заражённые (инфекционные), болеют 6 дней</li>
                                     <li><strong style="color: #f1c40f;">R (Recovered)</strong> — невосприимчивые (иммунитет на 4 дня)</li>
                                 </ul>
-                                <p style="font-size: 14px;">Ключевые механизмы: перемещение в соседние клетки, заражение при контакте, циклический переход S→I→R→S, вакцинация.</p>
+                                <p>Ключевые механизмы: перемещение в соседние клетки, заражение при контакте, циклический переход S→I→R→S, вакцинация.</p>
                             </div>
                         </div>
                     </div>
@@ -51,23 +56,23 @@
                         </div>
                         <div id="collapse2" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <p style="font-size: 14px;">Входные параметры модели:</p>
-                                <ul style="font-size: 14px;">
+                                <p>Входные параметры модели:</p>
+                                <ul>
                                     <li>n — размер сетки (n×n клеток)</li>
                                     <li>rats — общее количество особей</li>
                                     <li>p_infect — вероятность заражения при контакте</li>
                                     <li>p_move — вероятность перемещения в соседнюю клетку</li>
                                     <li>t — длительность симуляции (в неделях)</li>
-                                    <li>day_vac — день, в который происходит вакцинация</li>
-                                    <li>v — доля здоровых особей, получающих прививку</li>
+                                    <li>day_vac — день начала вакцинации</li>
+                                    <li>v — доля вакцинируемых здоровых особей</li>
                                 </ul>
-                                <p style="font-size: 14px;">Алгоритм одного дня: перемещение крыс внутри сетки → заражение здоровых крыс больными → получение объектами S/R статуса → вакцинация (в заданный день).</p>
-                                <p style="font-size: 14px;">Фиксированные параметры: длительность болезни = 6 дней, иммунитет = 4 дня.</p>
+                                <p><strong>Алгоритм одного дня:</strong> перемещение → заражение → прогресс болезни/иммунитета → вакцинация.</p>
+                                <p><strong>Фиксированные параметры:</strong> болезнь = 6 дней, иммунитет = 4 дня.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 3. Формулы расчёта -->
+                    <!-- 3. Формулы расчёта (компактно) -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -78,92 +83,60 @@
                         </div>
                         <div id="collapse3" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <!-- Блок 1: Эпидемический порог -->
-                                <div class="formula-block">
-                                    <h5>📊 Расчёт эпидемического порога</h5>
-                                    
-                                    <p><strong>Эпидемический порог</strong> — это критический уровень заболеваемости, при превышении которого эпидемия переходит в неуправляемую фазу. Расчёт производится на основе первых 8 недель симуляции (базовый период).</p>
-                                    
-                                    <p><strong>Шаг 1. Вычисление среднего арифметического заболеваемости за базовый период</strong></p>
+                                <div class="formula-compact">
+                                    <h5>📊 Эпидемический порог</h5>
                                     <div class="formula-box formula-box-green">
-                                        <p class="formula-text">
-                                            X̄<sub>баз</sub> = (X₁ + X₂ + ... + Xₙ) / n
-                                        </p>
+                                        <p class="formula-text">X̄ = (X₁+...+X₈)/8</p>
+                                        <p class="formula-text">σ = √[Σ(Xᵢ-X̄)²/7]</p>
+                                        <p class="formula-text">X<sub>порог</sub> = X̄ + 2,507·σ</p>
                                     </div>
-                                    <p class="formula-description">где:</p>
-                                    <ul class="formula-description">
-                                        <li>X̄<sub>баз</sub> — среднее арифметическое заболеваемости за базовый период</li>
-                                        <li>Xᵢ — количество заражённых за i-ю неделю</li>
-                                        <li>n — количество недель в базовом периоде (n = 8)</li>
-                                    </ul>
-
-                                    <p><strong>Шаг 2. Вычисление стандартного отклонения</strong></p>
-                                    <div class="formula-box formula-box-green">
-                                        <p class="formula-text">
-                                            σ<sub>баз</sub> = √[ Σ(Xᵢ - X̄<sub>баз</sub>)² / (n - 1) ]
-                                        </p>
-                                    </div>
-                                    <p class="formula-description">где σ<sub>баз</sub> — стандартное (среднеквадратичное) отклонение заболеваемости.</p>
-
-                                    <p><strong>Шаг 3. Расчёт порога эпидемии</strong></p>
-                                    <div class="formula-box formula-box-green">
-                                        <p class="formula-text">
-                                            X<sub>порог</sub> = X̄<sub>баз</sub> + 2,507 × σ<sub>баз</sub>
-                                        </p>
-                                    </div>
-                                    <p class="formula-description">где 2,507 — произведение коэффициента Стьюдента (2,365) и статистической поправки (√(1 + 1/n) ≈ 1,06066).</p>
+                                    <p class="formula-note">* на основе первых 8 недель (коэф. Стьюдента)</p>
                                 </div>
 
-                                <!-- Блок 2: Эффективность вакцинации -->
-                                <div class="formula-block">
-                                    <h5>💉 Расчёт эффективности вакцинации</h5>
-                                    
-                                    <p>Эффективность вакцинации оценивается путём сравнения двух сценариев развития эпидемии:</p>
-                                    <ul style="font-size: 14px;">
-                                        <li>Сценарий А — симуляция без вакцинации на всём временном интервале</li>
-                                        <li>Сценарий Б — симуляция с вакцинацией (начиная с заданного пользователем дня)</li>
-                                    </ul>
-
-                                    <p><strong>Формула расчёта эффективности:</strong></p>
+                                <div class="formula-compact">
+                                    <h5>💉 Эффективность вакцинации</h5>
                                     <div class="formula-box formula-box-green">
-                                        <p class="formula-text">
-                                            Эффективность = (W<sub>без</sub> - W<sub>с</sub>) / W<sub>без</sub> × 100%
-                                        </p>
+                                        <p class="formula-text">Эфф = (W<sub>без</sub> - W<sub>с</sub>) / W<sub>без</sub> × 100%</p>
                                     </div>
-                                    <p class="formula-description">где:</p>
-                                    <ul class="formula-description">
-                                        <li><W<sub>без</sub> — количество эпидемических недель в сценарии без вакцинации</li>
-                                        <li>W<sub>с</sub> — количество эпидемических недель в сценарии с вакцинацией</li>
-                                    </ul>
-
-                                    <p><strong>Критерии оценки эффективности:</strong></p>
-                                    <div class="row" style="margin-top: 10px;">
-                                        <div class="col-md-4 text-center">
-                                            <div style="background: #d9534f; color: white; padding: 8px; border-radius: 8px;">
-                                                <strong>Низкая</strong><br>
-                                                &lt; 50%
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div style="background: #f0ad4e; color: white; padding: 8px; border-radius: 8px;">
-                                                <strong>Средняя</strong><br>
-                                                50% – 80%
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div style="background: #5cb85c; color: white; padding: 8px; border-radius: 8px;">
-                                                <strong>Высокая</strong><br>
-                                                &gt; 80%
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p class="formula-note">W — количество эпидемических недель</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Справа: краткие определения -->
+    <div class="col-md-5">
+        <div class="definitions">
+            <div class="def-card">
+                <div class="def-title">Эпидемический порог</div>
+                <p>Эпидемический порог — это математически рассчитанный уровень заболеваемости инфекцией, при превышении которого начинается её массовое (эпидемическое) распространение среди населения на конкретной территории.</p>
+            </div>
+            <div class="def-card">
+                <div class="def-title">Эффективность вакцинации</div>
+                <p>Эффективность вакцинации — это степень защиты привитого населения от конкретной инфекции, измеряемая в клинических (испытания) или реальных условиях. Она оценивается по показателю снижения заболеваемости среди вакцинированных по сравнению с невакцинированными.</p>
+            </div>
+            <div class="def-card">
+            <div class="def-title">Анализ результатов вакцинации</div>
+            <div class="analysis-badges">
+                <div class="analysis-badge badge-low">
+                    <strong>Низкая</strong>
+                    <span>&lt; 50%</span>
+                </div>
+                <div class="analysis-badge badge-medium">
+                    <strong>Средняя</strong>
+                    <span>50% – 80%</span>
+                </div>
+                <div class="analysis-badge badge-high">
+                    <strong>Высокая</strong>
+                    <span>&gt; 80%</span>
+                </div>
+            </div>
+            <p class="analysis-note">Чем выше эффективность, тем меньше эпидемических недель и ниже пик заболеваемости.</p>
+        </div>
         </div>
     </div>
 </div>
@@ -177,92 +150,30 @@
             </div>
             <div class="panel-body">
                 
-                <!-- ШАГ 1 -->
-                <div class="mb-25">
-                    <h5>Шаг 1. Задание пространственных и временных параметров</h5>
-                    <p>В расчётной панели задайте:</p>
-                    <ul>
-                        <li>Размер сетки (n) — например, 8 для сетки размером 8×8 клеток</li>
-                        <li>Общее число крыс (rats) — например, 64 особи</li>
-                        <li>Длительность симуляции (t) — например, 52 недели (1 год)</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Поля ввода пространственных и временных параметров</span>
+                <!-- Ряд 1: Шаги 1, 2, 3 -->
+                <div class="step-row">
+                    <div class="step-card">
+                        <h5>Шаг 1. Пространственные и временные параметры</h5>
+                        <p>Задайте размер сетки n×n, общее число крыс и длительность симуляции.</p>
+                        <div class="step-image">
+                            <img src="/static/img/shag1.png" alt="Параметры пространства и времени" class="step-screenshot">
+                        </div>
                     </div>
-                </div>
-
-                <!-- ШАГ 2 -->
-                <div class="mb-25">
-                    <h5>Шаг 2. Задание параметров заражения и перемещения</h5>
-                    <p>В расчётной панели задайте:</p>
-                    <ul>
-                        <li>Вероятность перемещения (p_move) — например, 0.5 (50% шанс переместиться в соседнюю клетку)</li>
-                        <li>Вероятность заражения (p_infect) — например, 0.6 (60% шанс заразиться при контакте с больным)</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Поля ввода вероятностей перемещения и заражения</span>
+                    
+                    <div class="step-card">
+                        <h5>Шаг 2. Заражение и перемещение</h5>
+                        <p>Укажите вероятность заражения p_infect и вероятность перемещения p_move.</p>
+                        <div class="step-image">
+                            <img src="/static/img/shag2.png" alt="Параметры заражения" class="step-screenshot">
+                        </div>
                     </div>
-                </div>
-
-                <!-- ШАГ 3 -->
-                <div class="mb-25">
-                    <h5>Шаг 3. Задание параметров вакцинации</h5>
-                    <p>В расчётной панели задайте:</p>
-                    <ul>
-                        <li>День начала вакцинации (day_vac) — например, 58-й день</li>
-                        <li>Процент вакцинируемых здоровых крыс (v) — например, 50%</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Поля настройки вакцинации</span>
-                    </div>
-                </div>
-
-                <!-- ШАГ 4 -->
-                <div class="mb-25">
-                    <h5>Шаг 4. Запуск расчёта</h5>
-                    <p>Нажмите зелёную кнопку <strong>«Запустить расчёт»</strong> внизу расчётной панели.</p>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Кнопка запуска расчёта</span>
-                    </div>
-                </div>
-
-                <!-- ШАГ 5 -->
-                <div class="mb-25">
-                    <h5>Шаг 5. Просмотр матрицы</h5>
-                    <p>После расчёта в блоке «Визуализация матрицы»:</p>
-                    <ul>
-                        <li>В каждой клетке отображается количество крыс каждого статуса (S, I, R)</li>
-                        <li>Цветовое кодирование: 🟢 S, 🔴 I, 🟡 R</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Визуализация матрицы n×n</span>
-                    </div>
-                </div>
-
-                <!-- ШАГ 6 -->
-                <div class="mb-25">
-                    <h5>Шаг 6. Анализ результатов</h5>
-                    <p>В блоке «Динамика эпидемии и анализ» представлены:</p>
-                    <ul>
-                        <li>График динамики SIR — изменение численности здоровых (S), заражённых (I) и иммунных (R) во времени</li>
-                        <li>Порог эпидемии — рассчитанный статистически уровень заболеваемости</li>
-                        <li>Эффективность вакцинации — в процентах (низкая &lt;50%, средняя 50-80%, высокая &gt;80%)</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] График динамики SIR и численные показатели</span>
-                    </div>
-                </div>
-
-                <!-- ШАГ 7 -->
-                <div style="margin-bottom: 10px;">
-                    <h5>Шаг 7. Экспорт данных</h5>
-                    <p>Нажмите на соответствующие кнопки, чтобы сохранить результаты:</p>
-                    <ul>
-                        <li>CSV — численные данные динамики SIR</li>
-                        <li>PNG — график динамики</li>
-                    </ul>
-                    <div class="step-placeholder" style="background: #f5f5f5; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                        <span class="text-muted">[СКРИНШОТ] Кнопки экспорта данных</span>
+                    
+                    <div class="step-card">
+                        <h5>Шаг 3. Параметры вакцинации</h5>
+                        <p>Укажите день начала вакцинации и процент вакцинируемых крыс.</p>
+                        <div class="step-image">
+                            <img src="/static/img/shag3.png" alt="Параметры вакцинации" class="step-screenshot">
+                        </div>
                     </div>
                 </div>
 
@@ -394,9 +305,13 @@
                                             % for j in range(10):
                                                 <td>
                                                     <div class="cell-content">
-                                                        <span class="stat-s">●</span> S:3<br>
-                                                        <span class="stat-i">●</span> I:1<br>
-                                                        <span class="stat-r">●</span> R:0
+                                                        % if (i + j) % 3 == 0:
+                                                            <span class="stat-s">●</span>
+                                                        % elif (i + j) % 3 == 1:
+                                                            <span class="stat-i">●</span>
+                                                        % else:
+                                                            <span class="stat-r">●</span>
+                                                        % end
                                                     </div>
                                                 </td>
                                             % end
@@ -451,9 +366,9 @@
                         <div class="graph-placeholder">
                             <strong>📊 График динамики SIR</strong>
                             <div class="graph-description">
-                                <span class="stat-s">🟢 S (здоровые)</span> |
-                                <span class="stat-i">🔴 I (заражённые)</span> |
-                                <span class="stat-r">🟡 R (иммунные)</span>
+                                <span style="color: #2ecc71;">🟢 S (здоровые)</span> |
+                                <span style="color: #e74c3c;">🔴 I (заражённые)</span> |
+                                <span style="color: #f1c40f;">🟡 R (иммунные)</span>
                             </div>
                             <div class="graph-area">
                                 <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
