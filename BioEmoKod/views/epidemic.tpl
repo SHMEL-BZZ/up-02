@@ -156,7 +156,7 @@
                         <h5>Шаг 1. Пространственные и временные параметры</h5>
                         <p>Задайте размер сетки n×n, общее число крыс и длительность симуляции.</p>
                         <div class="step-image">
-                            <img src="/static/img/ввод1.png" alt="Параметры пространства и времени" class="step-screenshot">
+                            <img src="/static/img/shag1.png" alt="Параметры пространства и времени" class="step-screenshot">
                         </div>
                     </div>
                     
@@ -164,7 +164,7 @@
                         <h5>Шаг 2. Заражение и перемещение</h5>
                         <p>Укажите вероятность заражения p_infect и вероятность перемещения p_move.</p>
                         <div class="step-image">
-                            <img src="/static/img/ввод2.png" alt="Параметры заражения" class="step-screenshot">
+                            <img src="/static/img/shag2.png" alt="Параметры заражения" class="step-screenshot">
                         </div>
                     </div>
                     
@@ -172,7 +172,7 @@
                         <h5>Шаг 3. Параметры вакцинации</h5>
                         <p>Укажите день начала вакцинации и процент вакцинируемых крыс.</p>
                         <div class="step-image">
-                            <img src="/static/img/ввод3.png" alt="Параметры вакцинации" class="step-screenshot">
+                            <img src="/static/img/shag3.png" alt="Параметры вакцинации" class="step-screenshot">
                         </div>
                     </div>
                 </div>
