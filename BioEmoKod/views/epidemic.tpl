@@ -300,22 +300,45 @@
                         <div class="matrix-container">
                             <table class="matrix-table">
                                 <tbody>
-                                    % for i in range(10):
-                                        <tr>
-                                            % for j in range(10):
-                                                <td>
-                                                    <div class="cell-content">
-                                                        % if (i + j) % 3 == 0:
-                                                            <span class="stat-s">●</span>
-                                                        % elif (i + j) % 3 == 1:
-                                                            <span class="stat-i">●</span>
-                                                        % else:
-                                                            <span class="stat-r">●</span>
-                                                        % end
-                                                    </div>
-                                                </td>
-                                            % end
-                                        </tr>
+                                    % if results and results.get('matrix_display'):
+                                        % for i in range(results['n']):
+                                            <tr>
+                                                % for j in range(results['n']):
+                                                    <td>
+                                                        <div class="cell-content">
+                                                            % for status in results['matrix_display'][i][j]:
+                                                                % if status == 'S':
+                                                                    <span class="stat-s">●</span>
+                                                                % elif status == 'I':
+                                                                    <span class="stat-i">●</span>
+                                                                % elif status == 'R':
+                                                                    <span class="stat-r">●</span>
+                                                                % end
+                                                            % end
+                                                        </div>
+                                                    </td>
+                                                % end
+                                            </tr>
+                                        % end
+                                    % else:
+                                        <!-- Заглушка для отображения до расчёта (10×10 с примерами) -->
+                                        % for i in range(10):
+                                            <tr>
+                                                % for j in range(10):
+                                                    <td>
+                                                        <div class="cell-content">
+                                                            % if (i + j) % 3 == 0:
+                                                                <span class="stat-s">●</span>
+                                                            % elif (i + j) % 3 == 1:
+                                                                <span class="stat-i">●</span>
+                                                            % else:
+                                                                <span class="stat-r">●</span>
+                                                            % end
+                                                        </div>
+                                                    </td>
+                                                % end
+                                            </tr>
+                                        % end
                                     % end
                                 </tbody>
                             </table>
@@ -371,9 +394,13 @@
                                 <span style="color: #f1c40f;">🟡 R (иммунные)</span>
                             </div>
                             <div class="graph-area">
-                                <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
-                                    <text x="280" y="125" text-anchor="middle" fill="#999" font-size="14">Здесь будет график</text>
-                                </svg>
+                                % if results and results.get('graph'):
+                                    <img src="{{results['graph']}}" alt="График динамики SIR" style="width:100%; border-radius:8px;">
+                                % else:
+                                    <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+                                        <text x="280" y="125" text-anchor="middle" fill="#999" font-size="14">Здесь будет график</text>
+                                    </svg>
+                                % end
                             </div>
                             <p class="graph-note">Ось X — недели, ось Y — количество крыс</p>
                         </div>
@@ -383,13 +410,21 @@
                     <div class="results-container">
                         <div class="result-card">
                             <div class="result-title">🧪 Эпидемический порог</div>
-                            <div class="result-value" id="epidemic-threshold">42</div>
+                            % if results and results.get('threshold') is not None:
+                                <div class="result-value" id="epidemic-threshold">{{results['threshold']}}</div>
+                            % else:
+                                <div class="result-value" id="epidemic-threshold">—</div>
+                            % end
                             <div class="result-unit">заражённых в неделю</div>
                         </div>
                         
                         <div class="result-card">
                             <div class="result-title">💉 Эффективность вакцинации</div>
-                            <div class="result-value" id="vaccine-efficacy">67%</div>
+                            % if results and results.get('efficacy') is not None:
+                                <div class="result-value" id="vaccine-efficacy">{{results['efficacy']}}%</div>
+                            % else:
+                                <div class="result-value" id="vaccine-efficacy">—</div>
+                            % end
                             <div class="result-description">
                                 <span class="efficiency-badge efficiency-low">Низкая &lt;50%</span>
                                 <span class="efficiency-badge efficiency-medium">Средняя 50-80%</span>
@@ -402,17 +437,29 @@
                             <div class="result-compare">
                                 <div class="compare-item">
                                     <span class="compare-label">Без вакцинации:</span>
-                                    <span class="compare-value" id="peak-without">78 крыс</span>
-                                    <span class="compare-unit">(неделя 6)</span>
+                                    % if results and results.get('peak_without') is not None:
+                                        <span class="compare-value" id="peak-without">{{results['peak_without']}} крыс</span>
+                                        <span class="compare-unit">(неделя {{results['week_without']}})</span>
+                                    % else:
+                                        <span class="compare-value" id="peak-without">—</span>
+                                    % end
                                 </div>
                                 <div class="compare-item">
                                     <span class="compare-label">С вакцинацией:</span>
-                                    <span class="compare-value" id="peak-with">34 крыс</span>
-                                    <span class="compare-unit">(неделя 9)</span>
+                                    % if results and results.get('peak_with') is not None:
+                                        <span class="compare-value" id="peak-with">{{results['peak_with']}} крыс</span>
+                                        <span class="compare-unit">(неделя {{results['week_with']}})</span>
+                                    % else:
+                                        <span class="compare-value" id="peak-with">—</span>
+                                    % end
                                 </div>
                                 <div class="compare-item">
                                     <span class="compare-label">Снижение пика:</span>
-                                    <span class="compare-value reduction">56%</span>
+                                    % if results and results.get('reduction') is not None:
+                                        <span class="compare-value reduction">{{results['reduction']}}%</span>
+                                    % else:
+                                        <span class="compare-value reduction">—</span>
+                                    % end
                                 </div>
                             </div>
                         </div>
