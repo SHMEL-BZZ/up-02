@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title='Главная', year=year)
+% rebase('layout.tpl', title='Главная', year=year, active_page='home')
 
 <div class="page-header">
     <div class="header-container">

@@ -1,4 +1,4 @@
-% rebase('layout.tpl', title=title, year=year)
+% rebase('layout.tpl', title=title, year=year, active_page='predator_pray')
 
 <!-- специальный стиль для страницы Модель хищник-жертва -->
 <head>
@@ -8,7 +8,15 @@
 <div class="page-header">
     <h2>Модель «Хищник-жертва»</h2>
 </div>
-
+<!-- БЛОК-ЯКОРЬ ДЛЯ БЫСТРОГО ПЕРЕХОДА К РАСЧЁТНОЙ ПАНЕЛИ -->
+<div class="calculation-jump">
+    <div class="calculation-jump__content">
+        <span class="calculation-jump__text">⚡ Хотите провести расчёт?</span>
+        <a href="#calculation-panel" class="calculation-jump__btn">
+            🚀 Перейти к расчётной панели
+        </a>
+    </div>
+</div>
 <!-- Верхняя строка: теория + картинки в колонке -->
 <div class="row">
     <div class="col-md-8">
@@ -115,19 +123,19 @@
                                 <ul>
                                     <li>α = 0.8, c = 0.04, β = 0.6, d = 0.02</li>
                                     <li>x₀ = 50, y₀ = 20</li>
-                                    <li><em>Результат:</em> циклические колебания численности</li>
+                                    <li>Результат: циклические колебания численности</li>
                                 </ul>
                                 <p><strong>Пример 2. Вымирание хищников:</strong></p>
                                 <ul>
                                     <li>α = 0.5, c = 0.01, β = 1.2, d = 0.01</li>
                                     <li>x₀ = 30, y₀ = 5</li>
-                                    <li><em>Результат:</em> хищники вымирают из-за высокой смертности</li>
+                                    <li>Результат: хищники вымирают из-за высокой смертности</li>
                                 </ul>
                                 <p><strong>Пример 3. Вымирание жертв:</strong></p>
                                 <ul>
                                     <li>α = 0.4, c = 0.08, β = 0.5, d = 0.01</li>
                                     <li>x₀ = 10, y₀ = 30</li>
-                                    <li><em>Результат:</em> жертвы истребляются хищниками</li>
+                                    <li>Результат: жертвы истребляются хищниками</li>
                                 </ul>
                             </div>
                         </div>
@@ -153,10 +161,10 @@
                         </div>
                     </div>
 
-                </div> <!-- panel-group -->
-            </div> <!-- panel-body -->
-        </div> <!-- panel-info -->
-    </div> <!-- col-md-8 -->
+                </div> 
+            </div> 
+        </div> 
+    </div>
 
     <!-- Картинки в колонке справа -->
     <div class="col-md-4">
@@ -167,10 +175,9 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/bunny.jpg"
-                             class="img-responsive"
-                             style="height: 250px; width: 100%; object-fit: cover;"
+                             class="img-responsive predator-prey-img"
                              alt="Заяц">
-                        <p class="text-muted" style="margin-top: 10px;">🐇 Жертва (заяц)</p>
+                        <p class="text-muted">🐇 Жертва (заяц)</p>
                     </div>
                 </div>
 
@@ -178,24 +185,23 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/fox.jpg"
-                             class="img-responsive"
-                             style="height: 250px; width: 100%; object-fit: cover;"
+                             class="img-responsive predator-prey-img"
                              alt="Лиса">
-                        <p class="text-muted" style="margin-top: 10px;">🦊 Хищник (лиса)</p>
+                        <p class="text-muted">🦊 Хищник (лиса)</p>
                     </div>
                 </div>
 
-            </div> <!-- panel-body -->
-        </div> <!-- panel-default -->
-    </div> <!-- col-md-4 -->
-</div> <!-- row -->
+            </div> 
+        </div> 
+    </div> 
+</div> 
 
 <!-- Расчётная панель -->
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="calculation-panel">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
+                <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
 
@@ -256,7 +262,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- col-md-6 (левая колонка) -->
+                        </div>
 
                         <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
                         <div class="col-md-6">
@@ -276,7 +282,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label class="col-sm-6 control-label">Эффективность охоты с:</label>
+                                        <label class="col-sm-6 control-label">Эффективность охоты c:</label>
                                         <div class="col-sm-6">
                                             <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
                                             <span class="help-block">Диапазон: 0.01–0.06</span>
@@ -306,41 +312,52 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- col-md-6 (правая колонка) -->
+                        </div>
 
-                    </div> <!-- row (два столбца) -->
+                    </div>
 
                     <hr>
 
                     <!-- Кнопка запуска -->
                     <div class="form-group">
-                        <div class="col-sm-offset-5 col-sm-2">
+                        <div class="col-sm-offset-4 col-sm-4">
                             <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
                         </div>
                     </div>
 
                 </form>
-            </div> <!-- panel-body -->
-        </div> <!-- panel-primary -->
-    </div> <!-- col-md-12 -->
-</div> <!-- row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Отображение ошибок -->
+% if defined('error') and error:
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger">
+            <strong>⚠️ Ошибка:</strong> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
+    </div>
+</div>
+% end
+
 <!-- Результаты расчёта (если есть) -->
 % if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title text-center">📈 Результаты моделирования</h3>
+                <h3 class="panel-title text-center">Результаты моделирования</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="text-center">Динамика численности во времени</h4>
-                        <img src="/static/temp/{{ results.get('plot_time', '') }}" class="img-responsive img-thumbnail" alt="График динамики">
-                    </div>
-                    <div class="col-md-6">
-                        <h4 class="text-center">Фазовый портрет</h4>
-                        <img src="/static/temp/{{ results.get('plot_phase', '') }}" class="img-responsive img-thumbnail" alt="Фазовый портрет">
+                    <div class="col-md-12">
+                        <h4 class="text-center">Динамика популяций и фазовый портрет</h4>
+                        <img src="data:image/png;base64,{{ results.get('plot_base64', '') }}" 
+                             class="img-responsive img-thumbnail results-plot"
+                             alt="Графики динамики и фазовый портрет">
                     </div>
                 </div>
 
@@ -348,9 +365,38 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 class="text-center">📊 Анализ результатов</h4>
+                        <div class="panel-heading">
+                            <h4 class="text-center">Анализ результатов</h4>
+                        <div/>
                         <div class="well">
-                            <p><strong>Равновесная численность жертв (x*):</strong> {{ results.get('x_star', 'Н/Д') }}</p>
-                            <p><strong>Равновесная численность хищников (y*):</strong> {{ results.get('y_star', 'Н/Д') }}</p>
-                            <p><strong>Расчётный период колебаний:</strong> {{ results.get('period', 'Н/Д') }} лет</p>
-                            <p><strong>Т
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Равновесная численность жертв (x*):</strong> {{ results.get('x_star', 'Н/Д') }}</p>
+                                    <p><strong>Равновесная численность хищников (y*):</strong> {{ results.get('y_star', 'Н/Д') }}</p>
+                                    <p><strong>Расчётный период колебаний:</strong> {{ results.get('period', 'Н/Д') }} лет</p>
+                                    <p><strong>Тип устойчивости:</strong> {{ results.get('stability_type', 'Н/Д') }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Средняя численность жертв:</strong> {{ results.get('avg_prey', 'Н/Д') }}</p>
+                                    <p><strong>Средняя численность хищников:</strong> {{ results.get('avg_predator', 'Н/Д') }}</p>
+                                    <p><strong>Мин/макс жертв:</strong> {{ results.get('min_prey', 'Н/Д') }} / {{ results.get('max_prey', 'Н/Д') }}</p>
+                                    <p><strong>Мин/макс хищников:</strong> {{ results.get('min_predator', 'Н/Д') }} / {{ results.get('max_predator', 'Н/Д') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Кнопка экспорта -->
+                <div class="text-center">
+                    <form action="/export_csv" method="post" style="display: inline;">
+                        <input type="hidden" name="data_type" value="predator_prey">
+                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+% end
