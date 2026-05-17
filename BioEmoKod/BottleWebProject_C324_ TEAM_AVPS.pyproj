@@ -30,6 +30,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="model\epidemic.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="model\fishing_model.py">
       <SubType>Code</SubType>
     </Compile>
