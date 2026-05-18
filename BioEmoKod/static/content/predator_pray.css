@@ -274,8 +274,58 @@ h5 {
         border-color: #3d6e3a;
     }
 
-form[action="/export_csv"] .btn-primary {
-    margin-top: 35px;
+/* Стили для контейнера с кнопками экспорта */
+.text-center:has(.export-buttons-wrapper) {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.export-buttons-wrapper {
+    display: contents;
+}
+
+/* Стили для форм экспорта */
+.text-center:has(.export-buttons-wrapper) form {
+    flex: 1;
+    max-width: 250px;
+    margin: 0;
+}
+
+/* Стили для кнопок экспорта */
+.text-center:has(.export-buttons-wrapper) .btn-primary {
+    width: 100%;
+    margin: 20px 0;
+    padding: 14px 20px;
+    white-space: nowrap;
+}
+/* Стили для кнопки запуска расчёта */
+.btn-success {
+    background-color: #468847;
+    border-color: #4E653D;
+    color: white;
+    font-size: 16px;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
+}
+
+    .btn-success:hover {
+        background-color: #3d6e3a;
+        border-color: #3d6e3a;
+    }
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Если хотите ограничить максимальную ширину кнопки */
+.col-sm-offset-4.col-sm-4 .btn-block {
+    max-width: 250px; /* ← ИЗМЕНИТЕ ЭТО ЗНАЧЕНИЕ на нужное */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* ===================================================
@@ -302,7 +352,7 @@ form[action="/export_csv"] .btn-primary {
     }
 
 .text-center form {
-    margin-top: 55px;
+    margin-top: 10px;
 }
 
 /* ===================================================

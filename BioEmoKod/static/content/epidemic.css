@@ -3,7 +3,6 @@
     font-size: 14px;
 }
 
-
 /* стили для внутренних заголовков (h5) */
 h5 {
     font-size: 15px;
@@ -35,7 +34,6 @@ h5 {
 .help-block {
     font-size: 11px;
 }
-
 
 /* стили для формул */
 .formula-block {
@@ -133,170 +131,108 @@ h5 {
     padding-left: 0;
 }
 
-/* СТИЛИ ДЛЯ МАТРИЦЫ*/
+/* ===================================================
+   СТИЛИ ДЛЯ МАТРИЦЫ - АБСОЛЮТНЫЙ ФИКС
+   =================================================== */
 
 .matrix-layout {
-    display: flex;
+    display: flex !important;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
-    background-color: transparent;
-    padding: 0;
+    justify-content: center !important;
+    gap: 40px !important;
+    background-color: transparent !important;
+    padding: 0 !important;
 }
 
-/* обёртка матрицы */
 .matrix-wrapper {
-    flex-shrink: 0;
-    overflow-x: auto;
-    padding: 20px;
+    flex-shrink: 0 !important;
+    overflow-x: auto !important;
+    padding: 20px !important;
 }
 
 .matrix-container {
-    text-align: center;
+    text-align: center !important;
+}
+
+/* ГЛАВНЫЙ ФИКС - переопределяем всё, что может быть из Bootstrap */
+.matrix-table,
+.matrix-table > tbody,
+.matrix-table > tbody > tr,
+.matrix-table > tbody > tr > td {
+    all: revert;
 }
 
 .matrix-table {
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
+    display: table !important;
+    border-collapse: collapse !important;
+    background-color: #fff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    margin: 0 auto !important;
+    width: auto !important;
 }
 
-    .matrix-table td {
-        width: 45px;
-        height: 45px;
-        border: 1px solid #999;
-        text-align: center;
-        vertical-align: middle;
-        background-color: #e8f5e9;
-        transition: background-color 0.2s ease;
-        padding: 2px;
+    .matrix-table > tbody {
+        display: table-row-group !important;
     }
 
-        .matrix-table td:hover {
-            background-color: #c8e6c9;
-            cursor: pointer;
+        .matrix-table > tbody > tr {
+            display: table-row !important;
         }
 
-/* содержимое ячейки */
+            .matrix-table > tbody > tr > td {
+                display: table-cell !important;
+                width: 45px !important;
+                height: 45px !important;
+                min-width: 45px !important;
+                max-width: 45px !important;
+                min-height: 45px !important;
+                max-height: 45px !important;
+                border: 1px solid #999 !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                background-color: #e8f5e9 !important;
+                padding: 2px !important;
+                margin: 0 !important;
+                line-height: 1 !important;
+            }
+
 .cell-content {
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* цвета статусов */
-.stat-s {
-    color: #2ecc71;
-    font-weight: bold;
-}
-
-.stat-i {
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-.stat-r {
-    color: #f1c40f;
-    font-weight: bold;
+    display: inline-block !important;
+    text-align: center !important;
+    vertical-align: middle !important;
 }
 
 .stat-s, .stat-i, .stat-r {
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 1;
-    display: inline-block;
+    display: inline-block !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* вертикальная легенда */
-.matrix-legend {
-    flex-shrink: 0;
-    width: 140px;
-    background-color: transparent;
-    padding: 0;
+.stat-s {
+    color: #2ecc71 !important;
 }
 
-.legend-title {
-    font-weight: bold;
-    font-size: 14px;
-    color: #4E653D;
-    margin-bottom: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
+.stat-i {
+    color: #e74c3c !important;
 }
 
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.color-s {
-    background-color: #2ecc71;
-}
-
-.color-i {
-    background-color: #e74c3c;
-}
-
-.color-r {
-    background-color: #f1c40f;
-}
-
-.legend-text {
-    font-size: 12px;
-    color: #333;
-}
-
-.legend-divider {
-    height: 1px;
-    background-color: #ddd;
-    margin: 12px 0;
-}
-
-/* кнопки в легенде */
-.legend-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 5px;
-}
-
-.matrix-btn {
-    width: 100%;
-    font-size: 12px;
-    padding: 5px 10px;
-}
-
-.matrix-table td {
-    width: 55px;
-    height: 55px;
-    border: 1px solid #999;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #e8f5e9;
-    padding: 0;
+.stat-r {
+    color: #f1c40f !important;
 }
 
 /* ===================================================
    СТИЛИ ДЛЯ РЕЗУЛЬТАТОВ СИМУЛЯЦИИ
    =================================================== */
 
-/* лэйаут результатов */
 .results-layout {
     display: flex;
     gap: 30px;
     align-items: stretch;
 }
 
-/* контейнер графика (слева) */
 .graph-container {
     flex: 2;
     min-width: 0;
@@ -341,7 +277,6 @@ h5 {
     margin-top: 10px;
 }
 
-/* контейнер результатов (справа) */
 .results-container {
     flex: 1;
     display: flex;
@@ -383,7 +318,6 @@ h5 {
     margin-top: 10px;
 }
 
-/* эффективность вакцинации */
 .efficiency-badge {
     display: inline-block;
     padding: 3px 8px;
@@ -408,7 +342,6 @@ h5 {
     color: white;
 }
 
-/* сравнение (пик заболеваемости) */
 .result-compare {
     text-align: left;
     margin-top: 5px;
@@ -444,7 +377,6 @@ h5 {
     font-size: 16px;
 }
 
-/* карточки определений справа */
 .definitions {
     display: flex;
     flex-direction: column;
@@ -514,7 +446,6 @@ h5 {
     margin: 8px 0 0 0;
 }
 
-/* стили для примера работы приложения */
 .step-row {
     display: flex;
     gap: 20px;
@@ -559,4 +490,71 @@ h5 {
 .step-final {
     margin-top: 20px;
     font-size: 14px;
+}
+
+/* Легенда матрицы */
+.matrix-legend {
+    flex-shrink: 0;
+    width: 140px;
+    background-color: transparent;
+    padding: 0;
+}
+
+.legend-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.color-s {
+    background-color: #2ecc71;
+}
+
+.color-i {
+    background-color: #e74c3c;
+}
+
+.color-r {
+    background-color: #f1c40f;
+}
+
+.legend-text {
+    font-size: 12px;
+    color: #333;
+}
+
+.legend-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 12px 0;
+}
+
+.legend-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.matrix-btn {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 10px;
 }
