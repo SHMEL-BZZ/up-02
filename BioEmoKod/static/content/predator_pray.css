@@ -206,46 +206,7 @@ body {
     margin-bottom: 20px;
 }
 
-.control-label {
-    font-size: 16px;
-    text-align: left;
-    color: #4E653D;
-    font-family: 'Roboto', sans-serif;
-}
-
-.form-control {
-    font-size: 16px;
-    padding: 10px 15px;
-    font-family: 'Roboto', sans-serif;
-}
-
-.help-block {
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-}
-
-.panel-primary h4 {
-    font-size: 17px;
-    font-weight: bold;
-    margin: 15px 0 10px 0;
-    color: #4E653D;
-    font-family: 'Roboto', sans-serif;
-}
-
-.panel-primary .form-group {
-    margin-bottom: 8px;
-}
-
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', sans-serif;
-}
-
-h5 {
-    font-size: 17px;
-    font-weight: bold;
-    color: #4E653D;
-    margin-top: 0;
-    margin-bottom: 20px;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -274,33 +235,6 @@ h5 {
         border-color: #3d6e3a;
     }
 
-/* Стили для контейнера с кнопками экспорта */
-.text-center:has(.export-buttons-wrapper) {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-}
-
-.export-buttons-wrapper {
-    display: contents;
-}
-
-/* Стили для форм экспорта */
-.text-center:has(.export-buttons-wrapper) form {
-    flex: 1;
-    max-width: 250px;
-    margin: 0;
-}
-
-/* Стили для кнопок экспорта */
-.text-center:has(.export-buttons-wrapper) .btn-primary {
-    width: 100%;
-    margin: 20px 0;
-    padding: 14px 20px;
-    white-space: nowrap;
-}
-/* Стили для кнопки запуска расчёта */
 .btn-success {
     background-color: #468847;
     border-color: #4E653D;
@@ -319,13 +253,6 @@ h5 {
 .btn-block {
     display: block;
     width: 100%;
-}
-
-/* Если хотите ограничить максимальную ширину кнопки */
-.col-sm-offset-4.col-sm-4 .btn-block {
-    max-width: 250px; /* ← ИЗМЕНИТЕ ЭТО ЗНАЧЕНИЕ на нужное */
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* ===================================================
@@ -350,10 +277,6 @@ h5 {
         color: #4E653D;
         font-family: 'Roboto', sans-serif;
     }
-
-.text-center form {
-    margin-top: 10px;
-}
 
 /* ===================================================
    КАРТИНКИ (блок справа)
@@ -465,19 +388,11 @@ h5 {
     margin-bottom: 35px;
 }
 
-/* ===================================================
-   WELL БЛОКИ
-   =================================================== */
-
 .well {
     padding: 25px 30px;
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
 }
-
-/* ===================================================
-   ДОПОЛНИТЕЛЬНЫЕ ОТСТУПЫ ДЛЯ ВСЕХ ПАНЕЛЕЙ
-   =================================================== */
 
 .panel-default .panel-body,
 .panel-primary .panel-body,
@@ -550,47 +465,75 @@ h5 {
 html {
     scroll-behavior: smooth;
 }
+
 /* ===================================================
-   ЦЕНТРИРОВАНИЕ ФОРМЫ В РАСЧЁТНОЙ ПАНЕЛИ
+   СТИЛИ ДЛЯ РАСЧЁТНОЙ ПАНЕЛИ (ФОРМА)
    =================================================== */
 
-/* Центрирование всей формы */
-#calculation-panel .panel-body form {
-    max-width: 1000px;
-    margin: 0 auto;
+#calculation-panel .panel-body {
+    padding: 20px 15px !important;
 }
 
-/* Увеличение расстояния между колонками */
+    #calculation-panel .panel-body form {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
 #calculation-panel .row {
     display: flex;
     flex-wrap: wrap;
-    margin-left: -15px;
-    margin-right: -15px;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
-#calculation-panel .col-md-6 {
-    padding-left: 30px;
-    padding-right: 30px;
+#calculation-panel .col-md-3 {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
 }
 
-/* Центрирование заголовков секций */
-#calculation-panel h4.text-center {
-    text-align: center !important;
-    margin-bottom: 25px;
+#calculation-panel h4 {
+    text-align: left !important;
+    font-size: 16px !important;
+    font-weight: bold;
+    margin: 0 0 15px 0 !important;
+    padding: 0 !important;
+    color: #4E653D;
 }
 
-/* Выравнивание полей ввода */
 #calculation-panel .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px !important;
 }
 
-/* Сделать все поля ввода одинаковой ширины */
+#calculation-panel .control-label {
+    display: block !important;
+    text-align: left !important;
+    font-size: 14px !important;
+    margin-bottom: 15px !important;
+    padding: 0 !important;
+    font-weight: 500;
+    color: #4E653D;
+}
+
 #calculation-panel .form-control {
-    width: 100%;
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 240px !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    text-align: left;
 }
 
-/* Центрирование кнопки */
+#calculation-panel .help-block {
+    text-align: left !important;
+    font-size: 12px !important;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+    color: #e74c3c;
+}
+
+#calculation-panel hr {
+    margin: 25px 0 !important;
+}
+
 #calculation-panel .text-center {
     text-align: center;
     margin-top: 20px;
@@ -602,73 +545,12 @@ html {
     min-width: 200px;
 }
 
-/* Выравнивание меток (label) */
-#calculation-panel .control-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-/* Место для ошибок валидации */
-#calculation-panel .form-group {
-    position: relative;
-    margin-bottom: 35px;
-}
-
-/* Стили для сообщений об ошибках */
-#calculation-panel .help-block {
-    font-size: 13px;
-    margin-top: 5px;
-    margin-bottom: 0;
-    color: #e74c3c;
-    min-height: 20px;
-}
-
-/* Иконка ошибки */
-#calculation-panel .error-icon {
-    position: absolute;
-    right: 10px;
-    top: 38px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-    #calculation-panel .error-icon span {
-        font-size: 18px;
-    }
-
-/* Всплывающая подсказка с ошибкой */
-#calculation-panel .error-tooltip {
-    position: absolute;
-    right: 35px;
-    top: 35px;
-    background-color: #e74c3c;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    z-index: 100;
-    pointer-events: none;
-}
-
-    #calculation-panel .error-tooltip::before {
-        content: '';
-        position: absolute;
-        right: -5px;
-        top: 10px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: transparent transparent transparent #e74c3c;
-    }
-
-/* Успешное состояние поля */
+/* Стили для ошибок валидации */
 #calculation-panel .has-success .form-control {
     border-color: #5cb85c;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px #5cb85c;
 }
 
-/* Ошибочное состояние поля */
 #calculation-panel .has-error .form-control {
     border-color: #e74c3c;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px #e74c3c;

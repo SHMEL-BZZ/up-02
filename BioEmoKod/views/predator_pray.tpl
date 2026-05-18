@@ -199,148 +199,118 @@
             <div class="panel-body">
                 <form action="/predator_pray" method="post" class="form-horizontal">
                     <div class="row">
-                        <div class="col-md-6">
-                            <h4 class="text-center">📌 Начальные условия</h4>
-            
-                            <div class="form-group" id="group-x0">
+                        <!-- Столбец 1: Начальные условия -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">📌 Начальные условия</h4>
+                            <div class="form-group">
                                 <label class="control-label">Число жертв x₀ (10–100):</label>
                                 <input type="number" 
                                        step="1" 
                                        name="x0" 
-                                       id="x0" 
                                        class="form-control" 
-                                       value="{{form_values.get('x0', 50)}}" 
-                                       min="10" 
-                                       max="100"
-                                       required>
-                                % if validation_errors and validation_errors.get('x0'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['x0']}}</div>
+                                       value="{{form_values.get('x0', '')}}">
+                                % if field_errors.get('x0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['x0']}}</div>
                                 % end
                             </div>
-            
-                            <div class="form-group" id="group-y0">
+    
+                            <div class="form-group">
                                 <label class="control-label">Число хищников y₀ (1–50):</label>
                                 <input type="number" 
                                        step="1" 
                                        name="y0" 
-                                       id="y0" 
                                        class="form-control" 
-                                       value="{{form_values.get('y0', 20)}}" 
-                                       min="1" 
-                                       max="50"
-                                       required>
-                                % if validation_errors and validation_errors.get('y0'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['y0']}}</div>
+                                       value="{{form_values.get('y0', '')}}">
+                                % if field_errors.get('y0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['y0']}}</div>
                                 % end
                             </div>
+                        </div>
 
-                            <hr>
-
-                            <h4 class="text-center">⏱️ Параметры симуляции</h4>
-            
-                            <div class="form-group" id="group-T">
+                        <!-- Столбец 2: Параметры симуляции -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⏱️ Параметры симуляции</h4>
+                            <div class="form-group">
                                 <label class="control-label">Длительность T, лет (5–50):</label>
                                 <input type="number" 
                                        step="1" 
                                        name="T" 
-                                       id="T" 
                                        class="form-control" 
-                                       value="{{form_values.get('T', 50)}}" 
-                                       min="5" 
-                                       max="50"
-                                       required>
-                                % if validation_errors and validation_errors.get('T'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['T']}}</div>
+                                       value="{{form_values.get('T', '')}}">
+                                % if field_errors.get('T'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['T']}}</div>
                                 % end
                             </div>
-            
-                            <div class="form-group" id="group-N">
+    
+                            <div class="form-group">
                                 <label class="control-label">Число шагов N (200–10000):</label>
                                 <input type="number" 
                                        step="100" 
                                        name="N" 
-                                       id="N" 
                                        class="form-control" 
-                                       value="{{form_values.get('N', 1000)}}" 
-                                       min="200" 
-                                       max="10000"
-                                       required>
-                                % if validation_errors and validation_errors.get('N'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['N']}}</div>
+                                       value="{{form_values.get('N', '')}}">
+                                % if field_errors.get('N'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['N']}}</div>
                                 % end
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <h4 class="text-center">⚙️ Параметры модели</h4>
-            
-                            <div class="form-group" id="group-alpha">
+                        <!-- Столбец 3: Параметры модели (жертвы) -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⚙️ Параметры для жертв</h4>
+                            <div class="form-group">
                                 <label class="control-label">Рождаемость жертв α (0.4–1.5):</label>
                                 <input type="number" 
                                        step="0.01" 
                                        name="alpha" 
-                                       id="alpha" 
                                        class="form-control" 
-                                       value="{{form_values.get('alpha', 0.8)}}" 
-                                       min="0.4" 
-                                       max="1.5"
-                                       required>
-                                % if validation_errors and validation_errors.get('alpha'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['alpha']}}</div>
+                                       value="{{form_values.get('alpha', '')}}">
+                                % if field_errors.get('alpha'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['alpha']}}</div>
                                 % end
                             </div>
-            
-                            <div class="form-group" id="group-c">
+    
+                            <div class="form-group">
                                 <label class="control-label">Эффективность охоты c (0.01–0.06):</label>
                                 <input type="number" 
                                        step="0.01" 
                                        name="c" 
-                                       id="c" 
                                        class="form-control" 
-                                       value="{{form_values.get('c', 0.04)}}" 
-                                       min="0.01" 
-                                       max="0.06"
-                                       required>
-                                % if validation_errors and validation_errors.get('c'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['c']}}</div>
+                                       value="{{form_values.get('c', '')}}">
+                                % if field_errors.get('c'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['c']}}</div>
                                 % end
                             </div>
-            
-                            <div class="form-group" id="group-beta">
+                        </div>
+
+                        <!-- Столбец 4: Параметры модели (хищники) -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⚙️ Параметры для хищников</h4>
+                            <div class="form-group">
                                 <label class="control-label">Смертность хищников β (0.4–1.5):</label>
                                 <input type="number" 
                                        step="0.01" 
                                        name="beta" 
-                                       id="beta" 
                                        class="form-control" 
-                                       value="{{form_values.get('beta', 0.6)}}" 
-                                       min="0.4" 
-                                       max="1.5"
-                                       required>
-                                % if validation_errors and validation_errors.get('beta'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['beta']}}</div>
+                                       value="{{form_values.get('beta', '')}}">
+                                % if field_errors.get('beta'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['beta']}}</div>
                                 % end
                             </div>
-            
-                            <div class="form-group" id="group-d">
+    
+                            <div class="form-group">
                                 <label class="control-label">Рост хищников d (0.01–0.06):</label>
                                 <input type="number" 
-                                       step="0.01" 
+                                       step="0.01"
                                        name="d" 
-                                       id="d" 
                                        class="form-control" 
-                                       value="{{form_values.get('d', 0.02)}}" 
-                                       min="0.01" 
-                                       max="0.06"
-                                       required>
-                                % if validation_errors and validation_errors.get('d'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['d']}}</div>
+                                       value="{{form_values.get('d', '')}}">
+                                % if field_errors.get('d'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['d']}}</div>
                                 % end
                             </div>
                         </div>
                     </div>
-
-                    <hr>
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-lg">▶ Запустить расчёт</button>
@@ -351,6 +321,7 @@
         </div>
     </div>
 </div>
+
 <!-- Отображение ошибок сервера -->
 % if defined('error') and error:
 <div class="row">
