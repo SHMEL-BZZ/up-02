@@ -449,11 +449,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
                 
-                <!-- Кнопка экспорта -->
-                <div class="text-center">
-                    <form action="/export_csv" method="post" style="display: inline;">
+                <!-- Кнопки экспорта -->
+                <div class="text-center" style="display: flex; gap: 10px; justify-content: center;">
+                    <form action="/export_csv" method="post">
                         <input type="hidden" name="data_type" value="predator_prey">
                         <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                    </form>
+    
+                    <form action="/export_csv" method="post">
+                        <input type="hidden" name="data_type" value="predator_prey">
+                        <button type="submit" class="btn btn-primary">Экспорт графиков</button>
                     </form>
                 </div>
             </div>
