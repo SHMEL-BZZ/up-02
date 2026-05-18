@@ -105,75 +105,90 @@ def epidemic():
     results = None
     error = None
     
-    if request.method == 'POST':
-        try:
-            # Получаем параметры из формы
-            params = {
-                'grid_size': int(request.forms.get('grid_size', 8)),
-                'total_rats': int(request.forms.get('total_rats', 64)),
-                'weeks': int(request.forms.get('weeks', 52)),
-                'p_infect': float(request.forms.get('p_infect', 0.6)),
-                'p_move': float(request.forms.get('p_move', 0.5)),
-                'vacc_day': int(request.forms.get('vacc_day', 56)),
-                'vacc_percent': int(request.forms.get('vacc_percent', 50))
-            }
-            
-            # Валидация параметров
-            if not (2 <= params['grid_size'] <= 10):
-                raise ValueError("Размер сетки n должен быть в диапазоне 2–10")
-            max_rats = params['grid_size'] * params['grid_size'] * 4
-            if not (1 <= params['total_rats'] <= max_rats):
-                raise ValueError(f"Число крыс должно быть в диапазоне 1–{max_rats}")
-            if not (8 <= params['weeks'] <= 260):
-                raise ValueError("Длительность симуляции должна быть в диапазоне 8–260 недель")
-            if not (0.1 <= params['p_infect'] <= 0.9):
-                raise ValueError("Вероятность заражения должна быть в диапазоне 0.1–0.9")
-            if not (0.1 <= params['p_move'] <= 0.9):
-                raise ValueError("Вероятность перемещения должна быть в диапазоне 0.1–0.9")
-            max_vacc_day = params['weeks'] * 7
-            if not (9 <= params['vacc_day'] <= max_vacc_day):
-                raise ValueError(f"День вакцинации должен быть в диапазоне 9–{max_vacc_day}")
-            if not (1 <= params['vacc_percent'] <= 100):
-                raise ValueError("Процент вакцинации должен быть в диапазоне 1–100")
-            
-            # Запускаем симуляцию
-            sim = EpidemicSimulation(params)
-            sim_results = sim.get_results()
-            
-            # Вычисляем снижение пика
-            peak_without = sim_results['peak_without']
-            peak_with = sim_results['peak_with']
-            if peak_without > 0:
-                reduction = round((peak_without - peak_with) / peak_without * 100, 1)
-            else:
-                reduction = 0
-            
-            # Формируем результаты для шаблона
-            results = {
-                'graph': sim_results['graph'],
-                'threshold': sim_results['threshold'],
-                'efficacy': sim_results['efficacy'],
-                'peak_without': peak_without,
-                'peak_with': peak_with,
-                'week_without': sim_results['week_without'],
-                'week_with': sim_results['week_with'],
-                'reduction': reduction,
-                'matrix_display': sim_results['matrix_display'],
-                'n': sim_results['n']
-            }
-            
-        except ValueError as e:
-            error = str(e)
-        except Exception as e:
-            error = f"Ошибка расчёта: {str(e)}"
+    # Значения по умолчанию
+    default_form_values = {
+        'grid_size': 8,
+        'total_rats': 64,
+        'weeks': 52,
+        'p_infect': 0.6,
+        'p_move': 0.5,
+        'vacc_day': 56,
+        'vacc_percent': 50
+    }
     
-    # Для GET запроса или после обработки POST
+    # При GET запросе используем значения по умолчанию или сохранённые в сессии
+    form_values = default_form_values.copy()
+    
+    if request.method == 'POST':
+        # Проверяем, является ли это сбросом
+        if request.forms.get('reset') == 'true':
+            # Сбрасываем к значениям по умолчанию
+            form_values = default_form_values.copy()
+        else:
+            try:
+                # Получаем параметры из формы
+                form_values = {
+                    'grid_size': int(request.forms.get('grid_size', 8)),
+                    'total_rats': int(request.forms.get('total_rats', 64)),
+                    'weeks': int(request.forms.get('weeks', 52)),
+                    'p_infect': float(request.forms.get('p_infect', 0.6)),
+                    'p_move': float(request.forms.get('p_move', 0.5)),
+                    'vacc_day': int(request.forms.get('vacc_day', 56)),
+                    'vacc_percent': int(request.forms.get('vacc_percent', 50))
+                }
+                
+                # Валидация параметров
+                if not (2 <= form_values['grid_size'] <= 10):
+                    raise ValueError("Размер сетки n должен быть в диапазоне 2–10")
+                max_rats = form_values['grid_size'] * form_values['grid_size'] * 4
+                if not (1 <= form_values['total_rats'] <= max_rats):
+                    raise ValueError(f"Число крыс должно быть в диапазоне 1–{max_rats}")
+                if not (8 <= form_values['weeks'] <= 260):
+                    raise ValueError("Длительность симуляции должна быть в диапазоне 8–260 недель")
+                if not (0.1 <= form_values['p_infect'] <= 0.9):
+                    raise ValueError("Вероятность заражения должна быть в диапазоне 0.1–0.9")
+                if not (0.1 <= form_values['p_move'] <= 0.9):
+                    raise ValueError("Вероятность перемещения должна быть в диапазоне 0.1–0.9")
+                max_vacc_day = form_values['weeks'] * 7
+                if not (9 <= form_values['vacc_day'] <= max_vacc_day):
+                    raise ValueError(f"День вакцинации должен быть в диапазоне 9–{max_vacc_day}")
+                if not (1 <= form_values['vacc_percent'] <= 100):
+                    raise ValueError("Процент вакцинации должен быть в диапазоне 1–100")
+                
+                # Запускаем симуляцию
+                sim = EpidemicSimulation(form_values)
+                sim_results = sim.get_results()
+                
+                # Вычисляем снижение пика
+                peak_without = sim_results['peak_without']
+                peak_with = sim_results['peak_with']
+                reduction = round((peak_without - peak_with) / peak_without * 100, 1) if peak_without > 0 else 0
+                
+                # Формируем результаты
+                results = {
+                    'graph': sim_results['graph'],
+                    'threshold': sim_results['threshold'],
+                    'efficacy': sim_results['efficacy'],
+                    'peak_without': peak_without,
+                    'peak_with': peak_with,
+                    'week_without': sim_results['week_without'],
+                    'week_with': sim_results['week_with'],
+                    'reduction': reduction,
+                    'matrix_display': sim_results['matrix_display'],
+                    'n': sim_results['n']
+                }
+                
+            except ValueError as e:
+                error = str(e)
+            except Exception as e:
+                error = f"Ошибка расчёта: {str(e)}"
+    
     return template('epidemic', 
                    title=title, 
                    year=datetime.now().year,
                    results=results,
-                   error=error)
-
+                   error=error,
+                   form_values=form_values)
 
 @route('/competition')
 @view('competition')
