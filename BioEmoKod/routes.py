@@ -7,10 +7,11 @@ from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
+import random
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
-
+from controller.fishing_controller import find_optimal_q
 @route('/')
 @route('/home')
 @view('index')
@@ -200,15 +201,48 @@ def competition():
     )
 
 
-@route('/fishing')
-@view('fishing')
+@route('/fishing', method=['GET', 'POST'])
 def fishing():
-    """Renders the fishing page."""
-    return dict(
-        title='Fishing',
-        year=datetime.now().year
-    )
-
+    title = 'Динамика рыбного промысла'
+    results = None
+    error = None
+    
+    if request.method == 'POST':
+        try:
+            # Получаем параметры из формы
+            N = int(request.forms.get('N', 15))
+            M = int(request.forms.get('M', 15))
+            K = int(request.forms.get('K', 50))
+            p_repro = float(request.forms.get('p_repro', 0.25))
+            p_death = float(request.forms.get('p_death', 0.1))
+            
+            
+            
+            # Вызов оптимизации 
+            results_raw, q_opt = find_optimal_q(
+                N, M, K, p_repro, p_death,
+                steps_warmup=300,
+                steps_eval=300,
+                trials=3
+            )
+            
+            # Преобразование результатов для удобства отображения
+            q_vals = sorted(results_raw.keys())
+            catches = [results_raw[q][0] for q in q_vals]
+            pops = [results_raw[q][1] for q in q_vals]
+           
+            
+        except ValueError as e:
+            error = str(e)
+        except Exception as e:
+            error = f"Ошибка расчёта: {str(e)}"
+    
+    # Для GET или после POST с ошибкой отдаём форму
+    return template('fishing',
+                   title=title,
+                   year=datetime.now().year,
+                   results=results,
+                   error=error)
 
 @route('/about')
 @view('about')
