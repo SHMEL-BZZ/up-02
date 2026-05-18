@@ -8,6 +8,7 @@
 <div class="page-header">
     <h2>Модель «Хищник-жертва»</h2>
 </div>
+
 <!-- БЛОК-ЯКОРЬ ДЛЯ БЫСТРОГО ПЕРЕХОДА К РАСЧЁТНОЙ ПАНЕЛИ -->
 <div class="calculation-jump">
     <div class="calculation-jump__content">
@@ -17,6 +18,7 @@
         </a>
     </div>
 </div>
+
 <!-- Верхняя строка: теория + картинки в колонке -->
 <div class="row">
     <div class="col-md-8">
@@ -27,7 +29,6 @@
             </div>
             <div class="panel-body">
                 <div class="panel-group" id="accordion">
-
                     <!-- 1. Модель Лотки–Вольтерры -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -160,7 +161,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div> 
             </div> 
         </div> 
@@ -170,8 +170,6 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-
-                <!-- Картинка жертвы -->
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/bunny.jpg"
@@ -180,8 +178,6 @@
                         <p class="text-muted">🐇 Жертва (заяц)</p>
                     </div>
                 </div>
-
-                <!-- Картинка хищника -->
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/fox.jpg"
@@ -190,7 +186,6 @@
                         <p class="text-muted">🦊 Хищник (лиса)</p>
                     </div>
                 </div>
-
             </div> 
         </div> 
     </div> 
@@ -204,134 +199,201 @@
                 <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
-
-                <form action="/predator_pray" method="post" class="form-horizontal">
-
-                    <!-- Два столбца -->
+                <form action="/predator_pray" method="post" class="form-horizontal" id="calculationForm" novalidate>
                     <div class="row">
-
-                        <!-- ЛЕВАЯ КОЛОНКА: Начальные условия + симуляция -->
+                        <!-- ЛЕВАЯ КОЛОНКА -->
                         <div class="col-md-6">
-
                             <h4 class="text-center">📌 Начальные условия</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число жертв x₀:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="any" name="x0" class="form-control" value="50" required>
-                                            <span class="help-block">Диапазон: 10–100</span>
-                                        </div>
-                                    </div>
+                            <div class="form-group" id="group-x0">
+                                <label class="col-sm-6 control-label">Число жертв x₀:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="any" name="x0" id="x0" class="form-control" value="50" required>
+                                    <span class="help-block">Диапазон: 10–100</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число хищников y₀:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="any" name="y0" class="form-control" value="20" required>
-                                            <span class="help-block">Диапазон: 1–50</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="form-group" id="group-y0">
+                                <label class="col-sm-6 control-label">Число хищников y₀:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="any" name="y0" id="y0" class="form-control" value="20" required>
+                                    <span class="help-block">Диапазон: 1–50</span>
                                 </div>
                             </div>
 
                             <hr>
 
                             <h4 class="text-center">⏱️ Параметры симуляции</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Длительность T (лет):</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="1" name="T" class="form-control" value="50" required>
-                                            <span class="help-block">Диапазон: 5–50</span>
-                                        </div>
-                                    </div>
+                            <div class="form-group" id="group-T">
+                                <label class="col-sm-6 control-label">Длительность T (лет):</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="1" name="T" id="T" class="form-control" value="50" required>
+                                    <span class="help-block">Диапазон: 5–50</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число шагов N:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="100" name="N" class="form-control" value="1000" required>
-                                            <span class="help-block">Диапазон: 200–10000</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="form-group" id="group-N">
+                                <label class="col-sm-6 control-label">Число шагов N:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="100" name="N" id="N" class="form-control" value="1000" required>
+                                    <span class="help-block">Диапазон: 200–10000</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
+                        <!-- ПРАВАЯ КОЛОНКА -->
                         <div class="col-md-6">
-
                             <h4 class="text-center">⚙️ Параметры модели</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Рождаемость жертв α:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="alpha" class="form-control" value="0.8" required>
-                                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                                        </div>
-                                    </div>
+                            <div class="form-group" id="group-alpha">
+                                <label class="col-sm-6 control-label">Рождаемость жертв α:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="0.01" name="alpha" id="alpha" class="form-control" value="0.8" required>
+                                    <span class="help-block">Диапазон: 0.4–1.5</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Эффективность охоты c:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
-                                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="form-group" id="group-c">
+                                <label class="col-sm-6 control-label">Эффективность охоты c:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="0.01" name="c" id="c" class="form-control" value="0.04" required>
+                                    <span class="help-block">Диапазон: 0.01–0.06</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Смертность хищников β:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="beta" class="form-control" value="0.6" required>
-                                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="form-group" id="group-beta">
+                                <label class="col-sm-6 control-label">Смертность хищников β:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="0.01" name="beta" id="beta" class="form-control" value="0.6" required>
+                                    <span class="help-block">Диапазон: 0.4–1.5</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Рост хищников d:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="d" class="form-control" value="0.02" required>
-                                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="form-group" id="group-d">
+                                <label class="col-sm-6 control-label">Рост хищников d:</label>
+                                <div class="col-sm-6" style="position: relative;">
+                                    <input type="number" step="0.01" name="d" id="d" class="form-control" value="0.02" required>
+                                    <span class="help-block">Диапазон: 0.01–0.06</span>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <hr>
 
-                    <!-- Кнопка запуска -->
                     <div class="form-group">
                         <div class="col-sm-offset-4 col-sm-4">
-                            <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
+                            <button type="submit" class="btn btn-success btn-block" id="submitBtn">▶ Запустить расчёт</button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Отображение ошибок -->
+<!-- JavaScript для валидации -->
+<script>
+// Правила валидации
+const validationRules = {
+    x0: { min: 10, max: 100, message: 'Число жертв должно быть в диапазоне 10–100' },
+    y0: { min: 1, max: 50, message: 'Число хищников должно быть в диапазоне 1–50' },
+    T: { min: 5, max: 50, message: 'Длительность должна быть в диапазоне 5–50 лет' },
+    N: { min: 200, max: 10000, message: 'Число шагов должно быть в диапазоне 200–10000' },
+    alpha: { min: 0.4, max: 1.5, message: 'Рождаемость жертв должна быть в диапазоне 0.4–1.5' },
+    c: { min: 0.01, max: 0.06, message: 'Эффективность охоты должна быть в диапазоне 0.01–0.06' },
+    beta: { min: 0.4, max: 1.5, message: 'Смертность хищников должна быть в диапазоне 0.4–1.5' },
+    d: { min: 0.01, max: 0.06, message: 'Рост хищников должен быть в диапазоне 0.01–0.06' }
+};
+
+// Функция проверки одного поля
+function validateField(fieldId) {
+    const field = document.getElementById(fieldId);
+    const value = parseFloat(field.value);
+    const rule = validationRules[fieldId];
+    const formGroup = document.getElementById(`group-${fieldId}`);
+    const inputWrapper = field.parentElement;
+    
+    // Удаляем старые иконки
+    const oldIcon = inputWrapper.querySelector('.error-icon');
+    const oldTooltip = inputWrapper.querySelector('.error-tooltip');
+    if (oldIcon) oldIcon.remove();
+    if (oldTooltip) oldTooltip.remove();
+    
+    // Проверка
+    if (isNaN(value) || value < rule.min || value > rule.max) {
+        formGroup.classList.add('has-error');
+        formGroup.classList.remove('has-success');
+        
+        // Иконка
+        const errorIcon = document.createElement('div');
+        errorIcon.className = 'error-icon';
+        errorIcon.innerHTML = '<span>⚠️</span>';
+        
+        // Подсказка
+        const tooltip = document.createElement('div');
+        tooltip.className = 'error-tooltip';
+        tooltip.innerHTML = `⚠️ ${rule.message}`;
+        
+        inputWrapper.appendChild(errorIcon);
+        inputWrapper.appendChild(tooltip);
+        return false;
+    } else {
+        formGroup.classList.remove('has-error');
+        formGroup.classList.add('has-success');
+        return true;
+    }
+}
+
+// Проверка всех полей
+function validateAllFields() {
+    let isValid = true;
+    for (const fieldId in validationRules) {
+        if (!validateField(fieldId)) isValid = false;
+    }
+    return isValid;
+}
+
+// Показать сообщение об ошибке
+function showErrorSummary() {
+    const existing = document.querySelector('.validation-summary');
+    if (existing) existing.remove();
+    
+    const summary = document.createElement('div');
+    summary.className = 'alert alert-danger validation-summary';
+    summary.innerHTML = `
+        <strong>⚠️ Ошибка валидации!</strong><br>
+        Исправьте поля с красной рамкой
+        <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
+    `;
+    document.body.appendChild(summary);
+    setTimeout(() => summary.remove(), 5000);
+}
+
+// Подписка на события
+document.addEventListener('DOMContentLoaded', function() {
+    for (const fieldId in validationRules) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('input', () => validateField(fieldId));
+            field.addEventListener('blur', () => validateField(fieldId));
+        }
+    }
+    
+    const form = document.getElementById('calculationForm');
+    form.addEventListener('submit', function(e) {
+        if (!validateAllFields()) {
+            e.preventDefault();
+            showErrorSummary();
+            const firstError = document.querySelector('.has-error');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+    
+    // Первоначальная проверка
+    validateAllFields();
+});
+</script>
+
+<!-- Отображение ошибок сервера -->
 % if defined('error') and error:
 <div class="row">
     <div class="col-md-12">
@@ -343,7 +405,7 @@
 </div>
 % end
 
-<!-- Результаты расчёта (если есть) -->
+<!-- Результаты расчёта -->
 % if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
@@ -367,7 +429,7 @@
                     <div class="col-md-12">
                         <div class="panel-heading">
                             <h4 class="text-center">Анализ результатов</h4>
-                        <div/>
+                        </div>
                         <div class="well">
                             <div class="row">
                                 <div class="col-md-6">
@@ -394,7 +456,6 @@
                         <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
                     </form>
                 </div>
-                
             </div>
         </div>
     </div>
