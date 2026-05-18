@@ -66,22 +66,24 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-4">
-                            <button type="submit" class="btn btn-fishing btn-block">Найти оптимальный q</button>
+                        <hr>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-4">
+                                <button type="submit" class="btn btn-fishing btn-block">Найти оптимальный q</button>
+                            </div>
                         </div>
                     </div>
+                    
+                    
                 </form>
 
                 <!-- Блок результатов -->
                 % if defined('grid') and grid:
                 <div class="well">
                     % if defined('q'):
-                    <p class="text-center">
-                        <strong>Текущий q: {{ q }}</strong>
-                    </p>
+                    <h4 class="text-center">
+                        Текущий q: {{ q }}
+                    </h4>
                     % end
 
                     <div class="grid-container">
@@ -99,6 +101,24 @@
                             % end
                         </table>
                     </div>
+
+                    % if defined('error') and error:
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Ошибка!</strong> {{ error }}
+                    </div>
+                    % end
+
+                    % if defined('message') and message:
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+                    % end
 
                     <div class="col-sm-6 chart-title">
                         <label>Средняя популяция в зависимости от q:</label>

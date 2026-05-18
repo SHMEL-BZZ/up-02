@@ -21,7 +21,11 @@ class FishLake:
         self.q = q
         
         # Сетка озера: 0 — пусто, 1 — рыба
-        self.grid = [[0] * M for _ in range(N)]
+        self.grid = [[False] * M for _ in range(N)]
+        positions = random.sample(range(N * M), min(K, N * M))
+        for pos in positions:
+            r, c = divmod(pos, M)
+            self.grid[r][c] = True
         
         # Случайное равномерное размещение K рыб без повторений
         all_cells = [(i, j) for i in range(N) for j in range(M)]

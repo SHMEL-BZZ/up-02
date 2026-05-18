@@ -12,6 +12,7 @@ import random
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
+from model.fishing_model import FishLake
 @route('/')
 @route('/home')
 @view('index')
@@ -191,6 +192,8 @@ def fishing():
     title = 'Динамика рыбного промысла'
     results = None
     error = None
+    grid = None
+    q_current = None
     
     if request.method == 'POST':
         try:
@@ -206,10 +209,18 @@ def fishing():
             # Вызов оптимизации 
             results_raw, q_opt = find_optimal_q(
                 N, M, K, p_repro, p_death,
-                steps_warmup=300,
-                steps_eval=300,
+                steps_warmup=50,
+                steps_eval=50,
                 trials=3
             )
+
+
+            if q_opt is not None:
+                q_current = q_opt
+                lake = FishLake(N, M, K, p_repro, p_death, q_current)
+                for _ in range(3):
+                    lake.step()
+                grid = lake.grid
             
             # Преобразование результатов для удобства отображения
             q_vals = sorted(results_raw.keys())
@@ -224,10 +235,12 @@ def fishing():
     
     # Для GET или после POST с ошибкой отдаём форму
     return template('fishing',
-                   title=title,
-                   year=datetime.now().year,
-                   results=results,
-                   error=error)
+                title=title,
+                year=datetime.now().year,
+                results=results,
+                error=error,
+                grid=grid,
+                q=q_current)
 
 @route('/about')
 @view('about')
