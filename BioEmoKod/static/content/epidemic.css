@@ -148,6 +148,7 @@ h5 {
 .matrix-wrapper {
     flex-shrink: 0;
     overflow-x: auto;
+    padding: 20px;
 }
 
 .matrix-container {
@@ -179,8 +180,8 @@ h5 {
 
 /* содержимое ячейки */
 .cell-content {
-    font-size: 8px;
-    line-height: 1.2;
+    text-align: center;
+    vertical-align: middle;
 }
 
 /* цвета статусов */
@@ -197,6 +198,13 @@ h5 {
 .stat-r {
     color: #f1c40f;
     font-weight: bold;
+}
+
+.stat-s, .stat-i, .stat-r {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    display: inline-block;
 }
 
 /* вертикальная легенда */
@@ -265,6 +273,16 @@ h5 {
     width: 100%;
     font-size: 12px;
     padding: 5px 10px;
+}
+
+.matrix-table td {
+    width: 55px;
+    height: 55px;
+    border: 1px solid #999;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #e8f5e9;
+    padding: 0;
 }
 
 /* ===================================================
@@ -424,4 +442,121 @@ h5 {
 .reduction {
     color: #5cb85c;
     font-size: 16px;
+}
+
+/* карточки определений справа */
+.definitions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.def-card {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 12px 15px;
+    border-left: 4px solid #4E653D;
+}
+
+.def-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 6px;
+}
+
+.def-card p {
+    font-size: 13px;
+    margin: 0;
+    color: #555;
+    line-height: 1.4;
+}
+
+.analysis-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+.analysis-badge {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+    .analysis-badge strong {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+.badge-low {
+    background: #d9534f;
+    color: white;
+}
+
+.badge-medium {
+    background: #f0ad4e;
+    color: white;
+}
+
+.badge-high {
+    background: #5cb85c;
+    color: white;
+}
+
+.analysis-note {
+    font-size: 11px;
+    color: #666;
+    margin: 8px 0 0 0;
+}
+
+/* стили для примера работы приложения */
+.step-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.step-card {
+    flex: 1;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+    .step-card h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .step-card p {
+        font-size: 12px;
+        margin-bottom: 15px;
+        color: #555;
+    }
+
+.step-image {
+    margin-top: 10px;
+}
+
+.step-screenshot {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-final {
+    margin-top: 20px;
+    font-size: 14px;
 }

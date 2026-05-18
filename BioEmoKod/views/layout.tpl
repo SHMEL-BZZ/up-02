@@ -17,9 +17,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="{{ 'active' if active_page == 'home' else '' }}">
-                        <a href="/home" style="color: white !important;">Главная</a>
-                    </li>
                     <li class="{{ 'active' if active_page == 'predator_pray' else '' }}">
                         <a href="/predator_pray" style="color: white !important;">Хищник-жертва</a>
                     </li>
