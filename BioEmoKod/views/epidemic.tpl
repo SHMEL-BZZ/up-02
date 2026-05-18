@@ -461,6 +461,21 @@
                         </div>
                     </div>
                 </div>
+                <!-- Кнопки экспорта -->
+                <div class="export-buttons">
+                    <form action="/epidemic/export/csv" method="post" style="display: inline;">
+                        <input type="hidden" name="data">
+                        <button type="submit" class="btn btn-export-csv">
+                            Экспорт данных в CSV
+                        </button>
+                    </form>
+                    <form action="/epidemic/export/graph" method="post" style="display: inline;">
+                        <input type="hidden" name="graph">
+                        <button type="submit" class="btn btn-export-png">
+                            Экспорт графика
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

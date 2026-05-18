@@ -559,3 +559,47 @@ h5 {
     padding: 5px 10px;
 }
 
+/* кнопки экспорта */
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    clear: both;
+}
+
+.btn-export-csv {
+    background-color: #5bc0de;
+    border-color: #46b8da;
+    color: white;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+    .btn-export-csv:hover {
+        background-color: #31b0d5;
+        transform: translateY(-2px);
+    }
+
+.btn-export-png {
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    color: white;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+    .btn-export-png:hover {
+        background-color: #449d44;
+        transform: translateY(-2px);
+    }
