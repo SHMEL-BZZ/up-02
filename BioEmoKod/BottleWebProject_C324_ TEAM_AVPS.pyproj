@@ -30,6 +30,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="controller\fishing_controller.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="controller\pp_controller.py">
       <SubType>Code</SubType>
     </Compile>

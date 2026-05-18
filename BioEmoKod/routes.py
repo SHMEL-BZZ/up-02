@@ -11,7 +11,7 @@ import random
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
-
+from controller.fishing_controller import find_optimal_q
 @route('/')
 @route('/home')
 @view('index')
@@ -195,24 +195,39 @@ def fishing():
     if request.method == 'POST':
         try:
             # Получаем параметры из формы
-            N = int(request.forms.get('N', 20))
-            M = int(request.forms.get('M', 20))
+            N = int(request.forms.get('N', 15))
+            M = int(request.forms.get('M', 15))
             K = int(request.forms.get('K', 50))
-            p_repro = int(request.forms.get('p_repro', 0.3))
-            p_death = int(request.forms.get('p_death', 0.05))
+            p_repro = float(request.forms.get('p_repro', 0.25))
+            p_death = float(request.forms.get('p_death', 0.1))
             
+            
+            
+            # Вызов оптимизации 
+            results_raw, q_opt = find_optimal_q(
+                N, M, K, p_repro, p_death,
+                steps_warmup=300,
+                steps_eval=300,
+                trials=3
+            )
+            
+            # Преобразование результатов для удобства отображения
+            q_vals = sorted(results_raw.keys())
+            catches = [results_raw[q][0] for q in q_vals]
+            pops = [results_raw[q][1] for q in q_vals]
+           
             
         except ValueError as e:
             error = str(e)
         except Exception as e:
             error = f"Ошибка расчёта: {str(e)}"
     
-    # Для GET запроса или после обработки POST
+    # Для GET или после POST с ошибкой отдаём форму
     return template('fishing',
-                title=title,
-                year=datetime.now().year,
-                results=results,
-                error=error)
+                   title=title,
+                   year=datetime.now().year,
+                   results=results,
+                   error=error)
 
 @route('/about')
 @view('about')
