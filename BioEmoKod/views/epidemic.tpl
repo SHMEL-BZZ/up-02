@@ -190,34 +190,34 @@
                 <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
             </div>
             <div class="panel-body">
-                <form action="/epidemic" method="post" id="calculationForm" novalidate>
+                <form action="/epidemic" method="post" id="calculationForm">
                     <div class="row">
                         <!-- колонка 1: Пространство и время -->
                         <div class="col-md-4">
                             <h5>Пространство и время</h5>
                             
-                            <div class="form-group" id="group-grid_size">
-                                <label class="col-sm-12 control-label">Размер сетки n×n:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="1" name="grid_size" id="grid_size" class="form-control" value="8" required>
-                                    <span class="help-block">Диапазон: 2–10</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Размер сетки n×n (2–10):</label>
+                                <input type="number" step="1" name="grid_size" class="form-control" value="{{form_values.get('grid_size', '8')}}">
+                                % if field_errors.get('grid_size'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['grid_size']}}</div>
+                                % end
                             </div>
                             
-                            <div class="form-group" id="group-total_rats">
-                                <label class="col-sm-12 control-label">Общее число крыс:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="1" name="total_rats" id="total_rats" class="form-control" value="64" required>
-                                    <span class="help-block">Максимум: n² × 4</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Общее число крыс (1–n²×4):</label>
+                                <input type="number" step="1" name="total_rats" class="form-control" value="{{form_values.get('total_rats', '64')}}">
+                                % if field_errors.get('total_rats'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['total_rats']}}</div>
+                                % end
                             </div>
                             
-                            <div class="form-group" id="group-weeks">
-                                <label class="col-sm-12 control-label">Длительность (недели):</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="1" name="weeks" id="weeks" class="form-control" value="52" required>
-                                    <span class="help-block">Диапазон: 8–260</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Длительность, недели (8–260):</label>
+                                <input type="number" step="1" name="weeks" class="form-control" value="{{form_values.get('weeks', '52')}}">
+                                % if field_errors.get('weeks'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['weeks']}}</div>
+                                % end
                             </div>
                         </div>
 
@@ -225,20 +225,20 @@
                         <div class="col-md-4">
                             <h5>Заражение и перемещение</h5>
                             
-                            <div class="form-group" id="group-p_infect">
-                                <label class="col-sm-12 control-label">Вероятность заражения:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="0.05" name="p_infect" id="p_infect" class="form-control" value="0.6" required>
-                                    <span class="help-block">Диапазон: 0.1–0.9</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Вероятность заражения (0.1–0.9):</label>
+                                <input type="number" step="0.05" name="p_infect" class="form-control" value="{{form_values.get('p_infect', '0.6')}}">
+                                % if field_errors.get('p_infect'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_infect']}}</div>
+                                % end
                             </div>
                             
-                            <div class="form-group" id="group-p_move">
-                                <label class="col-sm-12 control-label">Вероятность перемещения:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="0.05" name="p_move" id="p_move" class="form-control" value="0.5" required>
-                                    <span class="help-block">Диапазон: 0.1–0.9</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Вероятность перемещения (0.1–0.9):</label>
+                                <input type="number" step="0.05" name="p_move" class="form-control" value="{{form_values.get('p_move', '0.5')}}">
+                                % if field_errors.get('p_move'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_move']}}</div>
+                                % end
                             </div>
                         </div>
 
@@ -246,40 +246,50 @@
                         <div class="col-md-4">
                             <h5>Вакцинация</h5>
                             
-                            <div class="form-group" id="group-vacc_day">
-                                <label class="col-sm-12 control-label">День начала вакцинации:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="1" name="vacc_day" id="vacc_day" class="form-control" value="56" required>
-                                    <span class="help-block">Минимум: 56 (8 недель)</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">День начала вакцинации (≥56):</label>
+                                <input type="number" step="1" name="vacc_day" class="form-control" value="{{form_values.get('vacc_day', '56')}}">
+                                % if field_errors.get('vacc_day'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_day']}}</div>
+                                % end
                             </div>
                             
-                            <div class="form-group" id="group-vacc_percent">
-                                <label class="col-sm-12 control-label">Процент вакцинируемых крыс:</label>
-                                <div class="col-sm-12" style="position: relative;">
-                                    <input type="number" step="5" name="vacc_percent" id="vacc_percent" class="form-control" value="50" required>
-                                    <span class="help-block">Диапазон: 1–100%</span>
-                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Процент вакцинируемых крыс (1–100):</label>
+                                <input type="number" step="5" name="vacc_percent" class="form-control" value="{{form_values.get('vacc_percent', '50')}}">
+                                % if field_errors.get('vacc_percent'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_percent']}}</div>
+                                % end
                             </div>
                         </div>
                     </div>
 
                     <!-- кнопка запуска -->
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <button type="submit" name="reset" value="false" class="btn btn-run" id="submitBtn">
-                                ▶ Запустить расчёт
-                            </button>
-                            <button type="submit" name="reset" value="true" class="btn btn-run">
-                                ⟳ Сброс данных
-                            </button>
-                        </div>
+                    <div class="form-group text-center">
+                        <button type="submit" name="reset" value="false" class="btn btn-success btn-lg">
+                            ▶ Запустить расчёт
+                        </button>
+                        <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">
+                            ⟳ Сброс
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Отображение ошибок сервера -->
+% if defined('error') and error:
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger">
+            <strong>⚠️ Ошибка:</strong> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
+    </div>
+</div>
+% end
 
 <!-- блок: визуализация матрицы -->
 <div class="row">
@@ -367,9 +377,10 @@
 </div>
 
 <!-- блок: результаты симуляции -->
+% if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-info">
+        <div class="panel panel-success">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">📈 Результаты симуляции</h3>
             </div>
@@ -384,7 +395,7 @@
                                 <span style="color: #f1c40f;">🟡 R (иммунные)</span>
                             </div>
                             <div class="graph-area">
-                                % if results and results.get('graph'):
+                                % if results.get('graph'):
                                     <img src="{{results['graph']}}" alt="График динамики SIR" style="width:100%; border-radius:8px;">
                                 % else:
                                     <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
@@ -399,21 +410,13 @@
                     <div class="results-container">
                         <div class="result-card">
                             <div class="result-title">🧪 Эпидемический порог</div>
-                            % if results and results.get('threshold') is not None:
-                                <div class="result-value" id="epidemic-threshold">{{results['threshold']}}</div>
-                            % else:
-                                <div class="result-value" id="epidemic-threshold">—</div>
-                            % end
+                            <div class="result-value">{{results.get('threshold', '—')}}</div>
                             <div class="result-unit">заражённых в неделю</div>
                         </div>
                         
                         <div class="result-card">
                             <div class="result-title">💉 Эффективность вакцинации</div>
-                            % if results and results.get('efficacy') is not None:
-                                <div class="result-value" id="vaccine-efficacy">{{results['efficacy']}}%</div>
-                            % else:
-                                <div class="result-value" id="vaccine-efficacy">—</div>
-                            % end
+                            <div class="result-value">{{results.get('efficacy', '—')}}%</div>
                             <div class="result-description">
                                 <span class="efficiency-badge efficiency-low">Низкая &lt;50%</span>
                                 <span class="efficiency-badge efficiency-medium">Средняя 50-80%</span>
@@ -426,228 +429,23 @@
                             <div class="result-compare">
                                 <div class="compare-item">
                                     <span class="compare-label">Без вакцинации:</span>
-                                    % if results and results.get('peak_without') is not None:
-                                        <span class="compare-value" id="peak-without">{{results['peak_without']}} крыс</span>
-                                        <span class="compare-unit">(неделя {{results['week_without']}})</span>
-                                    % else:
-                                        <span class="compare-value" id="peak-without">—</span>
-                                    % end
+                                    <span class="compare-value">{{results.get('peak_without', '—')}} крыс</span>
+                                    <span class="compare-unit">(неделя {{results.get('week_without', '—')}})</span>
                                 </div>
                                 <div class="compare-item">
                                     <span class="compare-label">С вакцинацией:</span>
-                                    % if results and results.get('peak_with') is not None:
-                                        <span class="compare-value" id="peak-with">{{results['peak_with']}} крыс</span>
-                                        <span class="compare-unit">(неделя {{results['week_with']}})</span>
-                                    % else:
-                                        <span class="compare-value" id="peak-with">—</span>
-                                    % end
+                                    <span class="compare-value">{{results.get('peak_with', '—')}} крыс</span>
+                                    <span class="compare-unit">(неделя {{results.get('week_with', '—')}})</span>
                                 </div>
                                 <div class="compare-item">
                                     <span class="compare-label">Снижение пика:</span>
-                                    % if results and results.get('reduction') is not None:
-                                        <span class="compare-value reduction">{{results['reduction']}}%</span>
-                                    % else:
-                                        <span class="compare-value reduction">—</span>
-                                    % end
+                                    <span class="compare-value reduction">{{results.get('reduction', '—')}}%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- JavaScript для валидации -->
-<script>
-// Правила валидации для эпидемии
-const validationRules = {
-    grid_size: { min: 2, max: 10, message: 'Размер сетки должен быть в диапазоне 2–10' },
-    total_rats: { min: 1, max: 400, message: 'Число крыс должно быть в диапазоне 1–400' },
-    weeks: { min: 8, max: 260, message: 'Длительность должна быть в диапазоне 8–260 недель' },
-    p_infect: { min: 0.1, max: 0.9, message: 'Вероятность заражения должна быть в диапазоне 0.1–0.9' },
-    p_move: { min: 0.1, max: 0.9, message: 'Вероятность перемещения должна быть в диапазоне 0.1–0.9' },
-    vacc_day: { min: 56, max: 1820, message: 'День вакцинации должен быть не меньше 56 (8 недель)' },
-    vacc_percent: { min: 1, max: 100, message: 'Процент вакцинации должен быть в диапазоне 1–100%' }
-};
-
-// Функция проверки одного поля
-function validateField(fieldId) {
-    const field = document.getElementById(fieldId);
-    if (!field) return true;
-    
-    const value = parseFloat(field.value);
-    const rule = validationRules[fieldId];
-    const formGroup = document.getElementById(`group-${fieldId}`);
-    const inputWrapper = field.parentElement;
-    
-    // Удаляем старые иконки
-    const oldIcon = inputWrapper.querySelector('.error-icon');
-    const oldTooltip = inputWrapper.querySelector('.error-tooltip');
-    if (oldIcon) oldIcon.remove();
-    if (oldTooltip) oldTooltip.remove();
-    
-    // Проверка
-    if (isNaN(value) || value < rule.min || value > rule.max) {
-        formGroup.classList.add('has-error');
-        formGroup.classList.remove('has-success');
-        
-        // Иконка
-        const errorIcon = document.createElement('div');
-        errorIcon.className = 'error-icon';
-        errorIcon.innerHTML = '<span>⚠️</span>';
-        
-        // Подсказка
-        const tooltip = document.createElement('div');
-        tooltip.className = 'error-tooltip';
-        tooltip.innerHTML = `⚠️ ${rule.message}`;
-        
-        inputWrapper.appendChild(errorIcon);
-        inputWrapper.appendChild(tooltip);
-        return false;
-    } else {
-        formGroup.classList.remove('has-error');
-        formGroup.classList.add('has-success');
-        return true;
-    }
-}
-
-// Дополнительная проверка зависимостей
-function validateDependencies() {
-    let isValid = true;
-    
-    // Проверка: число крыс не больше максимума
-    const gridSize = parseFloat(document.getElementById('grid_size')?.value || 8);
-    const totalRats = parseFloat(document.getElementById('total_rats')?.value || 64);
-    const maxRats = gridSize * gridSize * 4;
-    
-    if (totalRats > maxRats) {
-        const formGroup = document.getElementById('group-total_rats');
-        const inputWrapper = document.getElementById('total_rats')?.parentElement;
-        if (inputWrapper) {
-            const oldIcon = inputWrapper.querySelector('.error-icon');
-            const oldTooltip = inputWrapper.querySelector('.error-tooltip');
-            if (oldIcon) oldIcon.remove();
-            if (oldTooltip) oldTooltip.remove();
-            
-            formGroup.classList.add('has-error');
-            formGroup.classList.remove('has-success');
-            
-            const errorIcon = document.createElement('div');
-            errorIcon.className = 'error-icon';
-            errorIcon.innerHTML = '<span>⚠️</span>';
-            
-            const tooltip = document.createElement('div');
-            tooltip.className = 'error-tooltip';
-            tooltip.innerHTML = `⚠️ Число крыс не может превышать ${maxRats} (n² × 4)`;
-            
-            inputWrapper.appendChild(errorIcon);
-            inputWrapper.appendChild(tooltip);
-            isValid = false;
-        }
-    }
-    
-    // Проверка: день вакцинации не больше общей длительности
-    const weeks = parseFloat(document.getElementById('weeks')?.value || 52);
-    const vaccDay = parseFloat(document.getElementById('vacc_day')?.value || 56);
-    const maxDay = weeks * 7;
-    
-    if (vaccDay > maxDay) {
-        const formGroup = document.getElementById('group-vacc_day');
-        const inputWrapper = document.getElementById('vacc_day')?.parentElement;
-        if (inputWrapper) {
-            const oldIcon = inputWrapper.querySelector('.error-icon');
-            const oldTooltip = inputWrapper.querySelector('.error-tooltip');
-            if (oldIcon) oldIcon.remove();
-            if (oldTooltip) oldTooltip.remove();
-            
-            formGroup.classList.add('has-error');
-            formGroup.classList.remove('has-success');
-            
-            const errorIcon = document.createElement('div');
-            errorIcon.className = 'error-icon';
-            errorIcon.innerHTML = '<span>⚠️</span>';
-            
-            const tooltip = document.createElement('div');
-            tooltip.className = 'error-tooltip';
-            tooltip.innerHTML = `⚠️ День вакцинации не может превышать ${maxDay} (всего дней симуляции)`;
-            
-            inputWrapper.appendChild(errorIcon);
-            inputWrapper.appendChild(tooltip);
-            isValid = false;
-        }
-    }
-    
-    return isValid;
-}
-
-// Проверка всех полей
-function validateAllFields() {
-    let isValid = true;
-    for (const fieldId in validationRules) {
-        if (!validateField(fieldId)) isValid = false;
-    }
-    if (!validateDependencies()) isValid = false;
-    return isValid;
-}
-
-// Показать сообщение об ошибке
-function showErrorSummary() {
-    const existing = document.querySelector('.validation-summary');
-    if (existing) existing.remove();
-    
-    const summary = document.createElement('div');
-    summary.className = 'alert alert-danger validation-summary';
-    summary.innerHTML = `
-        <strong>⚠️ Ошибка валидации!</strong><br>
-        Исправьте поля с красной рамкой перед отправкой
-        <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
-    `;
-    document.body.appendChild(summary);
-    setTimeout(() => summary.remove(), 5000);
-}
-
-// Подписка на события
-document.addEventListener('DOMContentLoaded', function() {
-    for (const fieldId in validationRules) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('input', () => {
-                validateField(fieldId);
-                validateDependencies();
-            });
-            field.addEventListener('blur', () => {
-                validateField(fieldId);
-                validateDependencies();
-            });
-        }
-    }
-    
-    const form = document.getElementById('calculationForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            if (!validateAllFields()) {
-                e.preventDefault();
-                showErrorSummary();
-                const firstError = document.querySelector('.has-error');
-                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-    }
-    
-    // Первоначальная проверка
-    validateAllFields();
-});
-</script>
-
-<!-- Отображение ошибок сервера -->
-% if defined('error') and error:
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-danger">
-            <strong>⚠️ Ошибка:</strong> {{ error }}
-            <button type="button" class="close" data-dismiss="alert">×</button>
         </div>
     </div>
 </div>
