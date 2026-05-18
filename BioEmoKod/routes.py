@@ -2,16 +2,25 @@
 Routes and views for the bottle application.
 """
 
-from bottle import route, view, request, template
+from bottle import route, view, request, template, response
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
+import uuid
+import os
+import base64
+import json
+import csv
+from io import StringIO
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
+
+# Создаем глобальное хранилище для временных результатов
+temp_results = {}
 
 @route('/')
 @route('/home')
@@ -128,7 +137,53 @@ def predator_pray():
                     
                     plot_base64 = plot_dynamics(result)
                     
+                    # Генерируем уникальный ID для этой сессии результатов
+                    results_id = str(uuid.uuid4())
+                    
+                    # Сохраняем график в временную папку
+                    plot_filename = f"plot_{results_id}.png"
+                    plot_dir = os.path.join('static', 'temp_plots')
+                    plot_path = os.path.join(plot_dir, plot_filename)
+                    
+                    # Создаем директорию если её нет
+                    os.makedirs(plot_dir, exist_ok=True)
+                    
+                    # Сохраняем изображение из base64
+                    plot_base64_clean = plot_base64
+                    if 'base64,' in plot_base64:
+                        plot_base64_clean = plot_base64.split('base64,')[1]
+                    
+                    with open(plot_path, 'wb') as f:
+                        f.write(base64.b64decode(plot_base64_clean))
+                    
+                    # Сохраняем данные в глобальном хранилище
+                    temp_results[results_id] = {
+                        'x_t': result.prey.tolist() if hasattr(result.prey, 'tolist') else list(result.prey),
+                        'y_t': result.predators.tolist() if hasattr(result.predators, 'tolist') else list(result.predators),
+                        'time': result.time.tolist() if hasattr(result.time, 'tolist') else list(result.time),
+                        'params': {
+                            'alpha': alpha,
+                            'c': c,
+                            'beta': beta,
+                            'd': d,
+                            'x0': x0,
+                            'y0': y0,
+                            'T': T,
+                            'N': N,
+                            'avg_prey': result.avg_prey,
+                            'avg_predator': result.avg_predator,
+                            'min_prey': min(result.prey),
+                            'max_prey': max(result.prey),
+                            'min_predator': min(result.predators),
+                            'max_predator': max(result.predators)
+                        },
+                        'plot_path': plot_path
+                    }
+                    
+                    # Формируем результаты для отображения
                     results = {
+                        'id': results_id,
+                        'plot_id': results_id,
                         'x_star': f"{result.equilibrium_prey:.2f}",
                         'y_star': f"{result.equilibrium_predator:.2f}",
                         'period': f"{result.period:.2f}",
@@ -154,6 +209,115 @@ def predator_pray():
                    error=error,
                    form_values=form_values,
                    field_errors=field_errors)
+
+
+@route('/export_csv', method='POST')
+def export_csv():
+    """Export predator-prey data to CSV file with save dialog"""
+    results_id = request.forms.get('results_id', '')
+    
+    if results_id not in temp_results:
+        response.status = 404
+        return "Данные не найдены"
+    
+    data = temp_results[results_id]
+    
+    # Создаем CSV файл в памяти
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Записываем параметры модели
+    writer.writerow(['Параметры модели Лотки-Вольтерры'])
+    writer.writerow(['Параметр', 'Значение', 'Описание'])
+    writer.writerow(['α', data['params']['alpha'], 'Рождаемость жертв'])
+    writer.writerow(['c', data['params']['c'], 'Эффективность охоты'])
+    writer.writerow(['β', data['params']['beta'], 'Смертность хищников'])
+    writer.writerow(['d', data['params']['d'], 'Рост хищников'])
+    writer.writerow(['x₀', data['params']['x0'], 'Начальная численность жертв'])
+    writer.writerow(['y₀', data['params']['y0'], 'Начальная численность хищников'])
+    writer.writerow(['T', data['params']['T'], 'Длительность моделирования (лет)'])
+    writer.writerow(['N', data['params']['N'], 'Количество шагов'])
+    writer.writerow([])
+    
+    # Записываем статистику
+    writer.writerow(['Статистика'])
+    writer.writerow(['Показатель', 'Жертвы', 'Хищники'])
+    writer.writerow(['Среднее', f"{data['params']['avg_prey']:.2f}", f"{data['params']['avg_predator']:.2f}"])
+    writer.writerow(['Минимум', f"{data['params']['min_prey']:.2f}", f"{data['params']['min_predator']:.2f}"])
+    writer.writerow(['Максимум', f"{data['params']['max_prey']:.2f}", f"{data['params']['max_predator']:.2f}"])
+    writer.writerow([])
+    
+    # Записываем равновесные значения
+    writer.writerow(['Равновесные значения'])
+    writer.writerow(['Равновесная численность жертв (x*)', f"{data['params']['beta'] / data['params']['d']:.2f}"])
+    writer.writerow(['Равновесная численность хищников (y*)', f"{data['params']['alpha'] / data['params']['c']:.2f}"])
+    writer.writerow([])
+    
+    # Записываем временные ряды
+    writer.writerow(['Временные ряды'])
+    writer.writerow(['Время (лет)', 'Численность жертв', 'Численность хищников'])
+    
+    for i in range(len(data['time'])):
+        writer.writerow([f"{data['time'][i]:.3f}", f"{data['x_t'][i]:.3f}", f"{data['y_t'][i]:.3f}"])
+    
+    # Генерируем имя файла
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"predator_prey_data_{timestamp}.csv"
+    
+    # Отправляем файл с заголовками для открытия диалога сохранения
+    response.headers['Content-Type'] = 'text/csv; charset=utf-8'
+    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    return output.getvalue().encode('utf-8-sig')
+
+
+@route('/export_plot', method='POST')
+def export_plot():
+    """Export predator-prey plot to PNG file with save dialog"""
+    plot_id = request.forms.get('plot_id', '')
+    
+    if plot_id not in temp_results:
+        response.status = 404
+        return "График не найден"
+    
+    plot_path = temp_results[plot_id]['plot_path']
+    
+    # Проверяем существует ли файл
+    if not os.path.exists(plot_path):
+        response.status = 404
+        return "Файл графика не найден"
+    
+    # Читаем файл изображения
+    with open(plot_path, 'rb') as f:
+        image_data = f.read()
+    
+    # Генерируем имя файла
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"predator_prey_plot_{timestamp}.png"
+    
+    # Отправляем файл с заголовками для скачивания
+    response.headers['Content-Type'] = 'image/png'
+    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    return image_data
+
+
+@route('/cleanup_temp', method='POST')
+def cleanup_temp():
+    """Clean up old temporary files"""
+    temp_dir = os.path.join('static', 'temp_plots')
+    if os.path.exists(temp_dir):
+        current_time = datetime.now().timestamp()
+        deleted = 0
+        for filename in os.listdir(temp_dir):
+            filepath = os.path.join(temp_dir, filename)
+            if os.path.isfile(filepath):
+                file_time = os.path.getmtime(filepath)
+                if current_time - file_time > 3600:  # 1 час
+                    os.remove(filepath)
+                    deleted += 1
+        return f"Очищено {deleted} файлов"
+    return "Нет файлов для очистки"
 
 
 from model.epidemic import EpidemicSimulation

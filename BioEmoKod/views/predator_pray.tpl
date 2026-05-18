@@ -380,14 +380,19 @@
                 
                 <!-- Кнопки экспорта -->
                 <div class="text-center" style="display: flex; gap: 10px; justify-content: center;">
-                    <form action="/export_csv" method="post">
+                    <form action="/export_csv" method="post" target="_blank">
                         <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                        <input type="hidden" name="results_id" value="{{results.get('id', '')}}">
+                        <button type="submit" class="btn btn-primary">
+                            📊 Экспорт данных в CSV
+                        </button>
                     </form>
-    
-                    <form action="/export_csv" method="post">
-                        <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">Экспорт графиков</button>
+
+                    <form action="/export_plot" method="post" target="_blank">
+                        <input type="hidden" name="plot_id" value="{{results.get('plot_id', '')}}">
+                        <button type="submit" class="btn btn-primary">
+                            🖼️ Сохранить график
+                        </button>
                     </form>
                 </div>
             </div>
