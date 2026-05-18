@@ -28,81 +28,122 @@ def predator_pray():
     title = 'Модель «Хищник-жертва»'
     results = None
     error = None
+    validation_errors = {}
     
     # Значения по умолчанию
     default_form_values = {
-        'x0': 50,
-        'y0': 20,
-        'alpha': 0.8,
-        'c': 0.04,
-        'beta': 0.6,
-        'd': 0.02,
-        'T': 50,
-        'N': 1000
+        'x0': 50, 'y0': 20, 'alpha': 0.8, 'c': 0.04,
+        'beta': 0.6, 'd': 0.02, 'T': 50, 'N': 1000
     }
     
     form_values = default_form_values.copy()
     
     if request.method == 'POST':
-        # Проверяем, является ли это сбросом
+        # Сброс формы
         if request.forms.get('reset') == 'true':
             form_values = default_form_values.copy()
+            validation_errors = {}  # Очищаем ошибки при сбросе
         else:
-            try:
-                # Получаем параметры из формы
-                form_values = {
-                    'x0': float(request.forms.get('x0', 50)),
-                    'y0': float(request.forms.get('y0', 20)),
-                    'alpha': float(request.forms.get('alpha', 0.8)),
-                    'c': float(request.forms.get('c', 0.04)),
-                    'beta': float(request.forms.get('beta', 0.6)),
-                    'd': float(request.forms.get('d', 0.02)),
-                    'T': float(request.forms.get('T', 50)),
-                    'N': int(request.forms.get('N', 1000))
-                }
+            # Пытаемся получить значения из формы
+            raw_values = {}
+            for field in ['x0', 'y0', 'alpha', 'c', 'beta', 'd', 'T', 'N']:
+                raw_values[field] = request.forms.get(field, str(default_form_values[field]))
+            
+            # Функция для безопасного преобразования в float
+            def safe_float(value, field_name):
+                try:
+                    # Заменяем запятую на точку
+                    value = value.replace(',', '.')
+                    return float(value)
+                except ValueError:
+                    validation_errors[field_name] = f'Некорректное число: {value}'
+                    return None
+            
+            # Функция для безопасного преобразования в int
+            def safe_int(value, field_name):
+                try:
+                    # Заменяем запятую на точку и преобразуем в float, затем в int
+                    value = value.replace(',', '.')
+                    return int(float(value))
+                except ValueError:
+                    validation_errors[field_name] = f'Некорректное целое число: {value}'
+                    return None
+            
+            # Преобразуем все значения
+            x0 = safe_float(raw_values['x0'], 'x0')
+            y0 = safe_float(raw_values['y0'], 'y0')
+            alpha = safe_float(raw_values['alpha'], 'alpha')
+            c = safe_float(raw_values['c'], 'c')
+            beta = safe_float(raw_values['beta'], 'beta')
+            d = safe_float(raw_values['d'], 'd')
+            T = safe_float(raw_values['T'], 'T')
+            N = safe_int(raw_values['N'], 'N')
+            
+
+            # Сохраняем исходные строковые значения для отображения в форме
+            form_values = raw_values.copy()
+            
+            # Если есть ошибки преобразования, не выполняем валидацию
+            if not validation_errors:
+                # ========== СЕРВЕРНАЯ ВАЛИДАЦИЯ ==========
+                if x0 is not None and not (10 <= x0 <= 100):
+                    validation_errors['x0'] = 'Число жертв должно быть в диапазоне 10–100'
+                if y0 is not None and not (1 <= y0 <= 50):
+                    validation_errors['y0'] = 'Число хищников должно быть в диапазоне 1–50'
+                if T is not None and not (5 <= T <= 50):
+                    validation_errors['T'] = 'Длительность должна быть в диапазоне 5–50 лет'
+                if N is not None and not (200 <= N <= 10000):
+                    validation_errors['N'] = 'Число шагов должно быть в диапазоне 200–10000'
+                if alpha is not None and not (0.4 <= alpha <= 1.5):
+                    validation_errors['alpha'] = 'Рождаемость жертв должна быть в диапазоне 0.4–1.5'
+                if c is not None and not (0.01 <= c <= 0.06):
+                    validation_errors['c'] = 'Эффективность охоты должна быть в диапазоне 0.01–0.06'
+                if beta is not None and not (0.4 <= beta <= 1.5):
+                    validation_errors['beta'] = 'Смертность хищников должна быть в диапазоне 0.4–1.5'
+                if d is not None and not (0.01 <= d <= 0.06):
+                    validation_errors['d'] = 'Рост хищников должен быть в диапазоне 0.01–0.06'
                 
-                # Запускаем симуляцию
-                result = simulate_lotka_volterra(
-                    x0=form_values['x0'], 
-                    y0=form_values['y0'], 
-                    alpha=form_values['alpha'], 
-                    c=form_values['c'], 
-                    beta=form_values['beta'], 
-                    d=form_values['d'], 
-                    T=form_values['T'], 
-                    N=form_values['N']
-                )
                 
-                # Генерируем график
-                plot_base64 = plot_dynamics(result)
-                
-                # Формируем результаты
-                results = {
-                    'x_star': f"{result.equilibrium_prey:.2f}",
-                    'y_star': f"{result.equilibrium_predator:.2f}",
-                    'period': f"{result.period:.2f}",
-                    'stability_type': result.stability_type,
-                    'avg_prey': f"{result.avg_prey:.2f}",
-                    'avg_predator': f"{result.avg_predator:.2f}",
-                    'min_prey': f"{min(result.prey):.2f}",
-                    'max_prey': f"{max(result.prey):.2f}",
-                    'min_predator': f"{min(result.predators):.2f}",
-                    'max_predator': f"{max(result.predators):.2f}",
-                    'plot_base64': plot_base64
-                }
-                
-            except ValueError as e:
-                error = str(e)
-            except Exception as e:
-                error = f"Ошибка расчёта: {str(e)}"
+                # Если есть ошибки валидации - показываем их без расчёта
+                if validation_errors:
+                    error = "Пожалуйста, исправьте ошибки в форме"
+                else:
+                    # Все проверки пройдены, выполняем расчёт
+                    try:
+                        result = simulate_lotka_volterra(
+                            x0=x0, y0=y0,
+                            alpha=alpha, c=c,
+                            beta=beta, d=d,
+                            T=T, N=N
+                        )
+                        
+                        plot_base64 = plot_dynamics(result)
+                        
+                        results = {
+                            'x_star': f"{result.equilibrium_prey:.2f}",
+                            'y_star': f"{result.equilibrium_predator:.2f}",
+                            'period': f"{result.period:.2f}",
+                            'stability_type': result.stability_type,
+                            'avg_prey': f"{result.avg_prey:.2f}",
+                            'avg_predator': f"{result.avg_predator:.2f}",
+                            'min_prey': f"{min(result.prey):.2f}",
+                            'max_prey': f"{max(result.prey):.2f}",
+                            'min_predator': f"{min(result.predators):.2f}",
+                            'max_predator': f"{max(result.predators):.2f}",
+                            'plot_base64': plot_base64
+                        }
+                    except Exception as e:
+                        error = f"Ошибка расчёта: {str(e)}"
+            else:
+                error = "Пожалуйста, исправьте ошибки в форме"
     
     return template('predator_pray', 
                    title=title, 
                    year=datetime.now().year,
                    results=results,
                    error=error,
-                   form_values=form_values)
-
+                   form_values=form_values,
+                   validation_errors=validation_errors)
 
 from model.epidemic import EpidemicSimulation
 

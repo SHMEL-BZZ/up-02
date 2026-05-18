@@ -1,9 +1,7 @@
 % rebase('layout.tpl', title=title, year=year, active_page='predator_pray')
 
 <!-- специальный стиль для страницы Модель хищник-жертва -->
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/content/predator_pray.css" />
-</head>
+<link rel="stylesheet" type="text/css" href="/static/content/predator_pray.css" />
 
 <div class="page-header">
     <h2>Модель «Хищник-жертва»</h2>
@@ -199,200 +197,160 @@
                 <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
-                <form action="/predator_pray" method="post" class="form-horizontal" id="calculationForm" novalidate>
+                <form action="/predator_pray" method="post" class="form-horizontal">
                     <div class="row">
-                        <!-- ЛЕВАЯ КОЛОНКА -->
                         <div class="col-md-6">
                             <h4 class="text-center">📌 Начальные условия</h4>
+            
                             <div class="form-group" id="group-x0">
-                                <label class="col-sm-6 control-label">Число жертв x₀:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="any" name="x0" id="x0" class="form-control" value="50" required>
-                                    <span class="help-block">Диапазон: 10–100</span>
-                                </div>
+                                <label class="control-label">Число жертв x₀ (10–100):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="x0" 
+                                       id="x0" 
+                                       class="form-control" 
+                                       value="{{form_values.get('x0', 50)}}" 
+                                       min="10" 
+                                       max="100"
+                                       required>
+                                % if validation_errors and validation_errors.get('x0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['x0']}}</div>
+                                % end
                             </div>
-                            
+            
                             <div class="form-group" id="group-y0">
-                                <label class="col-sm-6 control-label">Число хищников y₀:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="any" name="y0" id="y0" class="form-control" value="20" required>
-                                    <span class="help-block">Диапазон: 1–50</span>
-                                </div>
+                                <label class="control-label">Число хищников y₀ (1–50):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="y0" 
+                                       id="y0" 
+                                       class="form-control" 
+                                       value="{{form_values.get('y0', 20)}}" 
+                                       min="1" 
+                                       max="50"
+                                       required>
+                                % if validation_errors and validation_errors.get('y0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['y0']}}</div>
+                                % end
                             </div>
 
                             <hr>
 
                             <h4 class="text-center">⏱️ Параметры симуляции</h4>
+            
                             <div class="form-group" id="group-T">
-                                <label class="col-sm-6 control-label">Длительность T (лет):</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="1" name="T" id="T" class="form-control" value="50" required>
-                                    <span class="help-block">Диапазон: 5–50</span>
-                                </div>
+                                <label class="control-label">Длительность T, лет (5–50):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="T" 
+                                       id="T" 
+                                       class="form-control" 
+                                       value="{{form_values.get('T', 50)}}" 
+                                       min="5" 
+                                       max="50"
+                                       required>
+                                % if validation_errors and validation_errors.get('T'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['T']}}</div>
+                                % end
                             </div>
-                            
+            
                             <div class="form-group" id="group-N">
-                                <label class="col-sm-6 control-label">Число шагов N:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="100" name="N" id="N" class="form-control" value="1000" required>
-                                    <span class="help-block">Диапазон: 200–10000</span>
-                                </div>
+                                <label class="control-label">Число шагов N (200–10000):</label>
+                                <input type="number" 
+                                       step="100" 
+                                       name="N" 
+                                       id="N" 
+                                       class="form-control" 
+                                       value="{{form_values.get('N', 1000)}}" 
+                                       min="200" 
+                                       max="10000"
+                                       required>
+                                % if validation_errors and validation_errors.get('N'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['N']}}</div>
+                                % end
                             </div>
                         </div>
 
-                        <!-- ПРАВАЯ КОЛОНКА -->
                         <div class="col-md-6">
                             <h4 class="text-center">⚙️ Параметры модели</h4>
+            
                             <div class="form-group" id="group-alpha">
-                                <label class="col-sm-6 control-label">Рождаемость жертв α:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="0.01" name="alpha" id="alpha" class="form-control" value="0.8" required>
-                                    <span class="help-block">Диапазон: 0.4–1.5</span>
-                                </div>
+                                <label class="control-label">Рождаемость жертв α (0.4–1.5):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="alpha" 
+                                       id="alpha" 
+                                       class="form-control" 
+                                       value="{{form_values.get('alpha', 0.8)}}" 
+                                       min="0.4" 
+                                       max="1.5"
+                                       required>
+                                % if validation_errors and validation_errors.get('alpha'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['alpha']}}</div>
+                                % end
                             </div>
-                            
+            
                             <div class="form-group" id="group-c">
-                                <label class="col-sm-6 control-label">Эффективность охоты c:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="0.01" name="c" id="c" class="form-control" value="0.04" required>
-                                    <span class="help-block">Диапазон: 0.01–0.06</span>
-                                </div>
+                                <label class="control-label">Эффективность охоты c (0.01–0.06):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="c" 
+                                       id="c" 
+                                       class="form-control" 
+                                       value="{{form_values.get('c', 0.04)}}" 
+                                       min="0.01" 
+                                       max="0.06"
+                                       required>
+                                % if validation_errors and validation_errors.get('c'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['c']}}</div>
+                                % end
                             </div>
-                            
+            
                             <div class="form-group" id="group-beta">
-                                <label class="col-sm-6 control-label">Смертность хищников β:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="0.01" name="beta" id="beta" class="form-control" value="0.6" required>
-                                    <span class="help-block">Диапазон: 0.4–1.5</span>
-                                </div>
+                                <label class="control-label">Смертность хищников β (0.4–1.5):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="beta" 
+                                       id="beta" 
+                                       class="form-control" 
+                                       value="{{form_values.get('beta', 0.6)}}" 
+                                       min="0.4" 
+                                       max="1.5"
+                                       required>
+                                % if validation_errors and validation_errors.get('beta'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['beta']}}</div>
+                                % end
                             </div>
-                            
+            
                             <div class="form-group" id="group-d">
-                                <label class="col-sm-6 control-label">Рост хищников d:</label>
-                                <div class="col-sm-6" style="position: relative;">
-                                    <input type="number" step="0.01" name="d" id="d" class="form-control" value="0.02" required>
-                                    <span class="help-block">Диапазон: 0.01–0.06</span>
-                                </div>
+                                <label class="control-label">Рост хищников d (0.01–0.06):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="d" 
+                                       id="d" 
+                                       class="form-control" 
+                                       value="{{form_values.get('d', 0.02)}}" 
+                                       min="0.01" 
+                                       max="0.06"
+                                       required>
+                                % if validation_errors and validation_errors.get('d'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{validation_errors['d']}}</div>
+                                % end
                             </div>
                         </div>
                     </div>
 
                     <hr>
 
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-4">
-                            <button type="submit" class="btn btn-success btn-block" id="submitBtn">▶ Запустить расчёт</button>
-                        </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">▶ Запустить расчёт</button>
+                        <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">⟳ Сброс</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<!-- JavaScript для валидации -->
-<script>
-// Правила валидации
-const validationRules = {
-    x0: { min: 10, max: 100, message: 'Число жертв должно быть в диапазоне 10–100' },
-    y0: { min: 1, max: 50, message: 'Число хищников должно быть в диапазоне 1–50' },
-    T: { min: 5, max: 50, message: 'Длительность должна быть в диапазоне 5–50 лет' },
-    N: { min: 200, max: 10000, message: 'Число шагов должно быть в диапазоне 200–10000' },
-    alpha: { min: 0.4, max: 1.5, message: 'Рождаемость жертв должна быть в диапазоне 0.4–1.5' },
-    c: { min: 0.01, max: 0.06, message: 'Эффективность охоты должна быть в диапазоне 0.01–0.06' },
-    beta: { min: 0.4, max: 1.5, message: 'Смертность хищников должна быть в диапазоне 0.4–1.5' },
-    d: { min: 0.01, max: 0.06, message: 'Рост хищников должен быть в диапазоне 0.01–0.06' }
-};
-
-// Функция проверки одного поля
-function validateField(fieldId) {
-    const field = document.getElementById(fieldId);
-    const value = parseFloat(field.value);
-    const rule = validationRules[fieldId];
-    const formGroup = document.getElementById(`group-${fieldId}`);
-    const inputWrapper = field.parentElement;
-    
-    // Удаляем старые иконки
-    const oldIcon = inputWrapper.querySelector('.error-icon');
-    const oldTooltip = inputWrapper.querySelector('.error-tooltip');
-    if (oldIcon) oldIcon.remove();
-    if (oldTooltip) oldTooltip.remove();
-    
-    // Проверка
-    if (isNaN(value) || value < rule.min || value > rule.max) {
-        formGroup.classList.add('has-error');
-        formGroup.classList.remove('has-success');
-        
-        // Иконка
-        const errorIcon = document.createElement('div');
-        errorIcon.className = 'error-icon';
-        errorIcon.innerHTML = '<span>⚠️</span>';
-        
-        // Подсказка
-        const tooltip = document.createElement('div');
-        tooltip.className = 'error-tooltip';
-        tooltip.innerHTML = `⚠️ ${rule.message}`;
-        
-        inputWrapper.appendChild(errorIcon);
-        inputWrapper.appendChild(tooltip);
-        return false;
-    } else {
-        formGroup.classList.remove('has-error');
-        formGroup.classList.add('has-success');
-        return true;
-    }
-}
-
-// Проверка всех полей
-function validateAllFields() {
-    let isValid = true;
-    for (const fieldId in validationRules) {
-        if (!validateField(fieldId)) isValid = false;
-    }
-    return isValid;
-}
-
-// Показать сообщение об ошибке
-function showErrorSummary() {
-    const existing = document.querySelector('.validation-summary');
-    if (existing) existing.remove();
-    
-    const summary = document.createElement('div');
-    summary.className = 'alert alert-danger validation-summary';
-    summary.innerHTML = `
-        <strong>⚠️ Ошибка валидации!</strong><br>
-        Исправьте поля с красной рамкой
-        <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
-    `;
-    document.body.appendChild(summary);
-    setTimeout(() => summary.remove(), 5000);
-}
-
-// Подписка на события
-document.addEventListener('DOMContentLoaded', function() {
-    for (const fieldId in validationRules) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('input', () => validateField(fieldId));
-            field.addEventListener('blur', () => validateField(fieldId));
-        }
-    }
-    
-    const form = document.getElementById('calculationForm');
-    form.addEventListener('submit', function(e) {
-        if (!validateAllFields()) {
-            e.preventDefault();
-            showErrorSummary();
-            const firstError = document.querySelector('.has-error');
-            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
-    
-    // Первоначальная проверка
-    validateAllFields();
-});
-</script>
-
 <!-- Отображение ошибок сервера -->
 % if defined('error') and error:
 <div class="row">

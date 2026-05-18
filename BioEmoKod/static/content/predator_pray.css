@@ -550,3 +550,126 @@ h5 {
 html {
     scroll-behavior: smooth;
 }
+/* ===================================================
+   ЦЕНТРИРОВАНИЕ ФОРМЫ В РАСЧЁТНОЙ ПАНЕЛИ
+   =================================================== */
+
+/* Центрирование всей формы */
+#calculation-panel .panel-body form {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Увеличение расстояния между колонками */
+#calculation-panel .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+#calculation-panel .col-md-6 {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+/* Центрирование заголовков секций */
+#calculation-panel h4.text-center {
+    text-align: center !important;
+    margin-bottom: 25px;
+}
+
+/* Выравнивание полей ввода */
+#calculation-panel .form-group {
+    margin-bottom: 25px;
+}
+
+/* Сделать все поля ввода одинаковой ширины */
+#calculation-panel .form-control {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Центрирование кнопки */
+#calculation-panel .text-center {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#calculation-panel .btn-success {
+    display: inline-block;
+    width: auto;
+    min-width: 200px;
+}
+
+/* Выравнивание меток (label) */
+#calculation-panel .control-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Место для ошибок валидации */
+#calculation-panel .form-group {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+/* Стили для сообщений об ошибках */
+#calculation-panel .help-block {
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 0;
+    color: #e74c3c;
+    min-height: 20px;
+}
+
+/* Иконка ошибки */
+#calculation-panel .error-icon {
+    position: absolute;
+    right: 10px;
+    top: 38px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+    #calculation-panel .error-icon span {
+        font-size: 18px;
+    }
+
+/* Всплывающая подсказка с ошибкой */
+#calculation-panel .error-tooltip {
+    position: absolute;
+    right: 35px;
+    top: 35px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+}
+
+    #calculation-panel .error-tooltip::before {
+        content: '';
+        position: absolute;
+        right: -5px;
+        top: 10px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent transparent #e74c3c;
+    }
+
+/* Успешное состояние поля */
+#calculation-panel .has-success .form-control {
+    border-color: #5cb85c;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px #5cb85c;
+}
+
+/* Ошибочное состояние поля */
+#calculation-panel .has-error .form-control {
+    border-color: #e74c3c;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px #e74c3c;
+}
