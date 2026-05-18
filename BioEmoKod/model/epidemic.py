@@ -201,7 +201,7 @@ class EpidemicSimulation:
         }
         
         if peak_without > 0:
-            self.efficacy = round((peak_without - peak_with) / peak_without * 100, 1)
+            self.efficacy = max(0, round((peak_without - peak_with) / peak_without * 100, 1))
         else:
             self.efficacy = 0
         
