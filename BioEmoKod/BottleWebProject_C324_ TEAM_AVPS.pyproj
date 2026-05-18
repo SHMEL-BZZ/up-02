@@ -30,6 +30,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="controller\pp_controller.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="model\epidemic.py">
       <SubType>Code</SubType>
     </Compile>
@@ -41,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="model\" />
+    <Folder Include="controller\" />
     <Folder Include="static\" />
     <Folder Include="static\content\" />
     <Folder Include="static\fonts\" />
