@@ -2,37 +2,6 @@
 
 <!-- Подключение уникальных стилей для страницы эпидемии -->
 <link rel="stylesheet" type="text/css" href="/static/content/epidemic.css" />
-<link rel="stylesheet" type="text/css" href="/static/css/validation.css" />
-
-<style>
-    /* Дополнительные стили для формы эпидемии */
-    .form-group {
-        position: relative;
-        margin-bottom: 20px;
-    }
-    
-    .help-block {
-        font-size: 11px;
-        margin-top: 3px;
-        margin-bottom: 0;
-        color: #666;
-    }
-    
-    /* Стили для кнопок */
-    .btn-run {
-        background-color: #5bc0de;
-        border-color: #46b8da;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        margin-right: 10px;
-    }
-    
-    .btn-run:hover {
-        background-color: #31b0d5;
-        border-color: #269abc;
-    }
-</style>
 
 <div class="page-header">
     <h2>Модель «Распространение эпидемии»</h2>
@@ -312,7 +281,7 @@
     </div>
 </div>
 
-<!-- блок: визуализация матрицы (оставляем без изменений) -->
+<!-- блок: визуализация матрицы -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-info">
@@ -341,7 +310,7 @@
                                                                 % end
                                                             % end
                                                         </div>
-                                                    </tr>
+                                                    </td>
                                                 % end
                                             </tr>
                                         % end
@@ -359,7 +328,7 @@
                                                                 <span class="stat-r">●</span>
                                                             % end
                                                         </div>
-                                                    </tr>
+                                                    </td>
                                                 % end
                                             </tr>
                                         % end
