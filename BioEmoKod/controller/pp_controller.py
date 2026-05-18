@@ -249,35 +249,3 @@ def simulate_lotka_volterra(
     )
 
 
-# Пример использования и тестирования
-if __name__ == '__main__':
-    print("Тестирование расчетной логики...")
-    
-    # Тест 1: Расчет равновесия
-    prey_eq, pred_eq = calculate_equilibrium(alpha=0.8, c=0.03, beta=0.6, d=0.02)
-    print(f"Равновесие: жертвы={prey_eq:.2f}, хищники={pred_eq:.2f}")
-    assert abs(prey_eq - 30.0) < 0.01, "Ошибка в расчете равновесия жертв"
-    assert abs(pred_eq - 26.67) < 0.01, "Ошибка в расчете равновесия хищников"
-    
-    # Тест 2: Расчет периода
-    period = calculate_period(alpha=0.8, beta=0.6)
-    print(f"Период: {period:.2f}")
-    assert abs(period - 2 * np.pi / np.sqrt(0.48)) < 0.01, "Ошибка в расчете периода"
-    
-    # Тест 3: Шаг Эйлера
-    prey_next, pred_next = euler_step(
-        prey=50, predators=10, dt=0.05,
-        alpha=0.8, c=0.03, d=0.02, beta=0.6
-    )
-    print(f"Шаг Эйлера: жертвы={prey_next:.2f}, хищники={pred_next:.2f}")
-    
-    # Тест 4: Полная симуляция с базовыми параметрами
-    result = simulate_lotka_volterra(T=10, N=200)
-    print(f"Симуляция завершена: {len(result.time)} точек")
-    print(f"Средние значения: жертвы={result.avg_prey:.2f}, хищники={result.avg_predator:.2f}")
-    
-    # Тест 5: Проверка реалистичности
-    is_realistic = check_realistic(np.array(result.prey), np.array(result.predators))
-    print(f"Реалистичность результата: {is_realistic}")
-    
-    print("\nВсе тесты пройдены!")
