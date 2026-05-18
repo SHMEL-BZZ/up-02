@@ -314,6 +314,7 @@
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-lg">▶ Запустить расчёт</button>
+                        <button type="submit" name="random" value="true" class="btn btn-info btn-lg">🎲 Генерация</button>
                         <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">⟳ Сброс</button>
                     </div>
                 </form>

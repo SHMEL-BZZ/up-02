@@ -55,6 +55,19 @@ def predator_pray():
         if request.forms.get('reset') == 'true':
             form_values = default_form_values.copy()
             field_errors = {}
+        elif request.forms.get('random') == 'true':
+            form_values = generate_random_values()
+            field_errors = {}
+            # Автоматически запускаем расчёт со сгенерированными значениями
+            # Преобразуем строки в числа для расчёта
+            x0 = float(form_values['x0'])
+            y0 = float(form_values['y0'])
+            alpha = float(form_values['alpha'])
+            c = float(form_values['c'])
+            beta = float(form_values['beta'])
+            d = float(form_values['d'])
+            T = float(form_values['T'])
+            N = int(form_values['N'])
         else:
             # Получаем значения из формы
             form_values = {
@@ -132,6 +145,7 @@ def predator_pray():
             # Если есть ошибки - показываем их без расчёта
             if field_errors:
                 error = "Пожалуйста, исправьте ошибки в форме"
+
             else:
                 # Все проверки пройдены, выполняем расчёт
                 try:
@@ -176,6 +190,19 @@ def predator_pray():
                    error=error,
                    form_values=form_values,
                    field_errors=field_errors)
+
+def generate_random_values():
+    """Генерирует случайные значения в допустимых диапазонах"""
+    return {
+        'x0': str(random.randint(10, 100)),           # жертвы 10-100
+        'y0': str(random.randint(1, 50)),             # хищники 1-50
+        'alpha': f"{random.uniform(0.4, 1.5):.2f}",   # рождаемость жертв 0.4-1.5
+        'c': f"{random.uniform(0.01, 0.06):.3f}",     # эффективность охоты 0.01-0.06
+        'beta': f"{random.uniform(0.4, 1.5):.2f}",    # смертность хищников 0.4-1.5
+        'd': f"{random.uniform(0.01, 0.06):.3f}",     # рост хищников 0.01-0.06
+        'T': str(random.randint(5, 50)),              # длительность 5-50
+        'N': str(random.randint(200, 10000))          # шаги 200-10000
+    }
 
 @route('/export_csv', method='POST')
 def export_csv():
