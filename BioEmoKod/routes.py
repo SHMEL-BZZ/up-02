@@ -7,6 +7,7 @@ from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
+import random
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
@@ -185,15 +186,33 @@ def competition():
     )
 
 
-@route('/fishing')
-@view('fishing')
+@route('/fishing', method=['GET', 'POST'])
 def fishing():
-    """Renders the fishing page."""
-    return dict(
-        title='Fishing',
-        year=datetime.now().year
-    )
-
+    title = 'Динамика рыбного промысла'
+    results = None
+    error = None
+    
+    if request.method == 'POST':
+        try:
+            # Получаем параметры из формы
+            N = int(request.forms.get('N', 20))
+            M = int(request.forms.get('M', 20))
+            K = int(request.forms.get('K', 50))
+            p_repro = int(request.forms.get('p_repro', 0.3))
+            p_death = int(request.forms.get('p_death', 0.05))
+            
+            
+        except ValueError as e:
+            error = str(e)
+        except Exception as e:
+            error = f"Ошибка расчёта: {str(e)}"
+    
+    # Для GET запроса или после обработки POST
+    return template('fishing',
+                title=title,
+                year=datetime.now().year,
+                results=results,
+                error=error)
 
 @route('/about')
 @view('about')

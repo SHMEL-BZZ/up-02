@@ -1,11 +1,330 @@
-<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+/*  ШРИФТ  */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 
-</body>
-</html>
+/* Основные стили для body */
+body {
+    font-size: 16px;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+}
+
+/* Универсальные правила для всех элементов и псевдоэлементов */
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Стили для используемых заголовков (h2, h3, h4) */
+h2, h3, h4 {
+    font-family: 'Roboto', sans-serif;
+}
+
+/*  ОБЩИЕ ПАНЕЛИ (АККОРДЕОН)  */
+/* Панели внутри аккордеона */
+.panel-group .panel {
+    overflow: visible;
+}
+
+/* Стиль для тела панели после заголовка при раскрытии */
+.panel-group .panel-heading + .panel-collapse > .panel-body {
+    border-top: none;
+    padding-top: 5px;
+    margin-top: 0;
+}
+
+/* Основные стили для тела панели и параграфов внутри */
+.panel-body,
+.panel-group .panel-body,
+.panel-body p {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+}
+
+    /* Стили для блока .well внутри .panel-body */
+    .panel-body .well,
+    .panel-body .well p,
+    .panel-body .well strong {
+        font-size: 16px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Стили для вспомогательных текстов, div и strong внутри .panel-body */
+    .panel-body span.help-block,
+    .panel-body div,
+    .panel-body strong {
+        font-size: 16px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+/* Заголовки панелей аккордеона */
+.panel-group .panel-title {
+    font-size: 17px;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+    /* Ссылки внутри заголовков панелей */
+    .panel-group .panel-title a {
+        font-size: 17px;
+        font-weight: bold;
+        text-decoration: none;
+        color: #31708f;
+        font-family: 'Roboto', sans-serif;
+    }
+
+        .panel-group .panel-title a:hover {
+            color: #5bc0de;
+        }
+
+/* Заголовок панели */
+.panel-group .panel-heading {
+    padding: 18px 25px;
+    background-color: #f5f5f5;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Тело панели */
+.panel-group .panel-body {
+    padding: 25px 30px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Цвета заголовков для основных панелей */
+.panel-primary .panel-heading,
+.panel-info .panel-heading,
+.panel-success .panel-heading {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 12px 22px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Заголовки внутри цветных панелей (с центрированием) */
+.panel-primary .panel-title,
+.panel-info .panel-title,
+.panel-success .panel-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #31708f;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+/* Тела цветных панелей */
+.panel-primary .panel-body,
+.panel-info .panel-body,
+.panel-success .panel-body {
+    padding: 25px 30px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Стили для основной панели */
+.panel-primary {
+    border-color: #bce8f1;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+/*  ФОРМЫ И ЭЛЕМЕНТЫ УПРАВЛЕНИЯ  */
+/* Подписи полей ввода */
+.control-label {
+    font-size: 16px;
+    text-align: left;
+    color: #4E653D;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Поля ввода */
+.form-control {
+    font-size: 16px;
+    padding: 10px 15px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Вспомогательный текст под полями */
+.help-block {
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Разделительная линия внутри панели */
+.panel-primary hr {
+    margin: 18px 0;
+    border-color: #ecf0f1;
+}
+
+/*  КНОПКИ  */
+/* Общие стили для кнопок */
+.btn,
+.btn-fishing,
+.btn-save-accent {
+    background-color: #468847;
+    border-color: #4E653D;
+    color: white;
+    font-size: 16px;
+    padding: 14px 32px;
+    border-radius: 8px;
+    margin: 12px 10px;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.3s ease;
+}
+
+    /* Эффект при наведении */
+    .btn-fishing:hover,
+    .btn-save-accent:hover {
+        background-color: #3d6e3a;
+        border-color: #3d6e3a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Эффект при нажатии */
+    .btn-fishing:active,
+    .btn-save-accent:active {
+        transform: translateY(0);
+    }
+
+/* Кнопка на всю ширину */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/*  ТАБЛИЦА СЕТКИ (РЫБЫ)  */
+/* Контейнер для таблицы с горизонтальной прокруткой */
+.grid-container {
+    overflow-x: auto;
+    margin: 20px 0;
+    text-align: center;
+}
+
+/* Таблица сетки */
+.grid-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+    /* Ячейки таблицы */
+    .grid-table td {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ccc;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+    }
+
+/* Ячейка с рыбой */
+.fish-cell {
+    background-color: #bce8f1;
+}
+
+/* Пустая ячейка */
+.empty-cell {
+    background-color: #f9f9f9;
+}
+
+/* Иконка рыбы */
+.fish-icon {
+    font-size: 20px;
+    color: #2c6e9e;
+    display: inline-block;
+    line-height: 1;
+}
+
+/*  ЗАГЛУШКА ГРАФИКА  */
+/* Блок-заглушка для графика */
+.chart-placeholder {
+    background-color: #f5f5f5;
+    border: 1px dashed #bbb;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    margin: 20px 0;
+}
+
+/* Заголовок для графика */
+.chart-title {
+    margin: 15px 0 5px 0;
+    font-weight: 500;
+    color: #4E653D;
+}
+
+/*  WELL БЛОК РЕЗУЛЬТАТОВ  */
+/* Блок с результатами */
+.well {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px 30px;
+    margin-top: 25px;
+    font-family: 'Roboto', sans-serif;
+}
+
+    /* Жирный текст внутри центрированного блока в well */
+    .well .text-center strong {
+        color: #4E653D;
+        font-size: 18px;
+    }
+
+/*  ПРИМЕР (картинка)  */
+/* Изображение внутри панели "Пример" */
+#collapseExample .panel-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/*  ТЕОРИЯ (блок внутри аккордеона)  */
+/* Параграфы в блоке теории */
+.theory-content p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Жирный текст в теории */
+.theory-content strong {
+    color: #4E653D;
+}
+
+/*  АДАПТИВНОСТЬ  */
+@media (max-width: 768px) {
+    .grid-table td {
+        width: 20px;
+        height: 20px;
+    }
+
+    .fish-icon {
+        font-size: 14px;
+    }
+
+    .panel-group .panel-heading,
+    .panel-primary .panel-body,
+    .panel-info .panel-body,
+    .panel-success .panel-body {
+        padding: 15px 20px;
+    }
+
+    .btn,
+    .btn-fishing,
+    .btn-save-accent {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/*  УТИЛИТЫ  */
+/* Выравнивание текста по центру */
+.text-center {
+    text-align: center;
+}
