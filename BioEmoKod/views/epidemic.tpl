@@ -83,7 +83,7 @@
                         <div id="collapse3" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div class="formula-compact">
-                                    <h5>📊 Эпидемический порог</h5>
+                                    <h5>Эпидемический порог</h5>
                                     <div class="formula-box formula-box-green">
                                         <p class="formula-text">X̄ = (X₁+...+X₈)/8</p>
                                         <p class="formula-text">σ = √[Σ(Xᵢ-X̄)²/7]</p>
@@ -93,7 +93,7 @@
                                 </div>
 
                                 <div class="formula-compact">
-                                    <h5>💉 Эффективность вакцинации</h5>
+                                    <h5>Эффективность вакцинации</h5>
                                     <div class="formula-box formula-box-green">
                                         <p class="formula-text">Эфф = (W<sub>без</sub> - W<sub>с</sub>) / W<sub>без</sub> × 100%</p>
                                     </div>
@@ -197,27 +197,33 @@
                             <h5>Пространство и время</h5>
                             
                             <div class="form-group">
-                                <label class="control-label">Размер сетки n×n (2–10):</label>
-                                <input type="number" step="1" name="grid_size" class="form-control" value="{{form_values.get('grid_size', '8')}}">
-                                % if field_errors.get('grid_size'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['grid_size']}}</div>
-                                % end
+                                <label class="col-sm-12 control-label">Размер сетки n×n (2–10):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="grid_size" class="form-control" value="{{form_values.get('grid_size', '8')}}">
+                                    % if field_errors.get('grid_size'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['grid_size']}}</div>
+                                    % end
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="control-label">Общее число крыс (1–n²×4):</label>
-                                <input type="number" step="1" name="total_rats" class="form-control" value="{{form_values.get('total_rats', '64')}}">
-                                % if field_errors.get('total_rats'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['total_rats']}}</div>
+                                <label class="col-sm-12 control-label">Общее число крыс (1–n²×4):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="total_rats" class="form-control" value="{{form_values.get('total_rats', '64')}}">
+                                    % if field_errors.get('total_rats'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['total_rats']}}</div>
                                 % end
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="control-label">Длительность, недели (8–260):</label>
-                                <input type="number" step="1" name="weeks" class="form-control" value="{{form_values.get('weeks', '52')}}">
-                                % if field_errors.get('weeks'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['weeks']}}</div>
-                                % end
+                               <label class="col-sm-12 control-label">Длительность, недели (8–260):</label>
+                               <div class="col-sm-12">
+                                    <input type="number" step="1" name="weeks" class="form-control" value="{{form_values.get('weeks', '52')}}">
+                                    % if field_errors.get('weeks'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['weeks']}}</div>
+                                    % end
+                                </div>
                             </div>
                         </div>
 
@@ -226,19 +232,23 @@
                             <h5>Заражение и перемещение</h5>
                             
                             <div class="form-group">
-                                <label class="control-label">Вероятность заражения (0.1–0.9):</label>
-                                <input type="number" step="0.05" name="p_infect" class="form-control" value="{{form_values.get('p_infect', '0.6')}}">
-                                % if field_errors.get('p_infect'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_infect']}}</div>
-                                % end
+                                <label class="col-sm-12 control-label">Вероятность заражения (0.1–0.9):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="0.1" name="p_infect" class="form-control" value="{{form_values.get('p_infect', '0.6')}}">
+                                    % if field_errors.get('p_infect'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_infect']}}</div>
+                                    % end
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="control-label">Вероятность перемещения (0.1–0.9):</label>
-                                <input type="number" step="0.05" name="p_move" class="form-control" value="{{form_values.get('p_move', '0.5')}}">
-                                % if field_errors.get('p_move'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_move']}}</div>
-                                % end
+                                <label class="col-sm-12 control-label">Вероятность перемещения (0.1–0.9):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="0.1" name="p_move" class="form-control" value="{{form_values.get('p_move', '0.5')}}">
+                                    % if field_errors.get('p_move'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_move']}}</div>
+                                    % end
+                                </div>
                             </div>
                         </div>
 
@@ -247,31 +257,40 @@
                             <h5>Вакцинация</h5>
                             
                             <div class="form-group">
-                                <label class="control-label">День начала вакцинации (≥56):</label>
-                                <input type="number" step="1" name="vacc_day" class="form-control" value="{{form_values.get('vacc_day', '56')}}">
-                                % if field_errors.get('vacc_day'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_day']}}</div>
-                                % end
+                                <label class="col-sm-12 control-label">День начала вакцинации (≥56):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="vacc_day" class="form-control" value="{{form_values.get('vacc_day', '56')}}">
+                                    % if field_errors.get('vacc_day'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_day']}}</div>
+                                    % end
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="control-label">Процент вакцинируемых крыс (1–100):</label>
-                                <input type="number" step="5" name="vacc_percent" class="form-control" value="{{form_values.get('vacc_percent', '50')}}">
-                                % if field_errors.get('vacc_percent'):
-                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_percent']}}</div>
-                                % end
+                                <label class="col-sm-12 control-label">Процент вакцинируемых крыс (1–100):</label>
+                                <div class="col-sm-12">
+                                    <input type="number" step="1" name="vacc_percent" class="form-control" value="{{form_values.get('vacc_percent', '50')}}">
+                                    % if field_errors.get('vacc_percent'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_percent']}}</div>
+                                    % end
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- кнопка запуска -->
-                    <div class="form-group text-center">
-                        <button type="submit" name="reset" value="false" class="btn btn-success btn-lg">
-                            ▶ Запустить расчёт
-                        </button>
-                        <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">
-                            ⟳ Сброс
-                        </button>
+                    <!-- кнопка запуска и сброса -->
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button type="submit" name="reset" value="false" class="btn btn-run">
+                                ▶ Запустить расчёт
+                            </button>
+                            <button type="submit" name="reset" value="true" class="btn btn-run" id="runButton">
+                                ⟳ Сброс данных
+                            </button>
+                            <button type="submit" name="random" value="true" class="btn btn-run" id="runButton">
+                                🎲 Генерация случайных значений
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -380,12 +399,13 @@
 % if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-success">
+        <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">📈 Результаты симуляции</h3>
             </div>
             <div class="panel-body">
                 <div class="results-layout">
+                    <!-- SIR график -->
                     <div class="graph-container">
                         <div class="graph-placeholder">
                             <strong>📊 График динамики SIR</strong>
@@ -436,10 +456,6 @@
                                     <span class="compare-label">С вакцинацией:</span>
                                     <span class="compare-value">{{results.get('peak_with', '—')}} крыс</span>
                                     <span class="compare-unit">(неделя {{results.get('week_with', '—')}})</span>
-                                </div>
-                                <div class="compare-item">
-                                    <span class="compare-label">Снижение пика:</span>
-                                    <span class="compare-value reduction">{{results.get('reduction', '—')}}%</span>
                                 </div>
                             </div>
                         </div>

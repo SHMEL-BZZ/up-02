@@ -156,11 +156,11 @@ def predator_pray():
                    field_errors=field_errors)
 
 
-from model.epidemic import EpidemicSimulation
+from model.epidemic import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
+from controller.epidemic_controller import SimulationResult
 
 @route('/epidemic', method=['GET', 'POST'])
 def epidemic():
-    """Renders the epidemic page and handles form submission."""
     title = 'Модель «Распространение эпидемии»'
     results = None
     error = None
@@ -179,8 +179,63 @@ def epidemic():
     }
     
     if request.method == 'POST':
+        # Генерация случайных значений
+        if request.forms.get('random') == 'true':
+            import random
+            # Генерируем случайные значения с учётом зависимостей
+            grid_size = random.randint(2, 10)
+            max_rats = grid_size * grid_size * 4
+            total_rats = random.randint(1, max_rats)
+            weeks = random.randint(8, 260)
+            p_infect = round(random.uniform(0.1, 0.9), 1)
+            p_move = round(random.uniform(0.1, 0.9), 1)
+            max_vacc_day = weeks * 7
+            vacc_day = random.randint(56, max_vacc_day)
+            vacc_percent = random.randint(1, 100)
+            
+            form_values = {
+                'grid_size': str(grid_size),
+                'total_rats': str(total_rats),
+                'weeks': str(weeks),
+                'p_infect': str(p_infect),
+                'p_move': str(p_move),
+                'vacc_day': str(vacc_day),
+                'vacc_percent': str(vacc_percent)
+            }
+            field_errors = {}
+
+            # Выполняем расчёт для сгенерированных значений
+            try:
+                analysis = analyze_epidemic_scenario(
+                    n=grid_size,
+                    total_rats=total_rats,
+                    weeks=weeks,
+                    p_infect=p_infect,
+                    p_move=p_move,
+                    vacc_day=vacc_day,
+                    vacc_percent=vacc_percent,
+                )
+                
+                results = {
+                    'graph': analysis['graph'],
+                    'threshold': analysis['results']['Эпидемический порог'],
+                    'efficacy': float(analysis['evaluation']['Эффективность вакцинации'].rstrip('%')),
+                    'peak_without': analysis['results']['Пик заражения (без вакцинации)'],
+                    'peak_with': analysis['results']['Пик заражения (с вакцинацией)'],
+                    'week_without': analysis['results']['Неделя пика (без вакцинации)'],
+                    'week_with': analysis['results']['Неделя пика (с вакцинацией)'],
+                    'matrix_display': analysis['simulation_result'].matrix_display,
+                    'n': analysis['simulation_result'].n,
+                    'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
+                    'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)']
+                }
+            except Exception as e:
+                error = f"Ошибка расчёта: {str(e)}"
+                import traceback
+                traceback.print_exc()
+
         # Сброс формы
-        if request.forms.get('reset') == 'true':
+        elif request.forms.get('reset') == 'true':
             form_values = default_form_values.copy()
             field_errors = {}
         else:
@@ -210,20 +265,92 @@ def epidemic():
                         return None
                 return None
             
-            # Функция для преобразования в int
+            # Функция для преобразования в int с валидацией
             def to_int(value, field_name, errors, required=True):
                 if not value and required:
                     errors[field_name] = 'Поле обязательно для заполнения'
                     return None
                 if value:
+                    # Проверка на отрицательные числа и буквы в начале
+                    value = value.strip()
+                    if value.startswith('-'):
+                        errors[field_name] = 'Значение не может быть отрицательным'
+                        return None
+                    
+                    # Проверка на буквы и другие символы
+                    import re
+                    if not re.match(r'^[\d]+$', value.replace(',', '').replace('.', '')):
+                        errors[field_name] = 'Значение должно быть целым положительным числом'
+                        return None
+                    
                     try:
+                        # Заменяем запятую на точку и преобразуем
                         value = value.replace(',', '.')
-                        return int(float(value))
+                        # Проверяем, что после преобразования нет дробной части
+                        float_val = float(value)
+                        if float_val != int(float_val):
+                            errors[field_name] = 'Значение должно быть целым числом (без дробной части)'
+                            return None
+                        int_val = int(float_val)
+                        if int_val < 0:
+                            errors[field_name] = 'Значение не может быть отрицательным'
+                            return None
+                        return int_val
                     except (ValueError, TypeError):
-                        errors[field_name] = f'Некорректное целое число: {value}'
+                        errors[field_name] = 'Некорректное число'
                         return None
                 return None
+
+            # 1. Валидация размера сетки (2-10)
+            grid_size = to_int(form_values['grid_size'], 'grid_size', field_errors)
+            if grid_size is not None and 'grid_size' not in field_errors:
+                if not (2 <= grid_size <= 10):
+                    field_errors['grid_size'] = 'Размер сетки должен быть в диапазоне от 2 до 10'
+                        # 2. Валидация количества крыс (1 до n*n*4)
+            total_rats = to_int(form_values['total_rats'], 'total_rats', field_errors)
+            if total_rats is not None and 'total_rats' not in field_errors:
+                if grid_size is not None and 'grid_size' not in field_errors:
+                    max_rats = grid_size * grid_size * 4
+                    if not (1 <= total_rats <= max_rats):
+                        field_errors['total_rats'] = f'Число крыс должно быть в диапазоне от 1 до {max_rats} (при размере сетки {grid_size}x{grid_size})'
             
+            # 3. Валидация длительности в неделях (8-260)
+            weeks = to_int(form_values['weeks'], 'weeks', field_errors)
+            if weeks is not None and 'weeks' not in field_errors:
+                if not (8 <= weeks <= 260):
+                    field_errors['weeks'] = 'Длительность должна быть в диапазоне от 8 до 260 недель'
+            
+            # 4. Валидация вероятности заражения (0.1-0.9, 2 знака)
+            p_infect = to_float(form_values['p_infect'], 'p_infect', field_errors)
+            if p_infect is not None and 'p_infect' not in field_errors:
+                if not (0.1 <= p_infect <= 0.9):
+                    field_errors['p_infect'] = 'Вероятность заражения должна быть в диапазоне от 0.1 до 0.9'
+            
+            # 5. Валидация вероятности перемещения (0.1-0.9, 2 знака)
+            p_move = to_float(form_values['p_move'], 'p_move', field_errors)
+            if p_move is not None and 'p_move' not in field_errors:
+                if not (0.1 <= p_move <= 0.9):
+                    field_errors['p_move'] = 'Вероятность перемещения должна быть в диапазоне от 0.1 до 0.9'
+            
+            # 6. Валидация дня начала вакцинации (56 - weeks*7)
+            vacc_day = to_int(form_values['vacc_day'], 'vacc_day', field_errors)
+            if vacc_day is not None and 'vacc_day' not in field_errors:
+                if weeks is not None and 'weeks' not in field_errors:
+                    max_day = weeks * 7
+                    min_day = 56
+                    if not (min_day <= vacc_day <= max_day):
+                        field_errors['vacc_day'] = f'День начала вакцинации должен быть в диапазоне от {min_day} до {max_day} дней (с 8-й недели до конца симуляции)'
+                else:
+                    # Если недели еще не валидированы, но день вакцинации задан
+                    if not (1 <= vacc_day <= 1820):  # 260 * 7
+                        field_errors['vacc_day'] = 'День вакцинации должен быть положительным числом'
+            
+            # 7. Валидация процента вакцинируемых крыс (1-100)
+            vacc_percent = to_int(form_values['vacc_percent'], 'vacc_percent', field_errors)
+            if vacc_percent is not None and 'vacc_percent' not in field_errors:
+                if not (1 <= vacc_percent <= 100):
+                    field_errors['vacc_percent'] = 'Процент вакцинации должен быть в диапазоне от 1 до 100%'
+
             # Преобразуем все значения
             grid_size = to_int(form_values['grid_size'], 'grid_size', field_errors)
             total_rats = to_int(form_values['total_rats'], 'total_rats', field_errors)
@@ -232,38 +359,7 @@ def epidemic():
             p_move = to_float(form_values['p_move'], 'p_move', field_errors)
             vacc_day = to_int(form_values['vacc_day'], 'vacc_day', field_errors)
             vacc_percent = to_int(form_values['vacc_percent'], 'vacc_percent', field_errors)
-            
-            # Валидация диапазонов (только если поле не пустое и нет ошибок преобразования)
-            if grid_size is not None and 'grid_size' not in field_errors and not (2 <= grid_size <= 15):
-                field_errors['grid_size'] = 'Размер сетки должен быть в диапазоне 2–15'
-            
-            # Максимальное количество крыс = n² × 4
-            if grid_size is not None and total_rats is not None and 'total_rats' not in field_errors:
-                max_rats = grid_size * grid_size * 4
-                if not (1 <= total_rats <= max_rats):
-                    field_errors['total_rats'] = f'Число крыс должно быть в диапазоне 1–{max_rats} (максимум n² × 4)'
-            elif total_rats is not None and 'total_rats' not in field_errors and not (1 <= total_rats <= 400):
-                field_errors['total_rats'] = 'Число крыс должно быть в диапазоне 1–400'
-            
-            if weeks is not None and 'weeks' not in field_errors and not (10 <= weeks <= 520):
-                field_errors['weeks'] = 'Длительность должна быть в диапазоне 10–520 недель'
-            
-            if p_infect is not None and 'p_infect' not in field_errors and not (0.1 <= p_infect <= 1.0):
-                field_errors['p_infect'] = 'Вероятность заражения должна быть в диапазоне 0.1–1.0'
-            
-            if p_move is not None and 'p_move' not in field_errors and not (0.1 <= p_move <= 0.9):
-                field_errors['p_move'] = 'Вероятность перемещения должна быть в диапазоне 0.1–0.9'
-            
-            # День вакцинации должен быть не меньше 7 и не больше общего количества дней
-            if vacc_day is not None and weeks is not None and 'vacc_day' not in field_errors:
-                max_day = weeks * 7
-                if not (7 <= vacc_day <= max_day):
-                    field_errors['vacc_day'] = f'День вакцинации должен быть в диапазоне 7–{max_day} (дней симуляции)'
-            elif vacc_day is not None and 'vacc_day' not in field_errors and not (7 <= vacc_day <= 3640):
-                field_errors['vacc_day'] = 'День вакцинации должен быть не меньше 7'
-            
-            if vacc_percent is not None and 'vacc_percent' not in field_errors and not (1 <= vacc_percent <= 100):
-                field_errors['vacc_percent'] = 'Процент вакцинации должен быть в диапазоне 1–100%'
+          
             
             # Если есть ошибки - показываем их без расчёта
             if field_errors:
@@ -271,38 +367,33 @@ def epidemic():
             else:
                 # Все проверки пройдены, выполняем расчёт
                 try:
-                    params = {
-                        'grid_size': grid_size,
-                        'total_rats': total_rats,
-                        'weeks': weeks,
-                        'p_infect': p_infect,
-                        'p_move': p_move,
-                        'vacc_day': vacc_day,
-                        'vacc_percent': vacc_percent
-                    }
-                    sim = EpidemicSimulation(params)
-                    sim_results = sim.get_results()
+                    analysis = analyze_epidemic_scenario(
+                        n=grid_size,
+                        total_rats=total_rats,
+                        weeks=weeks,
+                        p_infect=p_infect,
+                        p_move=p_move,
+                        vacc_day=vacc_day,
+                        vacc_percent=vacc_percent,
+                    )
                     
-                    # Вычисляем снижение пика
-                    peak_without = sim_results['peak_without']
-                    peak_with = sim_results['peak_with']
-                    reduction = round((peak_without - peak_with) / peak_without * 100, 1) if peak_without > 0 else 0
-                    
-                    # Формируем результаты
                     results = {
-                        'graph': sim_results['graph'],
-                        'threshold': sim_results['threshold'],
-                        'efficacy': sim_results['efficacy'],
-                        'peak_without': peak_without,
-                        'peak_with': peak_with,
-                        'week_without': sim_results['week_without'],
-                        'week_with': sim_results['week_with'],
-                        'reduction': reduction,
-                        'matrix_display': sim_results['matrix_display'],
-                        'n': sim_results['n']
+                        'graph': analysis['graph'],
+                        'threshold': analysis['results']['Эпидемический порог'],
+                        'efficacy': float(analysis['evaluation']['Эффективность вакцинации'].rstrip('%')),
+                        'peak_without': analysis['results']['Пик заражения (без вакцинации)'],
+                        'peak_with': analysis['results']['Пик заражения (с вакцинацией)'],
+                        'week_without': analysis['results']['Неделя пика (без вакцинации)'],
+                        'week_with': analysis['results']['Неделя пика (с вакцинацией)'],
+                        'matrix_display': analysis['simulation_result'].matrix_display,
+                        'n': analysis['simulation_result'].n,
+                        'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
+                        'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)']
                     }
                 except Exception as e:
                     error = f"Ошибка расчёта: {str(e)}"
+                    import traceback
+                    traceback.print_exc()
     else:
         # GET запрос - устанавливаем значения по умолчанию
         form_values = default_form_values.copy()
