@@ -1,11 +1,231 @@
-<!DOCTYPE html>
+/* Стиль для страницы*/
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+/* Карточки моделей */
+.model-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    height: 100%;
+}
 
-</body>
-</html>
+/* Панель управления */
+.control-panel {
+    background: #697E50;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.control-btn {
+    background: #4E653D;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    margin: 5px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+    .control-btn:hover {
+        background: #354C2B;
+        transform: scale(1.02);
+    }
+
+.stop-btn {
+    background: #8b3a3a;
+}
+
+    .stop-btn:hover {
+        background: #6a2a2a;
+    }
+
+.export-btn {
+    background: #3a6a8b;
+}
+
+/* Статистика */
+.stats-panel {
+    background: #e8e0cc;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.stat-item {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 12px 0;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 15px;
+    color: #4D2D18;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4E653D;
+}
+
+
+/* Формулы */
+.formula-box {
+    background: #e8e0cc;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    font-family: monospace;
+    font-size: 14px;
+    text-align: center;
+}
+
+.formula-explanation {
+    background: #e8e0cc;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    font-size: 15px;
+}
+
+    .formula-explanation h3 {
+        color: #4E653D;
+        font-size: 20px;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+.param-row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    border-bottom: 1px solid #d4c9b0;
+}
+
+    .param-row:last-child {
+        border-bottom: none;
+    }
+
+.param-symbol {
+    width: 100px;
+    font-weight: bold;
+    color: #4E653D;
+    font-size: 15px;
+}
+
+.param-desc {
+    flex: 1;
+    font-size: 15px;
+    color: #4D2D18;
+}
+
+    .param-desc strong {
+        color: #4E653D;
+    }
+
+
+
+/* Раздел:пример. Для изображений */
+.example-step {
+    background: #e8e0cc;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 25px 0;
+}
+
+    .example-step h3 {
+        color: #4E653D;
+        /*margin-top: 0;*/
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    .example-step p {
+        margin-bottom: 15px;
+    }
+
+    .example-step ul {
+        margin-bottom: 15px;
+        padding-left: 20px;
+    }
+
+    .example-step li {
+        margin: 8px 0;
+        font-size: 15px;
+        line-height: 1.4;
+    }
+
+.screenshot {
+    margin: 20px 0 5px 0;
+    text-align: center;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.screenshot-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid #ddd;
+    display: block;
+    margin: 0 auto;
+}
+
+.screenshot-caption {
+    margin-top: 12px;
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Убираем лишние отступы в колонках */
+.example-step .row {
+    margin-bottom: 10px;
+}
+
+.example-step .col-md-6 {
+    margin-bottom: 0;
+}
+
+
+
+/* Навигация по странице */
+.page-nav {
+    text-align: center;
+    margin: 20px 0 30px 0;
+    padding: 12px 0;
+    background: #e8e0cc;
+    border-radius: 40px;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 8px 24px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #4E653D;
+    text-decoration: none;
+    transition: 0.2s;
+    border-radius: 30px;
+}
+
+    .nav-link:hover {
+        background: #4E653D;
+        color: #F2EDDE;
+        text-decoration: none;
+    }
+
+.nav-separator {
+    color: #4E653D;
+    font-size: 15px;
+    opacity: 0.5;
+}

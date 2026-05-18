@@ -1,7 +1,5 @@
-/* стили по умолчанию */
-
-
-/* стиль основной страницы */
+п»їп»ї /* СЃС‚РёР»Рё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ */
+/* СЃС‚РёР»СЊ РѕСЃРЅРѕРІРЅРѕР№ СЃС‚СЂР°РЅРёС†С‹ */
 body {
     padding-top: 50px;
     padding-bottom: 20px;
@@ -48,30 +46,30 @@ input[type="checkbox"].input-validation-error {
     display: none;
 }
 
-/* Созданные стили */
+/* РЎРѕР·РґР°РЅРЅС‹Рµ СЃС‚РёР»Рё */
 
-/* Стили для навигационной панели */
+/* РЎС‚РёР»Рё РґР»СЏ РЅР°РІРёРіР°С†РёРѕРЅРЅРѕР№ РїР°РЅРµР»Рё */
 
-/* основной стиль */
+/* РѕСЃРЅРѕРІРЅРѕР№ СЃС‚РёР»СЊ */
 .navbar-inverse {
     background-color: #4E653D;
     border-color: #F2EDDE;
 }
 
-/* цвет ссылок по умолчанию */
+    /* С†РІРµС‚ СЃСЃС‹Р»РѕРє РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ */
     .navbar-inverse .navbar-nav > li > a {
         color: #F2EDDE;
         font-size: 18px;
     }
 
-    /* при наведении на ссылки */
-    .navbar-inverse .navbar-nav > li > a:hover,
-    .navbar-inverse .navbar-nav > li > a:focus {
-        color: #F2EDDE;
-        background-color: #354C2B;
-    }
+        /* РїСЂРё РЅР°РІРµРґРµРЅРёРё РЅР° СЃСЃС‹Р»РєРё */
+        .navbar-inverse .navbar-nav > li > a:hover,
+        .navbar-inverse .navbar-nav > li > a:focus {
+            color: #F2EDDE;
+            background-color: #354C2B;
+        }
 
-/* Стиль для заголовка страницы */
+/* РЎС‚РёР»СЊ РґР»СЏ Р·Р°РіРѕР»РѕРІРєР° СЃС‚СЂР°РЅРёС†С‹ */
 
 .page-header {
     background: #697E50;
@@ -82,14 +80,14 @@ input[type="checkbox"].input-validation-error {
     text-align: center;
     font-size: 24px;
 }
-/* Увеличиваем размер названия сайта */
+/* РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ РЅР°Р·РІР°РЅРёСЏ СЃР°Р№С‚Р° */
 .navbar-brand {
     font-size: 28px !important;
     font-weight: bold;
     padding-top: 12px !important;
     padding-bottom: 12px !important;
 }
-/* Выравнивание высоты панелей */
+/* Р’С‹СЂР°РІРЅРёРІР°РЅРёРµ РІС‹СЃРѕС‚С‹ РїР°РЅРµР»РµР№ */
 .row-equal-height {
     display: flex;
     flex-wrap: wrap;
@@ -104,7 +102,7 @@ input[type="checkbox"].input-validation-error {
     .row-equal-height .panel-body {
         flex: 1;
     }
-/* Фиксированная минимальная высота для всех панелей */
+/* Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° РґР»СЏ РІСЃРµС… РїР°РЅРµР»РµР№ */
 .model-panel {
     min-height: 280px;
 }
@@ -114,7 +112,7 @@ input[type="checkbox"].input-validation-error {
         min-height: auto;
     }
 }
-/* Делаем все колонки одной высоты */
+/* Р”РµР»Р°РµРј РІСЃРµ РєРѕР»РѕРЅРєРё РѕРґРЅРѕР№ РІС‹СЃРѕС‚С‹ */
 .row-flex {
     display: flex;
     flex-wrap: wrap;
@@ -125,19 +123,95 @@ input[type="checkbox"].input-validation-error {
         flex-direction: column;
     }
 
-    /* Панели растягиваются на всю высоту колонки */
+    /* РџР°РЅРµР»Рё СЂР°СЃС‚СЏРіРёРІР°СЋС‚СЃСЏ РЅР° РІСЃСЋ РІС‹СЃРѕС‚Сѓ РєРѕР»РѕРЅРєРё */
     .row-flex .panel {
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
-    /* Тело панели занимает всё свободное место */
+    /* РўРµР»Рѕ РїР°РЅРµР»Рё Р·Р°РЅРёРјР°РµС‚ РІСЃС‘ СЃРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ */
     .row-flex .panel-body {
         flex: 1;
     }
 
-/* Опционально: фиксированная минимальная высота для панелей */
+/* РћРїС†РёРѕРЅР°Р»СЊРЅРѕ: С„РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° РґР»СЏ РїР°РЅРµР»РµР№ */
 .model-card {
     height: 100%;
+}
+
+/* РЎС‚РёР»Рё РґР»СЏ С€Р°РїРєРё СЃС‚СЂР°РЅРёС†С‹ СЃ Р»РѕРіРѕС‚РёРїРѕРј */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.header-text {
+    flex: 1;
+    text-align: left;
+}
+
+.header-image {
+    flex-shrink: 0;
+}
+
+.rounded-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .rounded-logo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+/* РЈРІРµР»РёС‡РµРЅРёРµ Рё СЃРјРµРЅР° С†РІРµС‚Р° Р·Р°РіРѕР»РѕРІРєР° РЅР° РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ */
+.header-text h1 {
+    font-size: 55px;
+    margin: 0 0 2px 0;
+    font-weight: bold;
+}
+
+.header-text .lead {
+    font-size: 28px;
+    color: #152e28;
+}
+
+/* РЎС‚РёР»Рё РґР»СЏ РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†С‹ (СѓРјРµРЅСЊС€РµРЅРёРµ С‚РµРєСЃС‚Р°) */
+.well p {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.well h3 {
+    font-size: 20px;
+    text-align: left;
+    margin-top: 0;
+}
+
+.panel-default .panel-heading h4 {
+    font-size: 16px;
+}
+
+.panel-default .panel-body {
+    font-size: 14px;
+}
+
+    .panel-default .panel-body p {
+        font-size: 14px;
+    }
+
+    .panel-default .panel-body ul {
+        font-size: 14px;
+        padding-left: 20px;
+    }
+
+.alert-info {
+    font-size: 14px;
 }

@@ -1,11 +1,562 @@
-<!DOCTYPE html>
+/* общие стили для текста */
+.epidemic-text {
+    font-size: 14px;
+}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
 
-</body>
-</html>
+/* стили для внутренних заголовков (h5) */
+h5 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #4E653D;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* стили для абзацев и списков */
+.panel-body p {
+    font-size: 14px;
+}
+
+.panel-body ul {
+    font-size: 14px;
+}
+
+/* стили для полей ввода */
+.form-control {
+    font-size: 14px;
+}
+
+.control-label {
+    font-size: 14px;
+    text-align: left;
+}
+
+.help-block {
+    font-size: 11px;
+}
+
+
+/* стили для формул */
+.formula-block {
+    margin-bottom: 30px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.formula-box {
+    background: white;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.formula-box-green {
+    border-left: 4px solid #4E653D;
+}
+
+.formula-box-red {
+    border-left: 4px solid #e74c3c;
+}
+
+.formula-box-success {
+    border-left: 4px solid #5cb85c;
+}
+
+.formula-text {
+    font-size: 16px;
+    text-align: center;
+    margin: 0;
+}
+
+.formula-description {
+    font-size: 9px;
+    color: #666;
+}
+
+/* стили для критериев эффективности */
+.efficiency-box {
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.efficiency-low {
+    background: #d9534f;
+}
+
+.efficiency-medium {
+    background: #f0ad4e;
+}
+
+.efficiency-high {
+    background: #5cb85c;
+}
+
+/* стили для кнопки */
+.btn-run {
+    background-color: #468847;
+    border-color: #4E653D;
+    color: white;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 8px;
+}
+
+/* вспомогательные утилиты */
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-25 {
+    margin-bottom: 25px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* сброс отступов для h5 внутри расчётной панели */
+.panel-body h5 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding: 0;
+}
+
+.panel-body h5 {
+    margin-left: 15px;
+    padding-left: 0;
+}
+
+/* СТИЛИ ДЛЯ МАТРИЦЫ*/
+
+.matrix-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* обёртка матрицы */
+.matrix-wrapper {
+    flex-shrink: 0;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.matrix-container {
+    text-align: center;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+    .matrix-table td {
+        width: 45px;
+        height: 45px;
+        border: 1px solid #999;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #e8f5e9;
+        transition: background-color 0.2s ease;
+        padding: 2px;
+    }
+
+        .matrix-table td:hover {
+            background-color: #c8e6c9;
+            cursor: pointer;
+        }
+
+/* содержимое ячейки */
+.cell-content {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* цвета статусов */
+.stat-s {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.stat-i {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.stat-r {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+.stat-s, .stat-i, .stat-r {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    display: inline-block;
+}
+
+/* вертикальная легенда */
+.matrix-legend {
+    flex-shrink: 0;
+    width: 140px;
+    background-color: transparent;
+    padding: 0;
+}
+
+.legend-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.color-s {
+    background-color: #2ecc71;
+}
+
+.color-i {
+    background-color: #e74c3c;
+}
+
+.color-r {
+    background-color: #f1c40f;
+}
+
+.legend-text {
+    font-size: 12px;
+    color: #333;
+}
+
+.legend-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 12px 0;
+}
+
+/* кнопки в легенде */
+.legend-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.matrix-btn {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
+.matrix-table td {
+    width: 55px;
+    height: 55px;
+    border: 1px solid #999;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #e8f5e9;
+    padding: 0;
+}
+
+/* ===================================================
+   СТИЛИ ДЛЯ РЕЗУЛЬТАТОВ СИМУЛЯЦИИ
+   =================================================== */
+
+/* лэйаут результатов */
+.results-layout {
+    display: flex;
+    gap: 30px;
+    align-items: stretch;
+}
+
+/* контейнер графика (слева) */
+.graph-container {
+    flex: 2;
+    min-width: 0;
+}
+
+.graph-placeholder {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    height: 100%;
+}
+
+    .graph-placeholder strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #4E653D;
+    }
+
+.graph-description {
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.graph-area {
+    margin: 15px 0;
+}
+
+    .graph-area svg {
+        width: 100%;
+        height: auto;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+.graph-note {
+    font-size: 11px;
+    color: #999;
+    margin-top: 10px;
+}
+
+/* контейнер результатов (справа) */
+.results-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.result-card {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+.result-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 10px;
+}
+
+.result-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
+.result-unit {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.result-description {
+    font-size: 11px;
+    color: #888;
+    margin-top: 10px;
+}
+
+/* эффективность вакцинации */
+.efficiency-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    margin: 2px;
+}
+
+.efficiency-low {
+    background: #d9534f;
+    color: white;
+}
+
+.efficiency-medium {
+    background: #f0ad4e;
+    color: white;
+}
+
+.efficiency-high {
+    background: #5cb85c;
+    color: white;
+}
+
+/* сравнение (пик заболеваемости) */
+.result-compare {
+    text-align: left;
+    margin-top: 5px;
+}
+
+.compare-item {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.compare-label {
+    color: #555;
+    flex-shrink: 0;
+}
+
+.compare-value {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.compare-unit {
+    font-size: 10px;
+    color: #999;
+}
+
+.reduction {
+    color: #5cb85c;
+    font-size: 16px;
+}
+
+/* карточки определений справа */
+.definitions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.def-card {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 12px 15px;
+    border-left: 4px solid #4E653D;
+}
+
+.def-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #4E653D;
+    margin-bottom: 6px;
+}
+
+.def-card p {
+    font-size: 13px;
+    margin: 0;
+    color: #555;
+    line-height: 1.4;
+}
+
+.analysis-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+.analysis-badge {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+    .analysis-badge strong {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+.badge-low {
+    background: #d9534f;
+    color: white;
+}
+
+.badge-medium {
+    background: #f0ad4e;
+    color: white;
+}
+
+.badge-high {
+    background: #5cb85c;
+    color: white;
+}
+
+.analysis-note {
+    font-size: 11px;
+    color: #666;
+    margin: 8px 0 0 0;
+}
+
+/* стили для примера работы приложения */
+.step-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.step-card {
+    flex: 1;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+    .step-card h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .step-card p {
+        font-size: 12px;
+        margin-bottom: 15px;
+        color: #555;
+    }
+
+.step-image {
+    margin-top: 10px;
+}
+
+.step-screenshot {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-final {
+    margin-top: 20px;
+    font-size: 14px;
+}

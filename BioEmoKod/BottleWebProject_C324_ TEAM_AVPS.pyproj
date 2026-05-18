@@ -19,7 +19,6 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>BottleWebProject_C324_ TEAM_AVPS</Name>
     <RootNamespace>BioEmoKod</RootNamespace>
-    <InterpreterId>MSBuild|env2|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +30,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="model\epidemic.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="model\fishing_model.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="model\pp_model.py" />
     <Compile Include="routes.py" />
   </ItemGroup>
   <ItemGroup>
@@ -91,11 +94,18 @@
     <Content Include="static\fonts\STRomeTrial-Thin.otf" />
     <Content Include="static\fonts\STRomeTrial-Thin.ttf" />
     <Content Include="static\img\bunny.jpg" />
+    <Content Include="static\img\ex1.jpg" />
+    <Content Include="static\img\ex2.jpg" />
+    <Content Include="static\img\ex3.jpg" />
     <Content Include="static\img\fox.jpg" />
     <Content Include="static\img\kate.jpg" />
+    <Content Include="static\img\logo.jpg" />
     <Content Include="static\img\nika.jpg" />
     <Content Include="static\img\ola.jpg" />
     <Content Include="static\img\rita.jpg" />
+    <Content Include="static\img\shag1.png" />
+    <Content Include="static\img\shag2.png" />
+    <Content Include="static\img\shag3.png" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />
@@ -120,10 +130,46 @@
     <Content Include="views\layout.tpl" />
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="env0\">
+      <Id>env0</Id>
+      <Version>3.12</Version>
+      <Description>env0 (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env1\">
+      <Id>env1</Id>
+      <Version>3.12</Version>
+      <Description>env1 (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
     <Interpreter Include="env2\">
       <Id>env2</Id>
       <Version>3.9</Version>
       <Description>env2 (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env3\">
+      <Id>env3</Id>
+      <Version>3.12</Version>
+      <Description>env3 (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env5\">
+      <Id>env5</Id>
+      <Version>3.12</Version>
+      <Description>env5 (Python 3.12 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
