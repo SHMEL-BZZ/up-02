@@ -195,24 +195,6 @@ def export_csv():
     return csv_data
 
 
-@route('/export_json', method='POST')
-def export_json():
-    """Export predator-prey data to JSON format"""
-    results_id = request.forms.get('results_id', '')
-    
-    json_data = export_manager.export_to_json(results_id)
-    if json_data is None:
-        response.status = 404
-        return "Данные не найдены"
-    
-    filename = export_manager.generate_filename('predator_prey_data', 'json')
-    
-    response.headers['Content-Type'] = 'application/json; charset=utf-8'
-    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
-    
-    return json_data
-
-
 @route('/export_plot', method='POST')
 def export_plot():
     """Export predator-prey plot to PNG file with save dialog"""
@@ -231,11 +213,6 @@ def export_plot():
     return plot_bytes
 
 
-@route('/cleanup_temp', method='POST')
-def cleanup_temp():
-    """Clean up old temporary files"""
-    deleted = export_manager.cleanup_old_files(max_age_hours=1)
-    return f"Очищено {deleted} файлов"
 
 
 

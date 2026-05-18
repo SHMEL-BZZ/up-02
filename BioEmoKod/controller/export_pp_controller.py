@@ -158,37 +158,6 @@ class ExportManager:
         
         return output.getvalue().encode('utf-8-sig')
     
-    def export_to_json(self, data_id: str) -> Optional[bytes]:
-        """
-        Экспортирует данные в JSON формат
-        
-        Параметры:
-            data_id: идентификатор данных
-        
-        Возвращает:
-            bytes: содержимое JSON файла или None если данные не найдены
-        """
-        data = self.get_data(data_id)
-        if not data:
-            return None
-        
-        # Подготавливаем данные для JSON
-        export_data = {
-            'metadata': {
-                'export_time': datetime.now().isoformat(),
-                'model': 'Lotka-Volterra Predator-Prey',
-                'version': '1.0'
-            },
-            'parameters': data['params'],
-            'time_series': {
-                'time': data['time'],
-                'prey': data['x_t'],
-                'predators': data['y_t']
-            }
-        }
-        
-        json_str = json.dumps(export_data, indent=2, ensure_ascii=False)
-        return json_str.encode('utf-8')
     
     def get_plot_bytes(self, plot_id: str) -> Optional[bytes]:
         """
@@ -207,41 +176,6 @@ class ExportManager:
         with open(plot_path, 'rb') as f:
             return f.read()
     
-    def cleanup_old_files(self, max_age_hours: int = 1) -> int:
-        """
-        Очищает временные файлы старше указанного времени
-        
-        Параметры:
-            max_age_hours: максимальный возраст файлов в часах
-        
-        Возвращает:
-            int: количество удаленных файлов
-        """
-        current_time = datetime.now().timestamp()
-        deleted = 0
-        
-        # Очищаем файлы в temp_dir
-        if os.path.exists(self.temp_dir):
-            for filename in os.listdir(self.temp_dir):
-                filepath = os.path.join(self.temp_dir, filename)
-                if os.path.isfile(filepath):
-                    file_time = os.path.getmtime(filepath)
-                    if current_time - file_time > max_age_hours * 3600:
-                        os.remove(filepath)
-                        deleted += 1
-        
-        # Очищаем старые записи из temp_results
-        to_delete = []
-        for key, value in self.temp_results.items():
-            if 'created_at' in value:
-                age = (datetime.now() - value['created_at']).total_seconds()
-                if age > max_age_hours * 3600:
-                    to_delete.append(key)
-        
-        for key in to_delete:
-            del self.temp_results[key]
-        
-        return deleted
     
     def generate_filename(self, prefix: str, extension: str) -> str:
         """
