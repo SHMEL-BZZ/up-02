@@ -2,12 +2,14 @@
 Routes and views for the bottle application.
 """
 
-from bottle import route, view, request, template
+from bottle import route, view, request, template, response
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
+import csv
+import io
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
@@ -405,6 +407,158 @@ def epidemic():
                    error=error,
                    form_values=form_values,
                    field_errors=field_errors)
+
+@route('/epidemic/export/csv', method='POST')
+def export_epidemic_csv():
+    """Экспорт данных симуляции в CSV"""
+    try:
+        # Получаем параметры из POST запроса и преобразуем в нужные имена
+        params = {
+            'n': int(request.forms.get('grid_size', 8)),           # grid_size -> n
+            'total_rats': int(request.forms.get('total_rats', 64)),
+            'weeks': int(request.forms.get('weeks', 52)),
+            'p_infect': float(request.forms.get('p_infect', 0.6)),
+            'p_move': float(request.forms.get('p_move', 0.5)),
+            'vacc_day': int(request.forms.get('vacc_day', 56)),
+            'vacc_percent': int(request.forms.get('vacc_percent', 50))
+        }
+        
+        # Запускаем симуляцию
+        analysis = analyze_epidemic_scenario(**params)
+        result = analysis['simulation_result']
+        
+        # Создаём CSV файл
+        output = io.StringIO()
+        writer = csv.writer(output, delimiter=';')
+        
+        # Заголовок
+        writer.writerow(['Модель распространения эпидемии'])
+        writer.writerow(['Параметры симуляции:'])
+        writer.writerow(['Параметр', 'Значение'])
+        writer.writerow(['Размер сетки', params['n']])
+        writer.writerow(['Общее число крыс', params['total_rats']])
+        writer.writerow(['Длительность (недели)', params['weeks']])
+        writer.writerow(['Вероятность заражения', params['p_infect']])
+        writer.writerow(['Вероятность перемещения', params['p_move']])
+        writer.writerow(['День начала вакцинации', params['vacc_day']])
+        writer.writerow(['Процент вакцинации', f"{params['vacc_percent']}%"])
+        writer.writerow([])
+        
+        # Результаты
+        writer.writerow(['Результаты симуляции:'])
+        writer.writerow(['Показатель', 'Значение'])
+        writer.writerow(['Эпидемический порог', result.threshold])
+        writer.writerow(['Эффективность вакцинации', f"{result.efficacy}%"])
+        writer.writerow(['Пик заражения (без вакцинации)', result.peak_without])
+        writer.writerow(['Неделя пика (без вакцинации)', result.week_without])
+        writer.writerow(['Пик заражения (с вакцинацией)', result.peak_with])
+        writer.writerow(['Неделя пика (с вакцинацией)', result.week_with])
+        writer.writerow(['Эпидемические недели (без вакцинации)', result.epidemic_weeks_without])
+        writer.writerow(['Эпидемические недели (с вакцинацией)', result.epidemic_weeks_with])
+        writer.writerow([])
+        
+        # Еженедельные данные
+        writer.writerow(['Неделя', 'Здоровые (S)', 'Заражённые (I)', 'Иммунные (R)', 'Новые заражения'])
+        for week in range(len(result.history_s)):
+            new_infections = result.weekly_infections[week] if week < len(result.weekly_infections) else 0
+            writer.writerow([
+                week + 1,
+                result.history_s[week],
+                result.history_i[week],
+                result.history_r[week],
+                new_infections
+            ])
+        
+        # Отправляем CSV файл
+        response.content_type = 'text/csv; charset=utf-8'
+        response.headers['Content-Disposition'] = 'attachment; filename="epidemic_data.csv"'
+        
+        # Добавляем BOM для корректного открытия в Excel
+        csv_content = output.getvalue()
+        return csv_content.encode('utf-8-sig')
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        response.status = 500
+        return f"Ошибка экспорта: {str(e)}"
+
+
+@route('/epidemic/export/graph', method='POST')
+def export_epidemic_graph():
+    """Экспорт графика в PNG"""
+    try:
+        import matplotlib.pyplot as plt
+        from io import BytesIO
+        
+        # Получаем параметры из формы и преобразуем в нужные имена
+        params = {
+            'n': int(request.forms.get('grid_size', 8)),           # grid_size -> n
+            'total_rats': int(request.forms.get('total_rats', 64)),
+            'weeks': int(request.forms.get('weeks', 52)),
+            'p_infect': float(request.forms.get('p_infect', 0.6)),
+            'p_move': float(request.forms.get('p_move', 0.5)),
+            'vacc_day': int(request.forms.get('vacc_day', 56)),
+            'vacc_percent': int(request.forms.get('vacc_percent', 50))
+        }
+        
+        # Запускаем симуляцию
+        analysis = analyze_epidemic_scenario(**params)
+        result = analysis['simulation_result']
+        
+        # Создаём улучшенный график для экспорта
+        plt.figure(figsize=(14, 8))
+        
+        weeks_range = list(range(len(result.history_s)))
+        vacc_week = params['vacc_day'] / 7
+        
+        # График S, I, R
+        plt.plot(weeks_range, result.history_s, 'g-', label='Здоровые (S)', linewidth=2)
+        plt.plot(weeks_range, result.history_i, 'r-', label='Заражённые (I)', linewidth=2)
+        plt.plot(weeks_range, result.history_r, 'orange', label='Иммунные (R)', linewidth=2)
+        
+        # Линия вакцинации
+        if 0 <= vacc_week <= params['weeks']:
+            plt.axvline(x=vacc_week, color='purple', linestyle='--', linewidth=2, 
+                       label=f'Вакцинация (день {params["vacc_day"]})')
+        
+        # Отметка пика
+        peak_week = result.week_with
+        peak_value = result.peak_with
+        plt.plot(peak_week, peak_value, 'ro', markersize=10, 
+                label=f'Пик заражения: нед. {peak_week}, {peak_value} крыс')
+        
+        # Добавляем информацию о пороге на график
+        if result.threshold > 0:
+            plt.axhline(y=result.threshold, color='gray', linestyle=':', linewidth=1.5,
+                       label=f'Эпидемический порог: {result.threshold}')
+        
+        # Настройка графика
+        plt.xlabel('Недели', fontsize=12)
+        plt.ylabel('Количество крыс', fontsize=12)
+        plt.title(f'Динамика распространения эпидемии\nЭффективность вакцинации: {result.efficacy}%', 
+                 fontsize=14, fontweight='bold')
+        plt.legend(loc='best', fontsize=10)
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        # Сохраняем в буфер
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300, bbox_inches='tight')
+        buf.seek(0)
+        plt.close()
+        
+        # Отправляем PNG файл
+        response.content_type = 'image/png'
+        response.headers['Content-Disposition'] = 'attachment; filename="epidemic_graph.png"'
+        
+        return buf.getvalue()
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        response.status = 500
+        return f"Ошибка экспорта: {str(e)}"
 
 @route('/competition')
 @view('competition')
