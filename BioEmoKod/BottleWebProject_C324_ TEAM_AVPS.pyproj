@@ -41,6 +41,9 @@
     <Compile Include="controller\pp_controller.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="model\competition_model.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="model\epidemic.py">
       <SubType>Code</SubType>
     </Compile>
