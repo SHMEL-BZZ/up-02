@@ -8,6 +8,7 @@ import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
+import re
 
 import io
 import base64
@@ -209,25 +210,16 @@ def fishing():
 
     if request.method == 'POST':
         try:
+            # Получаем параметры из формы
             N = int(request.forms.get('N', 15))
             M = int(request.forms.get('M', 15))
             K = int(request.forms.get('K', 50))
-            pRepro = float(request.forms.get('prepro', 0.2))
-            pDeath = float(request.forms.get('pdeath', 0.1))
-
-            # Валидация
-            if not (10 <= N <= 100):
-                raise ValueError("N должно быть 10-100")
-            if not (10 <= M <= 100):
-                raise ValueError("M должно быть 10-100")
-            if not (1 <= K <= N * M):
-                raise ValueError(f"K должно быть 1-{N*M}")
-            if not (0.0 <= pRepro <= 1.0):
-                raise ValueError("prepro от 0 до 1")
-            if not (0.0 <= pDeath <= 1.0):
-                raise ValueError("pdeath от 0 до 1")
-
-            # 1. Вычисление оптимального значения
+            p_repro = float(request.forms.get('p_repro', 0.25))
+            p_death = float(request.forms.get('p_death', 0.1))
+            
+            
+            
+            # Вызов оптимизации 
             results_raw, q_opt = find_optimal_q(
                 N, M, K, pRepro, pDeath,
                 steps_warmup=50, steps_eval=50, trials=3
