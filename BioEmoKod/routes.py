@@ -158,8 +158,8 @@ def predator_pray():
                    field_errors=field_errors)
 
 
-from model.epidemic import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
-from controller.epidemic_controller import SimulationResult
+from model.epidemic import SimulationResult
+from controller.epidemic_controller import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
 
 @route('/epidemic', method=['GET', 'POST'])
 def epidemic():
@@ -187,7 +187,7 @@ def epidemic():
             # Генерируем случайные значения с учётом зависимостей
             grid_size = random.randint(2, 10)
             max_rats = grid_size * grid_size * 4
-            total_rats = random.randint(1, max_rats)
+            total_rats = random.randint(2, max_rats)
             weeks = random.randint(8, 260)
             p_infect = round(random.uniform(0.1, 0.9), 1)
             p_move = round(random.uniform(0.1, 0.9), 1)
