@@ -26,6 +26,8 @@ class SimulationResult:
     n: int                        # Размер сетки
     epidemic_weeks_without: int   # Количество эпидемических недель без вакцинации
     epidemic_weeks_with: int      # Количество эпидемических недель с вакцинацией
+    history_matrices: List[List[List[List[str]]]]  # История состояний матрицы по дням
+    total_days: int               # Общее количество дней симуляции
 
 
 def calculate_epidemic_threshold(weekly_infections: List[int]) -> float:
@@ -321,6 +323,29 @@ def record_stats(
     
     return history, weekly_infections
 
+def record_matrix_state(
+    grid: List[List[List[int]]],
+    rats_data: Dict[int, Dict],
+    n: int,
+    history_matrices: List[List[List[List[str]]]]
+) -> List[List[List[List[str]]]]:
+    """
+    Запись текущего состояния матрицы в историю для анимации.
+    
+    Параметры:
+        grid: текущая сетка
+        rats_data: данные о крысах
+        n: размер сетки
+        history_matrices: текущая история состояний
+    
+    Возвращает:
+        обновленная история состояний
+    """
+    matrix_state = get_matrix_state(grid, rats_data, n)
+    matrix_display = matrix_to_display(matrix_state)
+    history_matrices.append(matrix_display)
+    return history_matrices
+
 
 def get_matrix_state(
     grid: List[List[List[int]]], 
@@ -385,21 +410,27 @@ def run_single_simulation(
     max_per_cell: int,
     ill_days: int,
     immun_days: int,
-    return_matrix: bool = False
+    return_matrix: bool = False,
+    record_history: bool = False  # ← НОВЫЙ ПАРАМЕТР
 ) -> tuple:
     """
-    Запуск одной симуляции с возможностью сохранения финальной матрицы.
+    Запуск одной симуляции с возможностью сохранения финальной матрицы и истории.
     
     Возвращает:
-        (history_s, history_i, history_r, weekly_infections, threshold, matrix_display)
+        (history_s, history_i, history_r, weekly_infections, threshold, matrix_display, history_matrices)
     """
     # Инициализация
     grid, rats_data = initialize_rats(n, total_rats, max_per_cell)
     history = {'S': [], 'I': [], 'R': []}
     weekly_infections = []
+    history_matrices = []  # ← Для хранения состояний по дням
     
     total_days = weeks * 7
     current_week = 0
+    
+    # Записываем начальное состояние (день 0)
+    if record_history:
+        history_matrices = record_matrix_state(grid, rats_data, n, history_matrices)
     
     # Основной цикл симуляции
     for day in range(total_days):
@@ -411,6 +442,10 @@ def run_single_simulation(
         grid, rats_data = move_rats(grid, rats_data, p_move, n, max_per_cell)
         rats_data = infect_rats(grid, rats_data, p_infect)
         rats_data = update_statuses(rats_data, ill_days, immun_days)
+        
+        # Записываем состояние каждый день для анимации
+        if record_history:
+            history_matrices = record_matrix_state(grid, rats_data, n, history_matrices)
         
         # Запись статистики по неделям
         if day % 7 == 0:
@@ -428,10 +463,16 @@ def run_single_simulation(
         matrix_state = get_matrix_state(grid, rats_data, n)
         matrix_display = matrix_to_display(matrix_state)
     
-    return (
-        history['S'], history['I'], history['R'],
-        weekly_infections, threshold, matrix_display
-    )
+    if record_history:
+        return (
+            history['S'], history['I'], history['R'],
+            weekly_infections, threshold, matrix_display, history_matrices
+        )
+    else:
+        return (
+            history['S'], history['I'], history['R'],
+            weekly_infections, threshold, matrix_display
+        )
 
 
 def simulate_epidemic(
@@ -445,63 +486,50 @@ def simulate_epidemic(
     max_per_cell: int = 4,
     ill_days: int = 6,
     immun_days: int = 4,
+    record_history: bool = False
 ) -> SimulationResult:
     """
     Основная функция симуляции эпидемии.
-    
-    Параметры:
-        n: размер сетки
-        total_rats: общее количество крыс
-        weeks: количество недель
-        p_infect: вероятность заражения
-        p_move: вероятность перемещения
-        vacc_day: день вакцинации
-        vacc_percent: процент вакцинации
-        max_per_cell: максимальное количество крыс в клетке
-        ill_days: длительность болезни
-        immun_days: длительность иммунитета
-    
-    Возвращает:
-        SimulationResult с результатами симуляции
     """
-
     # Сохраняем начальное состояние для идентичных условий
     saved_random_state = random.getstate()
     saved_np_state = np.random.get_state()
     
-    # ===== СИМУЛЯЦИЯ БЕЗ вакцинации =====
+    # ===== СИМУЛЯЦИЯ БЕЗ вакцинации (для статистики, без истории) =====
     s_without, i_without, r_without, weekly_without, threshold_without, _ = run_single_simulation(
-    n, total_rats, weeks, p_infect, p_move,
-    None, None,
-    max_per_cell, ill_days, immun_days,
-    False
+        n, total_rats, weeks, p_infect, p_move,
+        None, None,
+        max_per_cell, ill_days, immun_days,
+        False, False
     )
     
-    # Подсчёт эпидемических недель без вакцинации
     epidemic_weeks_without = count_epidemic_weeks(i_without, threshold_without)
     
-    # Восстанавливаем состояние для идентичных начальных условий
+    # Восстанавливаем состояние
     random.setstate(saved_random_state)
     np.random.set_state(saved_np_state)
     
-    # ===== СИМУЛЯЦИЯ С вакцинацией =====
-    s_with, i_with, r_with, weekly_with, threshold_with, matrix_display = run_single_simulation(
-    n, total_rats, weeks, p_infect, p_move,
-    vacc_day, vacc_percent,
-    max_per_cell, ill_days, immun_days,
-    True
+    # ===== СИМУЛЯЦИЯ С вакцинацией (с сохранением истории для анимации) =====
+    result = run_single_simulation(
+        n, total_rats, weeks, p_infect, p_move,
+        vacc_day, vacc_percent,
+        max_per_cell, ill_days, immun_days,
+        True, record_history
     )
     
-    # Подсчёт эпидемических недель с вакцинацией
+    if record_history:
+        s_with, i_with, r_with, weekly_with, threshold_with, matrix_display, history_matrices = result
+    else:
+        s_with, i_with, r_with, weekly_with, threshold_with, matrix_display = result
+        history_matrices = []
+    
     epidemic_weeks_with = count_epidemic_weeks(i_with, threshold_with)
     
-    # Находим пики
     peak_without = max(i_without) if i_without else 0
     peak_with = max(i_with) if i_with else 0
     week_without = i_without.index(peak_without) if peak_without in i_without else 0
     week_with = i_with.index(peak_with) if peak_with in i_with else 0
     
-    # Расчет эффективности ПО ЭПИДЕМИЧЕСКИМ НЕДЕЛЯМ
     efficacy = calculate_efficacy(epidemic_weeks_without, epidemic_weeks_with)
     
     return SimulationResult(
@@ -518,5 +546,7 @@ def simulate_epidemic(
         matrix_display=matrix_display,
         n=n,
         epidemic_weeks_without=epidemic_weeks_without,
-        epidemic_weeks_with=epidemic_weeks_with
+        epidemic_weeks_with=epidemic_weeks_with,
+        history_matrices=history_matrices,
+        total_days=weeks * 7
     )

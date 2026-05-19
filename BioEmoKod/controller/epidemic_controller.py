@@ -142,6 +142,7 @@ def analyze_epidemic_scenario(
     p_move: float,
     vacc_day: int,
     vacc_percent: int,
+    record_history: bool = True
 ) -> dict:
     """
     Комплексный анализ одного сценария эпидемии.
@@ -171,6 +172,7 @@ def analyze_epidemic_scenario(
         p_move=p_move,
         vacc_day=vacc_day,
         vacc_percent=vacc_percent,
+        record_history=record_history
     )
     
     # Запуск симуляции без вакцинации для сравнения
