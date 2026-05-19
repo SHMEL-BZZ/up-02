@@ -207,7 +207,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Общее число крыс (1–n²×4):</label>
+                                <label class="col-sm-12 control-label">Общее число крыс (2–n²×4):</label>
                                 <div class="col-sm-12">
                                     <input type="number" step="1" name="total_rats" class="form-control" value="{{form_values.get('total_rats', '64')}}">
                                     % if field_errors.get('total_rats'):
@@ -287,8 +287,8 @@
                             <button type="submit" name="reset" value="true" class="btn btn-run" id="runButton">
                                 ⟳ Сброс данных
                             </button>
-                            <button type="submit" name="random" value="true" class="btn btn-run" id="runButton">
-                                🎲 Генерация случайных значений
+                            <button type="submit" name="random" value="true" class="btn btn-run">
+                                🎲 Генерация значений
                             </button>
                         </div>
                     </div>
