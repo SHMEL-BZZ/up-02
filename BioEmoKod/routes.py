@@ -308,13 +308,14 @@ def epidemic():
             if grid_size is not None and 'grid_size' not in field_errors:
                 if not (2 <= grid_size <= 10):
                     field_errors['grid_size'] = 'Размер сетки должен быть в диапазоне от 2 до 10'
-                        # 2. Валидация количества крыс (1 до n*n*4)
+            
+            # 2. Валидация количества крыс (2 до n*n*4)
             total_rats = to_int(form_values['total_rats'], 'total_rats', field_errors)
             if total_rats is not None and 'total_rats' not in field_errors:
                 if grid_size is not None and 'grid_size' not in field_errors:
                     max_rats = grid_size * grid_size * 4
-                    if not (1 <= total_rats <= max_rats):
-                        field_errors['total_rats'] = f'Число крыс должно быть в диапазоне от 1 до {max_rats} (при размере сетки {grid_size}x{grid_size})'
+                    if not (2 <= total_rats <= max_rats):
+                        field_errors['total_rats'] = f'Число крыс должно быть в диапазоне от 2 до {max_rats} (при размере сетки {grid_size}x{grid_size})'
             
             # 3. Валидация длительности в неделях (8-260)
             weeks = to_int(form_values['weeks'], 'weeks', field_errors)
@@ -414,7 +415,7 @@ def export_epidemic_csv():
     try:
         # Получаем параметры из POST запроса и преобразуем в нужные имена
         params = {
-            'n': int(request.forms.get('grid_size', 8)),           # grid_size -> n
+            'n': int(request.forms.get('grid_size', 8)),
             'total_rats': int(request.forms.get('total_rats', 64)),
             'weeks': int(request.forms.get('weeks', 52)),
             'p_infect': float(request.forms.get('p_infect', 0.6)),
@@ -493,7 +494,7 @@ def export_epidemic_graph():
         
         # Получаем параметры из формы и преобразуем в нужные имена
         params = {
-            'n': int(request.forms.get('grid_size', 8)),           # grid_size -> n
+            'n': int(request.forms.get('grid_size', 8)),
             'total_rats': int(request.forms.get('total_rats', 64)),
             'weeks': int(request.forms.get('weeks', 52)),
             'p_infect': float(request.forms.get('p_infect', 0.6)),
