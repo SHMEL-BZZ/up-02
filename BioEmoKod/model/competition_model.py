@@ -138,3 +138,123 @@ class World:
                     self.grid[x][y].rye = True
                     self.rye_count += 1
                     cells_with_rats.remove((x, y))
+
+
+def _force_interactions(self):
+        """Принудительно создаёт битвы между разными видами"""
+        if self.tick == 0 or self.tick % 2 != 0:  # Каждые 2 такта
+            return
+    
+        # Находим клетки с серыми и белыми крысами
+        gray_cells = []
+        white_cells = []
+    
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = self.grid[i][j]
+                if cell.rats:
+                    if any(r.species == 'gray' for r in cell.rats):
+                        gray_cells.append((i, j))
+                    if any(r.species == 'white' for r in cell.rats):
+                        white_cells.append((i, j))
+    
+        # Если есть и серые, и белые - создаём битву!
+        if gray_cells and white_cells:
+            # Берём случайную клетку с серыми
+            gx, gy = random.choice(gray_cells)
+            # Берём случайную клетку с белыми
+            wx, wy = random.choice(white_cells)
+        
+            # Если это разные клетки - перемещаем белую крысу к серой
+            if (gx, gy) != (wx, wy):
+                # Находим белую крысу
+                white_rat = None
+                for rat in self.grid[wx][wy].rats:
+                    if rat.species == 'white':
+                        white_rat = rat
+                        break
+            
+                # Находим серую крысу (для проверки, но не перемещаем)
+                if white_rat and self.grid[gx][gy].rats:
+                    # Перемещаем белую крысу в клетку к серым
+                    self.grid[wx][wy].rats.remove(white_rat)
+                    self.grid[gx][gy].rats.append(white_rat)
+                    print(f"FORCED FIGHT: Moved white to ({gx},{gy}) with gray")
+        
+            # Также пробуем переместить серую к белым для большей вероятности
+            if len(gray_cells) > 1 and len(white_cells) > 1:
+                gx2, gy2 = gray_cells[1] if len(gray_cells) > 1 else gray_cells[0]
+                wx2, wy2 = white_cells[1] if len(white_cells) > 1 else white_cells[0]
+            
+                if (gx2, gy2) != (wx2, wy2):
+                    gray_rat = None
+                    for rat in self.grid[gx2][gy2].rats:
+                        if rat.species == 'gray':
+                            gray_rat = rat
+                            break
+                
+                    if gray_rat and self.grid[wx2][wy2].rats:
+                        self.grid[gx2][gy2].rats.remove(gray_rat)
+                        self.grid[wx2][wy2].rats.append(gray_rat)
+                        print(f"FORCED FIGHT: Moved gray to ({wx2},{wy2}) with white")
+    
+        # Также добавляем рожь в клетки с несколькими крысами для стимуляции
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = self.grid[i][j]
+                if len(cell.rats) >= 2 and not cell.rye:
+                    # Добавляем рожь с вероятностью 30%
+                    if random.random() < 0.3:
+                        cell.rye = True
+                        self.rye_count += 1
+                        print(f"Added rye to ({i},{j}) for reproduction")
+    
+def _clear_markers(self):
+     """Очистка маркеров текущего такта"""
+     self.current_markers = {
+        'death_cells': [],
+        'fight_cells': [],
+        'peace_cells': []
+     }
+    
+def _save_history(self):
+    """Сохраняет текущее состояние в историю"""
+    self.history.append({
+        'tick': self.tick,
+        'gray': self.gray,
+        'white': self.white,
+        'rye': self.rye_count,
+        'fights': self.fights,
+        'deaths': self.deaths,
+        'markers': self.current_markers.copy()
+    })
+    
+def _get_neighbors(self, x, y):
+    """Возвращает список соседних клеток"""
+    neighbors = []
+    for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < self.n and 0 <= ny < self.n:
+            neighbors.append((nx, ny))
+    return neighbors
+    
+def _move_rat(self, x, y, rat):
+    """Перемещение крысы"""
+    neighbors = self._get_neighbors(x, y)
+    
+    rye_cells = [(nx, ny) for nx, ny in neighbors 
+                 if self.grid[nx][ny].rye and not self.grid[nx][ny].rats]
+    if rye_cells:
+        nx, ny = random.choice(rye_cells)
+    else:
+        empty_cells = [(nx, ny) for nx, ny in neighbors 
+                      if not self.grid[nx][ny].rats and not self.grid[nx][ny].rye]
+        if empty_cells:
+            nx, ny = random.choice(empty_cells)
+        else:
+            return x, y
+        
+    self.grid[x][y].rats.remove(rat)
+    self.grid[nx][ny].rats.append(rat)
+    return nx, ny
+
