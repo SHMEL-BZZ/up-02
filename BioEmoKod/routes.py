@@ -2,7 +2,7 @@
 Routes and views for the bottle application.
 """
 
-from bottle import route, view, request, template, response
+from bottle import route, view, request, template, response, static_file
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
@@ -11,9 +11,19 @@ import random
 import csv
 import io
 
-# Импортируем вашу модель 
+# Импортир модели "Хищник-жертва" 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
+
+# Импорт модели "Развитие эпидемии"
+from model.epidemic import SimulationResult
+from controller.epidemic_controller import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
+
+# Обработчик статических файлов
+@route('/static/<filepath:path>')
+def server_static(filepath):
+    """Serve static files."""
+    return static_file(filepath, root='static/')
 
 @route('/')
 @route('/home')
@@ -157,10 +167,6 @@ def predator_pray():
                    form_values=form_values,
                    field_errors=field_errors)
 
-
-from model.epidemic import SimulationResult
-from controller.epidemic_controller import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
-
 @route('/epidemic', method=['GET', 'POST'])
 def epidemic():
     title = 'Модель «Распространение эпидемии»'
@@ -229,7 +235,9 @@ def epidemic():
                     'matrix_display': analysis['simulation_result'].matrix_display,
                     'n': analysis['simulation_result'].n,
                     'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
-                    'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)']
+                    'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)'],
+                    'history_matrices': analysis['simulation_result'].history_matrices,
+                    'total_days': analysis['simulation_result'].total_days
                 }
             except Exception as e:
                 error = f"Ошибка расчёта: {str(e)}"
@@ -391,7 +399,9 @@ def epidemic():
                         'matrix_display': analysis['simulation_result'].matrix_display,
                         'n': analysis['simulation_result'].n,
                         'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
-                        'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)']
+                        'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)'],
+                        'history_matrices': analysis['simulation_result'].history_matrices,
+                        'total_days': analysis['simulation_result'].total_days
                     }
                 except Exception as e:
                     error = f"Ошибка расчёта: {str(e)}"

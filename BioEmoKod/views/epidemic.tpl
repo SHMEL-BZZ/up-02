@@ -322,7 +322,7 @@
                     <div class="matrix-wrapper">
                         <div class="matrix-container">
                             <table class="matrix-table">
-                                <tbody>
+                                <tbody id="matrix-body">
                                     % if results and results.get('matrix_display'):
                                         % for i in range(results['n']):
                                             <tr>
@@ -384,9 +384,20 @@
                         
                         <div class="legend-divider"></div>
                         
+                        <!-- Ползунок для выбора дня -->
+                        <div class="slider-container">
+                            <label>📅 День:</label>
+                            <input type="range" id="daySlider" min="0" max="0" value="0" step="1" style="width: 100%;">
+                            <span id="dayValue" style="font-size: 11px; display: block; text-align: center;">0</span>
+                        </div>
+                        
+                        <div class="legend-divider"></div>
+                        
+                        <!-- Кнопки управления анимацией -->
                         <div class="legend-buttons">
-                            <button class="btn btn-success btn-sm matrix-btn" disabled>▶ Старт</button>
-                            <button class="btn btn-danger btn-sm matrix-btn" disabled>🔄 Пауза</button>
+                            <button class="btn btn-success btn-sm matrix-btn" id="btnPlay">▶ Старт</button>
+                            <button class="btn btn-danger btn-sm matrix-btn" id="btnPause" style="display: none;">⏸ Пауза</button>
+                            <button class="btn btn-warning btn-sm matrix-btn" id="btnReset">🔄 Сброс</button>
                         </div>
                     </div>
                 </div>
@@ -496,3 +507,130 @@
     </div>
 </div>
 % end
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем данные истории из results
+    var historyMatrices = {{! results.get('history_matrices', '[]') if results else '[]' }};
+    var totalDays = {{ results.get('total_days', 0) if results else 0 }};
+    
+    // Если нет данных для анимации — не инициализируем анимацию (оставляем заглушку)
+    if (!historyMatrices || historyMatrices.length === 0) {
+        console.log('Нет данных для анимации, оставляем статическую матрицу');
+        return;
+    }
+    
+    console.log('History matrices length:', historyMatrices.length);
+    console.log('Total days:', totalDays);
+    
+    var currentIndex = totalDays;
+    var animationInterval = null;
+    var isPlaying = false;
+    
+    // Элементы управления
+    var slider = document.getElementById('daySlider');
+    var dayValue = document.getElementById('dayValue');
+    var btnPlay = document.getElementById('btnPlay');
+    var btnPause = document.getElementById('btnPause');
+    var btnReset = document.getElementById('btnReset');
+    var matrixBody = document.getElementById('matrix-body');
+    
+    // Устанавливаем максимальное значение слайдера
+    if (slider) {
+        slider.max = totalDays;
+        slider.value = totalDays;
+        if (dayValue) dayValue.innerText = 'День: ' + totalDays;
+    }
+    
+    // Функция обновления матрицы по индексу
+    function updateMatrix(dayIndex) {
+        if (!historyMatrices[dayIndex]) return;
+        
+        var matrix = historyMatrices[dayIndex];
+        var html = '';
+        
+        for (var i = 0; i < matrix.length; i++) {
+            html += '<tr>';
+            for (var j = 0; j < matrix[i].length; j++) {
+                html += '<td><div class="cell-content">';
+                var statuses = matrix[i][j];
+                for (var k = 0; k < statuses.length; k++) {
+                    var status = statuses[k];
+                    if (status === 'S') {
+                        html += '<span class="stat-s">●</span>';
+                    } else if (status === 'I') {
+                        html += '<span class="stat-i">●</span>';
+                    } else if (status === 'R') {
+                        html += '<span class="stat-r">●</span>';
+                    }
+                }
+                html += '</div></td>';
+            }
+            html += '</tr>';
+        }
+        
+        if (matrixBody) matrixBody.innerHTML = html;
+        
+        if (slider) slider.value = dayIndex;
+        if (dayValue) dayValue.innerText = 'День: ' + dayIndex;
+        
+        currentIndex = dayIndex;
+    }
+    
+    function startAnimation() {
+        if (animationInterval) clearInterval(animationInterval);
+        isPlaying = true;
+        
+        if (currentIndex >= totalDays) {
+            currentIndex = 0;
+            updateMatrix(currentIndex);
+        }
+        
+        if (btnPlay) btnPlay.style.display = 'none';
+        if (btnPause) btnPause.style.display = 'inline-block';
+        
+        animationInterval = setInterval(function() {
+            if (currentIndex < totalDays) {
+                currentIndex++;
+                updateMatrix(currentIndex);
+            } else {
+                stopAnimation();
+            }
+        }, 200);
+    }
+    
+    function stopAnimation() {
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        isPlaying = false;
+        
+        if (btnPlay) btnPlay.style.display = 'inline-block';
+        if (btnPause) btnPause.style.display = 'none';
+    }
+    
+    function resetAnimation() {
+        stopAnimation();
+        currentIndex = totalDays;
+        updateMatrix(totalDays);
+    }
+    
+    // Привязываем события
+    if (btnPlay) btnPlay.onclick = startAnimation;
+    if (btnPause) btnPause.onclick = stopAnimation;
+    if (btnReset) btnReset.onclick = resetAnimation;
+    
+    if (slider) {
+        slider.oninput = function() {
+            stopAnimation();
+            updateMatrix(parseInt(this.value));
+        };
+    }
+    
+    // Инициализируем матрицу последним днём
+    if (historyMatrices.length > 0 && totalDays > 0) {
+        updateMatrix(totalDays);
+    }
+});
+</script>
