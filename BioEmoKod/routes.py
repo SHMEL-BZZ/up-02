@@ -8,7 +8,6 @@ import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
-import re
 
 import io
 import base64
@@ -204,22 +203,31 @@ def fishing():
     q_opt = None
     frames_by_q = None
     q_animation_list = [] 
-    table_data = []
+    table_data = [] 
     n, m = None, None
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")   # всегда определена
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") 
 
     if request.method == 'POST':
         try:
-            # Получаем параметры из формы
             N = int(request.forms.get('N', 15))
             M = int(request.forms.get('M', 15))
             K = int(request.forms.get('K', 50))
-            p_repro = float(request.forms.get('p_repro', 0.25))
-            p_death = float(request.forms.get('p_death', 0.1))
-            
-            
-            
-            # Вызов оптимизации 
+            pRepro = float(request.forms.get('prepro', 0.2))
+            pDeath = float(request.forms.get('pdeath', 0.1))
+
+            # Валидация 
+            if not (10 <= N <= 100):
+                raise ValueError("N должно быть 10-100")
+            if not (10 <= M <= 100):
+                raise ValueError("M должно быть 10-100")
+            if not (1 <= K <= N * M):
+                raise ValueError(f"K должно быть 1-{N*M}")
+            if not (0.0 <= pRepro <= 1.0):
+                raise ValueError("prepro от 0 до 1")
+            if not (0.0 <= pDeath <= 1.0):
+                raise ValueError("pdeath от 0 до 1")
+
+            # 1. Оптимизация
             results_raw, q_opt = find_optimal_q(
                 N, M, K, pRepro, pDeath,
                 steps_warmup=50, steps_eval=50, trials=3
@@ -254,6 +262,21 @@ def fishing():
             buf.seek(0)
             graph_base64 = base64.b64encode(buf.read()).decode('utf-8')
             plt.close(fig)
+
+            # 3. Анимация 
+            q_animation_list = [round(i/20, 2) for i in range(21)]
+            frames_by_q = {}
+            total_steps = 60
+            record_every = 2
+
+            for q_val in q_animation_list:
+                lake = FishLake(N, M, K, pRepro, pDeath, q_val)
+                frames, _ = lake.simulate_with_frames(total_steps, record_every)
+                key = "{:.2f}".format(q_val)
+                frames_by_q[str(key)] = [
+                    [[int(cell) for cell in row] for row in frame] for frame in frames
+                ]
+            n, m = N, M
 
             # Результаты для отображения
             results = {

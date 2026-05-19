@@ -83,8 +83,8 @@
 
                 % if graph_base64:
                 <div class="well">
-                    <h4 class="text-center">Результаты</h4>
-                    <p><strong>Оптимальная вероятность вылова:</strong> {{ results['q_opt'] }}</p>
+                    <h4 class="text-center">Результаты оптимизации</h4>
+                    <p><strong>Оптимальная вероятность вылова (q_opt):</strong> {{ results['q_opt'] }}</p>
                     <p><strong>Средний улов при q_opt:</strong> {{ results['avg_catch_opt'] }}</p>
                     <p><strong>Средняя численность при q_opt:</strong> {{ results['avg_pop_opt'] }}</p>
 
@@ -114,7 +114,6 @@
                     </div>
                     <div class="text-center">
                         <p>Текущее значение q: <strong><span id="currentQ">0.00</span></strong></p>
-
                         <button id="startSeriesBtn" class="btn btn-fishing">▶ Старт серии</button>
                         <button id="pauseSeriesBtn" class="btn btn-fishing">⏸ Пауза</button>
                         <button id="resetSeriesBtn" class="btn btn-fishing">⟳ Сброс</button>
@@ -190,7 +189,7 @@
 </div>
 
 <script>
-// Данные от сервера
+// Данные от сервера 
 var qList = {{! q_animation_list_json }};
 var framesByQ = {{! frames_by_q_json }};
 var N = {{ N if N else 0 }};
@@ -203,6 +202,100 @@ var intervalId = null;
 var speed = 200;
 var framesForCurrentQ = [];
 
+// Обновление отображения сетки
+function renderCurrentFrame() {
+    if (!framesForCurrentQ || framesForCurrentQ.length === 0) return;
+    var frame = framesForCurrentQ[currentFrameIndex];
+    for (var i = 0; i < N; i++) {
+        for (var j = 0; j < M; j++) {
+            var cell = document.getElementById('cell-' + i + '-' + j);
+            if (!cell) continue;
+            var hasFish = frame[i][j] === 1;
+            if (hasFish) {
+                cell.className = 'fish-cell';
+                cell.innerHTML = '<span class="fish-icon">&bull;</span>';
+            } else {
+                cell.className = 'empty-cell';
+                cell.innerHTML = '';
+            }
+        }
+    }
+}
+
+// Загрузить анимацию для q с индексом index
+function loadQ(index) {
+    if (index >= qList.length) {
+        stopSeries();
+        alert("Анимация завершена для всех значений q");
+        return false;
+    }
+    var qVal = qList[index];
+    document.getElementById('currentQ').innerText = qVal;
+    //  Число в строку 
+    var key = qVal.toFixed(2);
+    framesForCurrentQ = framesByQ[key];
+    currentFrameIndex = 0;
+    if (framesForCurrentQ && framesForCurrentQ.length) {
+        renderCurrentFrame();
+        updateProgress();
+        return true;
+    }
+    return false;
+}
+
+// Один шаг анимации 
+function stepAnimation() {
+    if (!framesForCurrentQ) return;
+    if (currentFrameIndex + 1 < framesForCurrentQ.length) {
+        currentFrameIndex++;
+        renderCurrentFrame();
+        updateProgress();
+    } else {
+        // переход к следующему q
+        currentQIndex++;
+        if (!loadQ(currentQIndex)) {
+            stopSeries();
+        } else {
+            updateProgress();
+        }
+    }
+}
+
+function startSeries() {
+    if (intervalId) clearInterval(intervalId);
+    if (currentQIndex === 0 && currentFrameIndex === 0) {
+        if (!loadQ(0)) return;
+    }
+    intervalId = setInterval(stepAnimation, speed);
+}
+
+function stopSeries() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
+function resetSeries() {
+    stopSeries();
+    currentQIndex = 0;
+    loadQ(0);
+}
+
+function updateProgress() {
+    if (!framesForCurrentQ || framesForCurrentQ.length === 0) return;
+    var totalFramesForCurrent = framesForCurrentQ.length;
+    var currentFrame = currentFrameIndex;
+    var totalQ = qList.length;
+    var completedFrames = currentQIndex * totalFramesForCurrent + currentFrame;
+    var totalFramesAll = totalQ * totalFramesForCurrent;
+    var percent = Math.floor((completedFrames / totalFramesAll) * 100);
+    var progressBar = document.getElementById('animationProgress');
+    if (progressBar) {
+        progressBar.style.width = percent + '%';
+        progressBar.innerText = percent + '%';
+    }
+}
 
 // Обработчики кнопок
 document.getElementById('startSeriesBtn').addEventListener('click', startSeries);
@@ -253,7 +346,6 @@ if (speedSlider) {
     });
 }
 
-// Если данные есть, первый кадр для q=0.0
 if (qList.length && framesByQ) {
     loadQ(0);
 }
