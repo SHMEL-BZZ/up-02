@@ -403,3 +403,92 @@ def _force_interactions(self):
                     if gray_rat:
                         self.grid[gx2][gy2].rats.remove(gray_rat)
                         self.grid[wx2][wy2].rats.append(gray_rat)   
+
+def _apply_hunger(self):
+        """Применение голода"""
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = self.grid[i][j]
+                for rat in cell.rats[:]:
+                    rat.hunger += 1
+                    if rat.hunger >= 10:
+                        cell.rats.remove(rat)
+                        self.deaths += 1
+                        self.current_markers['death_cells'].append((i, j, rat.species))
+                        if rat.species == 'gray':
+                            self.gray -= 1
+                        else:
+                            self.white -= 1
+    
+def _spawn_rye(self, interval, count):
+        """Появление новой ржи"""
+        if self.tick > 0 and self.tick % max(1, interval) == 0:
+            empty = [(i, j) for i in range(self.n) for j in range(self.n)
+                    if not self.grid[i][j].rats and not self.grid[i][j].rye]
+            
+            for _ in range(min(count, len(empty))):
+                if empty:
+                    x, y = random.choice(empty)
+                    self.grid[x][y].rye = True
+                    self.rye_count += 1
+                    empty.remove((x, y))
+    
+def _reset_flags(self):
+        """Сброс флагов крыс"""
+        for i in range(self.n):
+            for j in range(self.n):
+                for rat in self.grid[i][j].rats:
+                    rat.reset_flags()
+    
+def is_simulation_over(self):
+        """Проверка окончания симуляции"""
+        if self.gray == 0 or self.white == 0:
+            self.is_extinct = True
+            return True
+        return False
+    
+def step(self, interval, count, max_ticks):
+        """Выполнение одного такта симуляции"""
+        if self.is_simulation_over():
+            return False
+    
+        if self.tick >= max_ticks:
+            return False
+    
+        self.tick += 1
+        self._clear_markers()
+    
+        # 1. Перемещение крыс
+        for i in range(self.n):
+            for j in range(self.n):
+                for rat in self.grid[i][j].rats[:]:
+                    self._move_rat(i, j, rat)
+    
+        # 2. Принудительные взаимодействия (создаём битвы)
+        self._force_interactions()
+    
+        # 3. Взаимодействия в клетках (битвы и размножение)
+        for i in range(self.n):
+            for j in range(self.n):
+                self._process_cell(i, j)
+    
+        # 4. Применение голода
+        self._apply_hunger()
+    
+        # 5. Появление новой ржи
+        self._spawn_rye(interval, count)
+    
+        # 6. Добавляем рожь если её мало
+        if self.rye_count < 3 and self.tick % 3 == 0:
+            empty_cells = [(i, j) for i in range(self.n) for j in range(self.n)
+                          if not self.grid[i][j].rats and not self.grid[i][j].rye]
+            for _ in range(min(2, len(empty_cells))):
+                if empty_cells:
+                    x, y = random.choice(empty_cells)
+                    self.grid[x][y].rye = True
+                    self.rye_count += 1
+                    empty_cells.remove((x, y))
+    
+    
+        self._save_history()
+        return True
