@@ -8,6 +8,7 @@ import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
+import re
 
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
@@ -198,17 +199,41 @@ def fishing():
     if request.method == 'POST':
         try:
             # Получаем параметры из формы
-            N = int(request.forms.get('N', 15))
-            M = int(request.forms.get('M', 15))
-            K = int(request.forms.get('K', 50))
-            p_repro = float(request.forms.get('p_repro', 0.25))
-            p_death = float(request.forms.get('p_death', 0.1))
+
+            n = request.forms.get('N')
+            m = request.forms.get('M')
+            k = request.forms.get('K')
+            prepro = request.forms.get('prepro')
+            pdeath = request.forms.get('pdeath')
+
+            if not all([n, m, k, prepro, pdeath]):
+                raise ValueError("Все поля должны быть заполнены")
             
-            
+            # Преобразование типов
+            try:
+                N = int(n)
+                M = int(m)
+                K = int(k)
+                pRepro = float(prepro)
+                pDeath = float(pdeath)
+            except ValueError:
+                raise ValueError("Все значения должны быть числами")
+
+            # Обработка полей ввода
+            if not (10 <= N <= 100):
+                raise ValueError("Количество строк сетки должно быть в диапазоне 10–100")
+            if not (10 <= M <= 100):
+                raise ValueError("Количество столбцов сетки должно быть в диапазоне 10–100")
+            if not (1 <= K <= N*M):
+                raise ValueError("Численность рыб должна быть в диапазоне 1–N*M")
+            if not (0.0 <= prepro <= 1.0):
+                raise ValueError("Вероятность размножения должна быть в диапазоне 0.0–1.0")
+            if not (0.0 <= prepro <= 1.0):
+                raise ValueError("Вероятность сметри должна быть в диапазоне 0.0–1.0")
             
             # Вызов оптимизации 
             results_raw, q_opt = find_optimal_q(
-                N, M, K, p_repro, p_death,
+                N, M, K, pRepro, pDeath,
                 steps_warmup=50,
                 steps_eval=50,
                 trials=3
@@ -217,7 +242,7 @@ def fishing():
 
             if q_opt is not None:
                 q_current = q_opt
-                lake = FishLake(N, M, K, p_repro, p_death, q_current)
+                lake = FishLake(N, M, K, pRepro, pDeath, q_current)
                 for _ in range(3):
                     lake.step()
                 grid = lake.grid

@@ -52,16 +52,16 @@
                         <div class="col-md-6">
                             <h4 class="text-center">Вероятности процессов</h4>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Размножение (p_repro):</label>
+                                <label class="col-sm-6 control-label">Размножение (prepro):</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="p_repro" class="form-control" value="0.25" step="0.01" required>
+                                    <input type="number" name="prepro" class="form-control" value="0.2" step="0.01" required>
                                     <span class="help-block">от 0 до 1</span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Гибель (p_death):</label>
+                                <label class="col-sm-6 control-label">Гибель (pdeath):</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="p_death" class="form-control" value="0.1" step="0.01" required>
+                                    <input type="number" name="pdeath" class="form-control" value="0.1" step="0.01" required>
                                     <span class="help-block">от 0 до 1</span>
                                 </div>
                             </div>
@@ -73,7 +73,17 @@
                             </div>
                         </div>
                     </div>
-                    
+                <!--Обработка ошибки-->
+                 % if defined('error') and error:
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Ошибка:</strong> {{ error }}
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                    </div>
+                </div>
+                % end   
                     
                 </form>
 
