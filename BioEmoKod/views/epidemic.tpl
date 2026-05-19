@@ -386,7 +386,7 @@
                         
                         <div class="legend-buttons">
                             <button class="btn btn-success btn-sm matrix-btn" disabled>▶ Старт</button>
-                            <button class="btn btn-danger btn-sm matrix-btn" disabled>🔄 Сброс</button>
+                            <button class="btn btn-danger btn-sm matrix-btn" disabled>🔄 Пауза</button>
                         </div>
                     </div>
                 </div>
