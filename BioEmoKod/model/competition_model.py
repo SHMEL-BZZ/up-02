@@ -258,3 +258,148 @@ def _move_rat(self, x, y, rat):
     self.grid[nx][ny].rats.append(rat)
     return nx, ny
 
+def _process_cell(self, x, y):
+        """Обработка взаимодействий в клетке"""
+        cell = self.grid[x][y]
+        rats = cell.rats
+
+        if len(rats) == 0:
+            return
+
+        # Одна крыса: если есть рожь - съедает
+        if len(rats) == 1 and cell.rye:
+            cell.rye = False
+            self.rye_count -= 1
+            rats[0].hunger = 0
+            return
+
+        # Две или более крысы
+        if len(rats) >= 2:
+            a, b = rats[0], rats[1]
+        
+            # Если виды разные - КОНФЛИКТ
+            if a.species != b.species:
+                hostility_diff = abs(a.hostility - b.hostility)
+            
+                # МИРНЫЙ РАЗБЕГ
+                if hostility_diff < 0.3:
+                    self.current_markers['peace_cells'].append((x, y))
+                
+                    # Разводим крыс по разным клеткам
+                    neighbors = self._get_neighbors(x, y)
+                    empty_neighbors = [n for n in neighbors if not self.grid[n[0]][n[1]].rats]
+                
+                    if len(empty_neighbors) >= 2:
+                        random.shuffle(empty_neighbors)
+                        self.grid[empty_neighbors[0][0]][empty_neighbors[0][1]].rats.append(a)
+                        self.grid[empty_neighbors[1][0]][empty_neighbors[1][1]].rats.append(b)
+                        rats.remove(a)
+                        rats.remove(b)
+                    elif len(empty_neighbors) == 1:
+                        self.grid[empty_neighbors[0][0]][empty_neighbors[0][1]].rats.append(a)
+                        rats.remove(a)
+                    return
+            
+                # ДРАКА
+                else:
+                    self.fights += 1
+                
+                    winner = random.choice([a, b])
+                    loser = b if winner == a else a
+                
+                    # Добавляем маркер битвы
+                    self.current_markers['fight_cells'].append((x, y, winner.species))
+                
+                    # Удаляем проигравшего
+                    rats.remove(loser)
+                    self.deaths += 1
+                    self.current_markers['death_cells'].append((x, y, loser.species))
+                
+                    if loser.species == 'gray':
+                        self.gray -= 1
+                    else:
+                        self.white -= 1
+                
+                    # Победитель съедает рожь
+                    if cell.rye:
+                        cell.rye = False
+                        self.rye_count -= 1
+                        winner.hunger = 0
+                
+                    return
+        
+            # Если виды одинаковые - РАСХОДЯТСЯ МИРНО
+            else:
+                self.current_markers['peace_cells'].append((x, y))
+            
+                # Разводим крыс по разным клеткам
+                neighbors = self._get_neighbors(x, y)
+                empty_neighbors = [n for n in neighbors if not self.grid[n[0]][n[1]].rats]
+            
+                if len(empty_neighbors) >= 2:
+                    random.shuffle(empty_neighbors)
+                    self.grid[empty_neighbors[0][0]][empty_neighbors[0][1]].rats.append(a)
+                    self.grid[empty_neighbors[1][0]][empty_neighbors[1][1]].rats.append(b)
+                    rats.remove(a)
+                    rats.remove(b)
+                elif len(empty_neighbors) == 1:
+                    self.grid[empty_neighbors[0][0]][empty_neighbors[0][1]].rats.append(a)
+                    rats.remove(a)
+                # Если нет свободных клеток - обе остаются на месте
+                return
+
+
+def _force_interactions(self):
+        """Принудительно создаёт конфликты между разными видами"""
+        if self.tick == 0 or self.tick % 2 != 0:  # Каждые 2 такта
+            return
+    
+        # Находим клетки с серыми и белыми крысами
+        gray_cells = []
+        white_cells = []
+    
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = self.grid[i][j]
+                if cell.rats:
+                    if any(r.species == 'gray' for r in cell.rats):
+                        gray_cells.append((i, j))
+                    if any(r.species == 'white' for r in cell.rats):
+                        white_cells.append((i, j))
+    
+        # Создаём битву: перемещаем крысу одного вида в клетку с другим видом
+        if gray_cells and white_cells:
+            # Берём случайную клетку с серыми
+            gx, gy = random.choice(gray_cells)
+            # Берём случайную клетку с белыми
+            wx, wy = random.choice(white_cells)
+        
+            # Если это разные клетки - перемещаем белую крысу к серой
+            if (gx, gy) != (wx, wy):
+                # Находим белую крысу
+                white_rat = None
+                for rat in self.grid[wx][wy].rats:
+                    if rat.species == 'white':
+                        white_rat = rat
+                        break
+            
+                if white_rat:
+                    # Перемещаем белую крысу в клетку к серым
+                    self.grid[wx][wy].rats.remove(white_rat)
+                    self.grid[gx][gy].rats.append(white_rat)
+        
+            # Также пробуем переместить серую к белым для большей вероятности
+            if len(gray_cells) > 1 and len(white_cells) > 1:
+                gx2, gy2 = gray_cells[1] if len(gray_cells) > 1 else gray_cells[0]
+                wx2, wy2 = white_cells[1] if len(white_cells) > 1 else white_cells[0]
+            
+                if (gx2, gy2) != (wx2, wy2):
+                    gray_rat = None
+                    for rat in self.grid[gx2][gy2].rats:
+                        if rat.species == 'gray':
+                            gray_rat = rat
+                            break
+                
+                    if gray_rat:
+                        self.grid[gx2][gy2].rats.remove(gray_rat)
+                        self.grid[wx2][wy2].rats.append(gray_rat)   
