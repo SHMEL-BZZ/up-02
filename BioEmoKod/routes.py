@@ -9,6 +9,12 @@ matplotlib.use('Agg')  # Для работы без графического и�
 import matplotlib.pyplot as plt
 import random
 
+import io
+import base64
+import csv
+from datetime import datetime
+import json
+
 # Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
@@ -192,55 +198,100 @@ def fishing():
     title = 'Динамика рыбного промысла'
     results = None
     error = None
-    grid = None
-    q_current = None
-    
+    graph_base64 = None
+    frames_json = None
+    q_opt = None
+    frames_by_q = None
+    q_animation_list = [] 
+    table_data = []
+    n, m = None, None
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")   # всегда определена
+
     if request.method == 'POST':
         try:
-            # Получаем параметры из формы
             N = int(request.forms.get('N', 15))
             M = int(request.forms.get('M', 15))
             K = int(request.forms.get('K', 50))
-            p_repro = float(request.forms.get('p_repro', 0.25))
-            p_death = float(request.forms.get('p_death', 0.1))
-            
-            
-            
-            # Вызов оптимизации 
+            pRepro = float(request.forms.get('prepro', 0.2))
+            pDeath = float(request.forms.get('pdeath', 0.1))
+
+            # Валидация
+            if not (10 <= N <= 100):
+                raise ValueError("N должно быть 10-100")
+            if not (10 <= M <= 100):
+                raise ValueError("M должно быть 10-100")
+            if not (1 <= K <= N * M):
+                raise ValueError(f"K должно быть 1-{N*M}")
+            if not (0.0 <= pRepro <= 1.0):
+                raise ValueError("prepro от 0 до 1")
+            if not (0.0 <= pDeath <= 1.0):
+                raise ValueError("pdeath от 0 до 1")
+
+            # 1. Вычисление оптимального значения
             results_raw, q_opt = find_optimal_q(
-                N, M, K, p_repro, p_death,
-                steps_warmup=50,
-                steps_eval=50,
-                trials=3
+                N, M, K, pRepro, pDeath,
+                steps_warmup=50, steps_eval=50, trials=3
             )
 
-
-            if q_opt is not None:
-                q_current = q_opt
-                lake = FishLake(N, M, K, p_repro, p_death, q_current)
-                for _ in range(3):
-                    lake.step()
-                grid = lake.grid
-            
-            # Преобразование результатов для удобства отображения
+            # Подготовка данных для таблицы и графика
+            table_data = []
             q_vals = sorted(results_raw.keys())
-            catches = [results_raw[q][0] for q in q_vals]
-            pops = [results_raw[q][1] for q in q_vals]
-           
+            avg_catch = [results_raw[q][0] for q in q_vals]
+            avg_pop = [results_raw[q][1] for q in q_vals]
+            for q, (catch, pop) in results_raw.items():
+                table_data.append({'q': q, 'avg_catch': catch, 'avg_pop': pop})
             
+
+            # 2. Построение графика
+            fig, ax1 = plt.subplots(figsize=(8, 5))
+            ax1.set_xlabel('Вероятность вылова q')
+            ax1.set_ylabel('Средняя численность', color='tab:blue')
+            ax1.plot(q_vals, avg_pop, 'b-o', label='Численность')
+            ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+            ax2 = ax1.twinx()
+            ax2.set_ylabel('Средний улов', color='tab:red')
+            ax2.plot(q_vals, avg_catch, 'r-s', label='Улов')
+            ax2.tick_params(axis='y', labelcolor='tab:red')
+
+            plt.title('Зависимость средней численности и улова от q')
+            fig.tight_layout()
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            graph_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            plt.close(fig)
+
+            # Результаты для отображения
+            results = {
+                'q_opt': f"{q_opt:.2f}" if q_opt is not None else "Не найден",
+                'avg_catch_opt': f"{results_raw[q_opt][0]:.2f}" if q_opt else "—",
+                'avg_pop_opt': f"{results_raw[q_opt][1]:.2f}" if q_opt else "—"
+            }
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
         except ValueError as e:
             error = str(e)
         except Exception as e:
             error = f"Ошибка расчёта: {str(e)}"
-    
-    # Для GET или после POST с ошибкой отдаём форму
+
+    table_data_json = json.dumps(table_data)
+
     return template('fishing',
-                title=title,
-                year=datetime.now().year,
-                results=results,
-                error=error,
-                grid=grid,
-                q=q_current)
+                   title=title,
+                   year=datetime.now().year,
+                   results=results,
+                   error=error,
+                   graph_base64=graph_base64,
+                   frames_by_q=frames_by_q,
+                   q_animation_list_json=json.dumps(q_animation_list),
+                   frames_by_q_json=json.dumps(frames_by_q),
+                   q_opt=q_opt,
+                   table_data_json=table_data_json,
+                   N=n, M=m,
+                   timestamp=timestamp)
 
 @route('/about')
 @view('about')
