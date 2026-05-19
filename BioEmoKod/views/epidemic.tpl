@@ -461,16 +461,31 @@
                         </div>
                     </div>
                 </div>
-                <!-- Кнопки экспорта -->
+               <!-- Кнопки экспорта -->
                 <div class="export-buttons">
                     <form action="/epidemic/export/csv" method="post" style="display: inline;">
-                        <input type="hidden" name="data">
+                        <!-- Передаём текущие параметры в скрытых полях -->
+                        <input type="hidden" name="grid_size" value="{{form_values.get('grid_size', '8')}}">
+                        <input type="hidden" name="total_rats" value="{{form_values.get('total_rats', '64')}}">
+                        <input type="hidden" name="weeks" value="{{form_values.get('weeks', '52')}}">
+                        <input type="hidden" name="p_infect" value="{{form_values.get('p_infect', '0.6')}}">
+                        <input type="hidden" name="p_move" value="{{form_values.get('p_move', '0.5')}}">
+                        <input type="hidden" name="vacc_day" value="{{form_values.get('vacc_day', '56')}}">
+                        <input type="hidden" name="vacc_percent" value="{{form_values.get('vacc_percent', '50')}}">
                         <button type="submit" class="btn btn-export-csv">
                             Экспорт данных в CSV
                         </button>
                     </form>
+    
                     <form action="/epidemic/export/graph" method="post" style="display: inline;">
-                        <input type="hidden" name="graph">
+                        <!-- Передаём текущие параметры в скрытых полях -->
+                        <input type="hidden" name="grid_size" value="{{form_values.get('grid_size', '8')}}">
+                        <input type="hidden" name="total_rats" value="{{form_values.get('total_rats', '64')}}">
+                        <input type="hidden" name="weeks" value="{{form_values.get('weeks', '52')}}">
+                        <input type="hidden" name="p_infect" value="{{form_values.get('p_infect', '0.6')}}">
+                        <input type="hidden" name="p_move" value="{{form_values.get('p_move', '0.5')}}">
+                        <input type="hidden" name="vacc_day" value="{{form_values.get('vacc_day', '56')}}">
+                        <input type="hidden" name="vacc_percent" value="{{form_values.get('vacc_percent', '50')}}">
                         <button type="submit" class="btn btn-export-png">
                             Экспорт графика
                         </button>
