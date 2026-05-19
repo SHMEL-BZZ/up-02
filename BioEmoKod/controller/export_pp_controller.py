@@ -19,28 +19,18 @@ class ExportManager:
     def __init__(self, temp_dir: str = 'static/temp_plots'):
         """
         Инициализация менеджера экспорта
-        
-        Параметры:
-            temp_dir: директория для временного хранения файлов
         """
-        self.temp_dir = temp_dir
+        self.temp_dir = temp_dir #директория для временного хранения
         self.temp_results: Dict[str, Dict] = {}
-        self._ensure_temp_dir()
+        self._ensure_temp_dir() #рекурсивное создание директории
     
     def _ensure_temp_dir(self):
         """Создает временную директорию если она не существует"""
-        os.makedirs(self.temp_dir, exist_ok=True)
+        os.makedirs(self.temp_dir, exist_ok=True)   #с проверкой существования
     
     def save_simulation_result(self, result, params: Dict) -> str:
         """
         Сохраняет результаты симуляции во временное хранилище
-        
-        Параметры:
-            result: объект SimulationResult
-            params: словарь с параметрами модели
-        
-        Возвращает:
-            unique_id: уникальный идентификатор сохраненных данных
         """
         results_id = str(uuid.uuid4())
         
@@ -58,14 +48,8 @@ class ExportManager:
     def save_plot(self, plot_base64: str) -> str:
         """
         Сохраняет график во временный файл
-        
-        Параметры:
-            plot_base64: строка с изображением в base64
-        
-        Возвращает:
-            plot_id: уникальный идентификатор графика
         """
-        plot_id = str(uuid.uuid4())
+        plot_id = str(uuid.uuid4()) #генерация идентификатора
         
         # Очищаем base64 строку
         if 'base64,' in plot_base64:
@@ -73,10 +57,10 @@ class ExportManager:
         
         # Сохраняем файл
         plot_filename = f"plot_{plot_id}.png"
-        plot_path = os.path.join(self.temp_dir, plot_filename)
+        plot_path = os.path.join(self.temp_dir, plot_filename) #формирование корректного пути
         
-        with open(plot_path, 'wb') as f:
-            f.write(base64.b64decode(plot_base64))
+        with open(plot_path, 'wb') as f: #запись 
+            f.write(base64.b64decode(plot_base64)) #декодирование в бин данные рисунка
         
         # Сохраняем информацию о графике
         if plot_id not in self.temp_results:
@@ -99,12 +83,6 @@ class ExportManager:
     def export_to_csv(self, data_id: str) -> Optional[bytes]:
         """
         Экспортирует данные в CSV формат
-        
-        Параметры:
-            data_id: идентификатор данных
-        
-        Возвращает:
-            bytes: содержимое CSV файла или None если данные не найдены
         """
         data = self.get_data(data_id)
         if not data:
@@ -162,12 +140,6 @@ class ExportManager:
     def get_plot_bytes(self, plot_id: str) -> Optional[bytes]:
         """
         Получает байты файла графика
-        
-        Параметры:
-            plot_id: идентификатор графика
-        
-        Возвращает:
-            bytes: содержимое файла графика или None если файл не найден
         """
         plot_path = self.get_plot_path(plot_id)
         if not plot_path or not os.path.exists(plot_path):
@@ -180,13 +152,6 @@ class ExportManager:
     def generate_filename(self, prefix: str, extension: str) -> str:
         """
         Генерирует имя файла с временной меткой
-        
-        Параметры:
-            prefix: префикс файла
-            extension: расширение файла (без точки)
-        
-        Возвращает:
-            str: сгенерированное имя файла
         """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         return f"{prefix}_{timestamp}.{extension}"
@@ -199,11 +164,6 @@ export_manager = ExportManager()
 def prepare_export_data(result, form_values: Dict, results_dict: Dict) -> Dict:
     """
     Подготавливает данные для экспорта из результатов симуляции
-    
-    Параметры:
-        result: объект SimulationResult
-        form_values: словарь со значениями формы
-        results_dict: словарь с результатами для отображения
     
     Возвращает:
         Dict: обновленный словарь результатов с ID для экспорта

@@ -16,7 +16,7 @@ import csv
 from io import StringIO
 
 # Импортируем модель
-from model.pp_model import simulate_lotka_volterra, plot_dynamics
+from controller.pp_controller import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
 # Импортируем менеджер экспорта
 from controller.export_pp_controller import export_manager, prepare_export_data
@@ -37,7 +37,7 @@ def home():
 
 @route('/predator_pray', method=['GET', 'POST'])
 def predator_pray():
-    """Renders the predator_pray page and handles form submission."""
+    """Рендеринг страницы хищник-жертва"""
     title = 'Модель «Хищник-жертва»'
     results = None
     error = None
@@ -47,7 +47,7 @@ def predator_pray():
     # Значения по умолчанию
     default_form_values = {
         'x0': '50', 'y0': '20', 'alpha': '0.8', 'c': '0.04',
-        'beta': '0.6', 'd': '0.02', 'T': '50', 'N': '1000'
+        'beta': '0.6', 'd': '0.02', 'T': '50', 'N': '5000'
     }
     
     if request.method == 'POST':
@@ -131,8 +131,8 @@ def predator_pray():
                 field_errors['y0'] = 'Число хищников должно быть в диапазоне 1–50'
             if T is not None and 'T' not in field_errors and not (5 <= T <= 50):
                 field_errors['T'] = 'Длительность должна быть в диапазоне 5–50 лет'
-            if N is not None and 'N' not in field_errors and not (200 <= N <= 10000):
-                field_errors['N'] = 'Число шагов должно быть в диапазоне 200–10000'
+            if N is not None and 'N' not in field_errors and not (5000 <= N <= 50000):
+                field_errors['N'] = 'Число шагов должно быть в диапазоне 5000–50000'
             if alpha is not None and 'alpha' not in field_errors and not (0.4 <= alpha <= 1.5):
                 field_errors['alpha'] = 'Рождаемость жертв должна быть в диапазоне 0.4–1.5'
             if c is not None and 'c' not in field_errors and not (0.01 <= c <= 0.06):
@@ -159,23 +159,25 @@ def predator_pray():
                     plot_base64 = plot_dynamics(result)
                     
                     # Формируем результаты для отображения
+                    
                     results = {
-                        'x_star': f"{result.equilibrium_prey:.2f}",
-                        'y_star': f"{result.equilibrium_predator:.2f}",
+                        'x_star': f"{round(result.equilibrium_prey)}",           # целое
+                        'y_star': f"{round(result.equilibrium_predator)}",       # целое
                         'period': f"{result.period:.2f}",
                         'stability_type': result.stability_type,
-                        'avg_prey': f"{result.avg_prey:.2f}",
-                        'avg_predator': f"{result.avg_predator:.2f}",
-                        'min_prey': f"{min(result.prey):.2f}",
-                        'max_prey': f"{max(result.prey):.2f}",
-                        'min_predator': f"{min(result.predators):.2f}",
-                        'max_predator': f"{max(result.predators):.2f}",
+                        'avg_prey': f"{round(result.avg_prey)}",                 # целое
+                        'avg_predator': f"{round(result.avg_predator)}",         # целое
+                        'min_prey': f"{int(min(result.prey))}",                  # целое
+                        'max_prey': f"{int(max(result.prey))}",                  # целое
+                        'min_predator': f"{int(min(result.predators))}",         # целое
+                        'max_predator': f"{int(max(result.predators))}",         # целое
                         'plot_base64': plot_base64
                     }
                     
                     # Подготавливаем данные для экспорта
                     from controller.export_pp_controller import prepare_export_data
                     results = prepare_export_data(result, form_values, results)
+                    print(f"x0={x0},y0={y0},alp={alpha},c={c},beta={beta},d={d},T={T},N={N}")
                     
                 except Exception as e:
                     error = f"Ошибка расчёта: {str(e)}"
@@ -206,7 +208,7 @@ def generate_random_values():
 
 @route('/export_csv', method='POST')
 def export_csv():
-    """Export predator-prey data to CSV file with save dialog"""
+    """Экспорт данных в CSV"""
     results_id = request.forms.get('results_id', '')
     
     csv_data = export_manager.export_to_csv(results_id)
@@ -224,7 +226,7 @@ def export_csv():
 
 @route('/export_plot', method='POST')
 def export_plot():
-    """Export predator-prey plot to PNG file with save dialog"""
+    """Экспорт графиков в PNG"""
     plot_id = request.forms.get('plot_id', '')
     
     plot_bytes = export_manager.get_plot_bytes(plot_id)
@@ -238,8 +240,6 @@ def export_plot():
     response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
     
     return plot_bytes
-
-
 
 
 
