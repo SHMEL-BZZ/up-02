@@ -582,7 +582,26 @@ simulation_service = SimulationService()
 
 @route('/competition', method=['GET', 'POST'])
 def competition_page():
-    """Страница конкуренции видов с обработкой POST запросов"""
+    """
+    Главная страница симуляции конкуренции видов.
+    Обрабатывает как GET (отображение), так и POST (действия) запросы.
+    
+    GET параметры:
+        auto=1   - включить автоматический режим
+        chart=1  - показать график динамики популяций
+        speed=X  - скорость авто-режима в секундах (0.1-2.0)
+    
+    POST действия (action):
+        randomize  - генерация случайных валидных параметров
+        reset      - сброс симуляции с новыми параметрами
+        auto_on    - включение автоматического режима
+        auto_off   - выключение автоматического режима
+        csv        - экспорт истории в CSV файл
+        chart      - построение графика динамики популяций
+    
+    Returns:
+        str: HTML страница с результатами симуляции
+    """
     global simulation_service
     
     # Значения по умолчанию
@@ -605,6 +624,27 @@ def competition_page():
     
     # Функция для генерации случайных валидных параметров
     def generate_random_params(self):
+        """
+        Генерирует случайные, но валидные параметры симуляции.
+        
+        Учитываются все ограничения:
+        - Размер поля от 2 до 10
+        - Крыс минимум 2 каждого вида
+        - Сумма крыс не более total_cells - 1
+        - Рожь не более total_cells - 4
+        - Интервал и количество ржи в допустимых диапазонах
+        
+        Returns:
+            dict: Словарь со случайными параметрами:
+                - n: размер поля
+                - gray: количество серых крыс
+                - white: количество белых крыс
+                - rye: количество ржи
+                - rye_interval: интервал появления ржи
+                - rye_spawn_count: количество новой ржи за раз
+                - max_ticks: максимальное количество тактов
+                - speed: скорость авто-режима
+        """
         import random
     
         n = random.randint(2, 10)
@@ -660,6 +700,14 @@ def competition_page():
     
     # Функции для работы с сессией
     def get_session():
+        """
+        Восстанавливает данные сессии из HTTP-куки 'competition_session'.
+        
+        Формат хранения: pickle → base64 → строка ASCII.
+        
+        Returns:
+            dict: Словарь с параметрами сессии или пустой словарь при ошибке
+        """
         session_cookie = request.get_cookie('competition_session')
         if session_cookie:
             try:
@@ -671,6 +719,14 @@ def competition_page():
         return {}
 
     def set_session(data):
+        """
+        Сохраняет данные сессии в HTTP-куку 'competition_session'.
+        
+        Формат хранения: pickle (сериализация) → base64 (ASCII) → кука.
+        
+        Args:
+            data (dict): Словарь с параметрами для сохранения
+        """
         import pickle
         import base64
         serialized = base64.b64encode(pickle.dumps(data)).decode()
