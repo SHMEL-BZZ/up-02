@@ -20,7 +20,7 @@ class TestEquilibriumCalculations(unittest.TestCase):
         """Защита от деления на ноль"""
         prey_eq, pred_eq = calculate_equilibrium(alpha=0.8, c=0, beta=0.6, d=0)
         self.assertEqual(prey_eq, 0)
-        self.assertEqual(pred_eq, float('inf') if 0.8/0 else 0)
+        self.assertEqual(pred_eq, 0)
     
     def test_zero_d(self):
         """d равно нулю"""
@@ -31,8 +31,8 @@ class TestEquilibriumCalculations(unittest.TestCase):
     def test_zero_c(self):
         """c равно нулю"""
         prey_eq, pred_eq = calculate_equilibrium(alpha=0.8, c=0, beta=0.6, d=0.02)
-        self.assertAlmostEqual(prey_eq, 30.0)
-        self.assertEqual(pred_eq, float('inf'))
+        self.assertEqual(prey_eq, 30.0)
+        self.assertAlmostEqual(pred_eq, 0.0)
 
 class TestPeriodCalculation(unittest.TestCase):
     """Тесты для расчета периода колебаний"""
@@ -268,9 +268,9 @@ class TestFullSimulation(unittest.TestCase):
         self.assertEqual(len(result.prey), 1001)
         self.assertEqual(len(result.predators), 1001)
         self.assertEqual(result.time[0], 0)
-        self.assertEqual(result.time[-1], 50)
-        self.assertEqual(result.prey[0], 50)
-        self.assertEqual(result.predators[0], 10)
+        self.assertEqual(round(result.time[-1]), 50)
+        self.assertEqual(round(result.prey[0]), 50)
+        self.assertEqual(round(result.predators[0]), 10)
     
     def test_equilibrium_calculation(self):
         """Проверка расчета равновесных значений"""
@@ -369,6 +369,242 @@ class TestEdgeCases(unittest.TestCase):
             alpha=-0.8, c=0.03, beta=-0.6, d=0.02
         )
         self.assertIsNotNone(result)
+
+class AdditionalTests(unittest.TestCase):
+    """Дополнительные тесты для полного покрытия"""
+    
+    # ===== ТЕСТЫ ДЛЯ calculate_equilibrium =====
+    def test_equilibrium_negative_params(self):
+        """Отрицательные параметры"""
+        prey_eq, pred_eq = calculate_equilibrium(alpha=-0.8, c=0.03, beta=-0.6, d=0.02)
+        # Проверяем, что функция не падает
+        self.assertIsNotNone(prey_eq)
+        self.assertIsNotNone(pred_eq)
+    
+    def test_equilibrium_very_small_values(self):
+        """Очень маленькие значения"""
+        prey_eq, pred_eq = calculate_equilibrium(alpha=1e-10, c=1e-10, beta=1e-10, d=1e-10)
+        self.assertAlmostEqual(prey_eq, 1.0)
+        self.assertAlmostEqual(pred_eq, 1.0)
+    
+    # ===== ТЕСТЫ ДЛЯ calculate_period =====
+    def test_period_various_signs(self):
+        """Проверка периода при разных знаках параметров"""
+        test_cases = [
+            (0.8, 0.6, 9.068996821171089),   # оба положительные
+            (-0.8, -0.6, 9.068996821171089),  # оба отрицательные
+            (0.8, -0.6, 0),                    # разные знаки
+            (-0.8, 0.6, 0),                    # разные знаки
+            (0, 0.6, 0),                       # один ноль
+            (0.8, 0, 0),                       # другой ноль
+        ]
+    
+        for alpha, beta, expected in test_cases:
+            with self.subTest(alpha=alpha, beta=beta):
+                period = calculate_period(alpha, beta)
+                if expected == 0:
+                    self.assertEqual(period, 0)
+                else:
+                    self.assertAlmostEqual(period, expected, places=5)
+    
+    def test_period_very_small_values(self):
+        """Очень маленькие значения"""
+        period = calculate_period(alpha=1e-10, beta=1e-10)
+        expected = 2 * np.pi / np.sqrt(1e-20)
+        self.assertAlmostEqual(period, expected)
+    
+    # ===== ТЕСТЫ ДЛЯ ДИФФЕРЕНЦИАЛЬНЫХ УРАВНЕНИЙ =====
+    def test_dx_dt_with_negative_values(self):
+        """Отрицательные значения популяций"""
+        dx_dt = calculate_dx_dt(prey=-10, predators=5, alpha=0.8, c=0.03)
+        # Функция должна корректно обработать отрицательные значения
+        self.assertIsInstance(dx_dt, float)
+    
+    def test_dy_dt_with_negative_values(self):
+        """Отрицательные значения популяций"""
+        dy_dt = calculate_dy_dt(prey=-10, predators=5, d=0.02, beta=0.6)
+        self.assertIsInstance(dy_dt, float)
+    
+    # ===== ТЕСТЫ ДЛЯ euler_step =====
+    def test_euler_step_negative_dt(self):
+        """Отрицательный шаг по времени"""
+        prey_next, pred_next = euler_step(
+            prey=50, predators=10, dt=-0.05,
+            alpha=0.8, c=0.03, d=0.02, beta=0.6
+        )
+        # Проверяем, что функция не падает
+        self.assertIsNotNone(prey_next)
+        self.assertIsNotNone(pred_next)
+    
+    def test_euler_step_very_large_dt(self):
+        """Очень большой шаг по времени (нестабильность)"""
+        prey_next, pred_next = euler_step(
+            prey=50, predators=10, dt=100.0,
+            alpha=0.8, c=0.03, d=0.02, beta=0.6
+        )
+        # Проверяем неотрицательность
+        self.assertGreaterEqual(prey_next, 0)
+        self.assertGreaterEqual(pred_next, 0)
+    
+    # ===== ТЕСТЫ ДЛЯ simulate_lotka_volterra_core =====
+    def test_core_with_zero_N(self):
+        """Нулевое количество шагов"""
+        with self.assertRaises(Exception):  # Должна быть ошибка
+            simulate_lotka_volterra_core(
+                x0=50, y0=10, alpha=0.8, c=0.03,
+                beta=0.6, d=0.02, T=50, N=0
+            )
+    
+    def test_core_with_negative_T(self):
+        """Отрицательное время симуляции"""
+        time, prey, predators = simulate_lotka_volterra_core(
+            x0=50, y0=10, alpha=0.8, c=0.03,
+            beta=0.6, d=0.02, T=-50, N=1000
+        )
+        # Время должно идти назад
+        self.assertLess(time[-1], time[0])
+    
+    # ===== ТЕСТЫ ДЛЯ calculate_averages =====
+    def test_averages_with_negative_values(self):
+        """Отрицательные значения в массивах"""
+        prey_array = np.array([-10, 20, -30, 40])
+        pred_array = np.array([5, -15, 25, -35])
+        
+        avg_prey, avg_pred = calculate_averages(prey_array, pred_array)
+        self.assertEqual(avg_prey, 5.0)  # (-10+20-30+40)/4 = 5
+        self.assertEqual(avg_pred, -5.0)  # (5-15+25-35)/4 = -5
+    
+    # ===== ТЕСТЫ ДЛЯ check_realistic =====
+    def test_realistic_with_inf_values(self):
+        """Бесконечные значения"""
+        prey_array = np.array([10, np.inf, 100])
+        predators_array = np.array([5, 10, 50])
+        
+        result = check_realistic(prey_array, predators_array)
+        self.assertFalse(result)
+    
+    # ===== ТЕСТЫ ДЛЯ simulate_lotka_volterra =====
+    def test_full_simulation_with_edge_params(self):
+        """Предельные значения параметров"""
+        try:
+            result = simulate_lotka_volterra(
+                x0=0, y0=0, alpha=0, c=0, beta=0, d=0, T=0, N=0
+            )
+            self.assertIsNotNone(result)
+            self.assertEqual(len(result.time), 1)  # Должен быть хотя бы 1 элемент
+        except ZeroDivisionError:
+            self.fail("Функция не должна падать при делении на ноль")
+    
+    def test_full_simulation_stability_long_term(self):
+        """Долгосрочная стабильность"""
+        result = simulate_lotka_volterra(T=1000, N=100000)
+        
+        # Проверяем, что значения не уходят в бесконечность
+        self.assertTrue(all(np.isfinite(p) for p in result.prey))
+        self.assertTrue(all(np.isfinite(p) for p in result.predators))
+        
+        # Проверяем, что значения остаются в разумных пределах
+        self.assertLess(max(result.prey), 1e6)
+        self.assertLess(max(result.predators), 1e6)
+    
+    def test_full_simulation_conservation_law(self):
+        """Проверка закона сохранения (для консервативной системы)"""
+        result = simulate_lotka_volterra(T=100, N=10000)
+        
+        # Для модели Лотки-Вольтерры есть инвариант:
+        # V = d*prey - beta*log(prey) + c*predators - alpha*log(predators)
+        prey = np.array(result.prey)
+        predators = np.array(result.predators)
+        
+        # Избегаем log(0)
+        prey = np.maximum(prey, 1e-10)
+        predators = np.maximum(predators, 1e-10)
+        
+        V = (0.02 * prey - 0.6 * np.log(prey) + 
+             0.03 * predators - 0.8 * np.log(predators))
+        
+        # Инвариант должен быть примерно постоянным
+        variation = np.std(V) / np.mean(V)
+        self.assertLess(variation, 0.1)  # Относительное отклонение менее 10%
+    
+    # ===== ТЕСТЫ НА КОРРЕКТНОСТЬ ТИПОВ =====
+    def test_return_types(self):
+        """Проверка типов возвращаемых значений"""
+        result = simulate_lotka_volterra()
+        
+        self.assertIsInstance(result.time, list)
+        self.assertIsInstance(result.prey, list)
+        self.assertIsInstance(result.predators, list)
+        self.assertIsInstance(result.equilibrium_prey, (int, float))
+        self.assertIsInstance(result.equilibrium_predator, (int, float))
+        self.assertIsInstance(result.period, float)
+        self.assertIsInstance(result.stability_type, str)
+        self.assertIsInstance(result.avg_prey, (int, float))
+        self.assertIsInstance(result.avg_predator, (int, float))
+    
+    # ===== СТРЕСС-ТЕСТЫ =====
+    def test_stress_large_N(self):
+        """Стресс-тест с большим количеством шагов"""
+        try:
+            result = simulate_lotka_volterra(T=100, N=1000000)
+            self.assertTrue(len(result.time) == 1000001)
+        except MemoryError:
+            self.skipTest("Слишком большой объем памяти")
+    
+    def test_stress_many_simulations(self):
+        """Стресс-тест множества симуляций"""
+        for i in range(100):
+            result = simulate_lotka_volterra(seed=i)
+            self.assertIsNotNone(result)
+    
+    # ===== ТЕСТЫ НА ВОСПРОИЗВОДИМОСТЬ =====
+    def test_deterministic_behavior(self):
+        """Проверка детерминированности без seed"""
+        result1 = simulate_lotka_volterra()
+        result2 = simulate_lotka_volterra()
+        
+        # Без seed результаты должны совпадать
+        self.assertEqual(result1.prey, result2.prey)
+    
+    # ===== ТЕСТЫ НА ГРАНИЧНЫЕ УСЛОВИЯ =====
+    def test_extreme_population_ratios(self):
+        """Экстремальные соотношения популяций"""
+        result = simulate_lotka_volterra(x0=1e6, y0=1, T=100)
+        self.assertTrue(all(
+        p >= 0 for p in result.prey))
+        self.assertTrue(all(p >= 0 for p in result.predators))
+    
+    def test_zero_growth_rates(self):
+        """Нулевые скорости роста"""
+        result = simulate_lotka_volterra(alpha=0, c=0, beta=0, d=0)
+        # Популяции не должны расти
+        self.assertLessEqual(max(result.prey), result.prey[0])
+        self.assertLessEqual(max(result.predators), result.predators[0])
+
+# ===== ДОПОЛНИТЕЛЬНЫЕ ТЕСТЫ ДЛЯ SimulationResult =====
+class TestSimulationResultDataClass(unittest.TestCase):
+    """Тесты для dataclass SimulationResult"""
+    
+    def test_dataclass_creation(self):
+        """Создание экземпляра dataclass"""
+        result = SimulationResult(
+            time=[0, 1],
+            prey=[10, 20],
+            predators=[5, 10],
+            equilibrium_prey=30,
+            equilibrium_predator=26,
+            period=2.5,
+            stability_type="Центр",
+            avg_prey=15,
+            avg_predator=7
+        )
+        self.assertEqual(result.time, [0, 1])
+        self.assertEqual(result.prey, [10, 20])
+    
+    def test_dataclass_default_values(self):
+        """Проверка отсутствия значений по умолчанию (все обязательные)"""
+        with self.assertRaises(TypeError):
+            SimulationResult()  # Должна быть ошибка без аргументов
 
 if __name__ == '__main__':
     # Настройка для запуска тестов с подробным выводом

@@ -101,7 +101,6 @@ def simulate_lotka_volterra_core(
     time[0] = 0
     prey[0] = x0
     predators[0] = y0
-    print(f"ВНутри: x0={x0},y0={y0},alp={alpha},c={c},beta={beta},d={d},T={T},N={N}")
     
     # Численное интегрирование
     for i in range(N):
