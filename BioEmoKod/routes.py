@@ -1008,6 +1008,66 @@ def competition_page():
     
     return template('competition', **template_data)
 
+@route('/competition/export/csv', method=['POST'])
+def export_competition_csv():
+    """Экспорт данных симуляции в CSV"""
+    global simulation_service
+    
+    if simulation_service.world:
+        filename = simulation_service.export_csv()
+        if filename:
+            # Отправляем файл пользователю
+            from bottle import static_file
+            import os
+            return static_file(os.path.basename(filename), root='logs', download=True)
+        else:
+            return "Нет данных для экспорта"
+    else:
+        return "Симуляция не инициализирована"
+
+
+@route('/competition/export/chart', method=['POST'])
+def export_competition_chart():
+    """Экспорт графика в PNG"""
+    chart_path = request.forms.get('chart_path', '')
+    
+    if chart_path and chart_path.startswith('/static/charts/'):
+        import os
+        filename = os.path.basename(chart_path)
+        from bottle import static_file
+        return static_file(filename, root='static/charts', download=f"competition_chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+    else:
+        # Если нет сохранённого графика, генерируем новый
+        global simulation_service
+        if simulation_service.world:
+            chart_path = simulation_service.get_chart()
+            if chart_path:
+                import os
+                filename = os.path.basename(chart_path)
+                from bottle import static_file
+                return static_file(filename, root='static/charts', download=f"competition_chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+        return "Нет графика для экспорта"
+
+
+
+    # Подготовка данных для отображения поля
+    cell_class, cell_content = prepare_display_data(world_state)
+    
+    # Отладка - проверка размеров
+    if len(cell_class) != n:
+        print(f"Warning: cell_class size ({len(cell_class)}) != n ({n})")
+        # Дополняем до нужного размера
+        while len(cell_class) < n:
+            cell_class.append(['cell-empty'] * n)
+            cell_content.append(['⬜'] * n)
+    
+    for i in range(len(cell_class)):
+        if len(cell_class[i]) != n:
+            print(f"Warning: cell_class[{i}] size ({len(cell_class[i])}) != n ({n})")
+            while len(cell_class[i]) < n:
+                cell_class[i].append('cell-empty')
+                cell_content[i].append('⬜')
+
 
 
 
