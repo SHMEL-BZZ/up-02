@@ -492,3 +492,70 @@ def step(self, interval, count, max_ticks):
     
         self._save_history()
         return True
+
+def to_dict(self, include_markers=True):
+        """Преобразование состояния мира в словарь"""
+        marker_map = {}
+        if include_markers:
+            # Маркеры смерти
+            for x, y, species in self.current_markers['death_cells']:
+                marker_map[(x, y)] = {'type': 'death', 'species': species}
+            # Маркеры битвы
+            for x, y, species in self.current_markers['fight_cells']:
+                marker_map[(x, y)] = {'type': 'fight', 'species': species}
+            # Маркеры мира
+            for x, y in self.current_markers['peace_cells']:
+                marker_map[(x, y)] = {'type': 'peace'}
+
+        grid_dict = []
+        for i in range(self.n):
+            row = []
+            for j in range(self.n):
+                cell = self.grid[i][j]
+                marker = marker_map.get((i, j))
+            
+                cell_dict = {
+                    'rats': [r.to_dict() for r in cell.rats],
+                    'rye': cell.rye,
+                    'marker': marker
+                }
+                row.append(cell_dict)
+            grid_dict.append(row)
+    
+        return {
+            'tick': self.tick,
+            'gray': self.gray,
+            'white': self.white,
+            'rye': self.rye_count,
+            'fights': self.fights,
+            'deaths': self.deaths,
+            'is_extinct': self.is_extinct,
+            'grid': grid_dict
+        }
+    
+def get_verdict(self):
+        """Возвращает вердикт по итогам симуляции"""
+        if self.gray == 0 and self.white == 0:
+            return "ПОЛНОЕ ВЫМИРАНИЕ"
+        elif self.gray == 0:
+            return "ПОБЕДИЛИ БЕЛЫЕ КРЫСЫ"
+        elif self.white == 0:
+            return "ПОБЕДИЛИ СЕРЫЕ КРЫСЫ"
+        else:
+            return f"СОСУЩЕСТВОВАНИЕ: серых={self.gray}, белых={self.white}"
+    
+def export_csv(self):
+        """Экспорт истории в CSV файл"""
+        os.makedirs('logs', exist_ok=True)
+        filename = f"logs/competition_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+        with open(filename, 'w', encoding='utf-8-sig', newline='') as f:
+            writer = csv.writer(f, delimiter=';')
+            writer.writerow(['Tick', 'Gray', 'White', 'Rye', 'Fights', 'Deaths'])
+            for h in self.history:
+                writer.writerow([h['tick'], h['gray'], h['white'], h['rye'], h['fights'], h['deaths']])
+            writer.writerow([])
+            writer.writerow(['VERDICT', self.get_verdict()])
+
+        return filename
+
