@@ -559,3 +559,43 @@ def export_csv(self):
 
         return filename
 
+class ChartService:
+    """Сервис генерации графиков"""
+    @staticmethod
+    def generate_population_chart(world: World):
+        """Генерация графика динамики популяций"""
+        if not world.history or len(world.history) < 2:
+            return None
+        
+        ticks = [h['tick'] for h in world.history]
+        gray = [h['gray'] for h in world.history]
+        white = [h['white'] for h in world.history]
+        rye = [h['rye'] for h in world.history]
+        
+        plt.figure(figsize=(14, 8))
+        
+        plt.plot(ticks, gray, label='Серые крысы', color='#8e8e8e', linewidth=2.5, marker='o', markersize=4)
+        plt.plot(ticks, white, label='Белые крысы', color='#d0d0e0', linewidth=2.5, marker='s', markersize=4)
+        plt.plot(ticks, rye, label='Рожь', color='#d4a843', linewidth=2, marker='^', markersize=4)
+        
+        plt.xlabel('Такт', fontsize=14, fontweight='bold')
+        plt.ylabel('Количество особей', fontsize=14, fontweight='bold')
+        plt.title('Динамика численности популяций', fontsize=16, fontweight='bold')
+        plt.legend(loc='best', fontsize=12)
+        plt.grid(True, alpha=0.3, linestyle='--')
+        
+        if world.is_extinct:
+            last_tick = ticks[-1] if ticks else 0
+            plt.axvline(x=last_tick, color='red', linestyle='--', linewidth=2, alpha=0.7, label='Вымирание')
+            plt.legend(loc='best', fontsize=12)
+        
+        
+        plt.xlim(0, max(ticks) + 1 if ticks else 10)
+        plt.ylim(bottom=0)
+        
+        os.makedirs('static/charts', exist_ok=True)
+        filename = f"static/charts/chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        plt.savefig(filename, dpi=150, bbox_inches='tight', facecolor='white')
+        plt.close()
+        
+        return f"/{filename}"
