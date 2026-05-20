@@ -571,14 +571,104 @@ def export_epidemic_graph():
         response.status = 500
         return f"Ошибка экспорта: {str(e)}"
 
-@route('/competition')
-@view('competition')
-def competition():
-    """Renders the competition page."""
-    return dict(
-        title='Competition',
-        year=datetime.now().year
-    )
+
+from controller.competition_controller import SimulationService, validate_parameters, prepare_display_data
+from bottle import route, view, request, template, response, redirect
+import time
+
+# Глобальный сервис для симуляции
+simulation_service = SimulationService()
+
+
+@route('/competition', method=['GET', 'POST'])
+def competition_page():
+    """Страница конкуренции видов с обработкой POST запросов"""
+    global simulation_service
+    
+    # Значения по умолчанию
+    default_params = {
+        'n': 4,
+        'gray': 5,
+        'white': 5,
+        'rye': 8,
+        'rye_interval': 3,
+        'rye_spawn_count': 2,
+        'max_ticks': 100
+    }
+    
+    error = None
+    csv_msg = None
+    chart_path = None
+    auto_mode = False
+    speed = 0.5
+    show_chart = False
+    
+    # Функция для генерации случайных валидных параметров
+    def generate_random_params(self):
+        import random
+    
+        n = random.randint(2, 10)
+        total_cells = n * n
+    
+        max_single_species = total_cells - 2
+        max_total_rats = total_cells - 1
+    
+        if max_single_species < 2:
+            max_single_species = 2
+    
+        gray = random.randint(2, min(max_single_species, 30))
+    
+        max_white = min(max_single_species, total_cells - 1 - gray)
+        if max_white < 2:
+            max_white = 2
+            if gray + 2 > total_cells - 1:
+                gray = max(2, total_cells - 1 - 2)
+                max_white = 2
+    
+        white = random.randint(2, max_white)
+    
+        total_occupied = gray + white
+        max_rye = min(total_cells - 4, total_cells - total_occupied)
+        if max_rye < 1:
+            max_rye = 1
+        rye = random.randint(1, max_rye)
+    
+        rye_interval = random.randint(1, 20)
+        rye_spawn_count = random.randint(1, 5)
+        max_ticks = random.randint(1, 200)  
+        speed = round(random.uniform(0.1, 2.0), 1)
+    
+        return {
+            'n': n,
+            'gray': gray,
+            'white': white,
+            'rye': rye,
+            'rye_interval': rye_interval,
+            'rye_spawn_count': rye_spawn_count,
+            'max_ticks': max_ticks,
+            'speed': speed
+        }
+    
+    # Инициализируем параметры значениями по умолчанию
+    n = default_params['n']
+    gray_init = default_params['gray']
+    white_init = default_params['white']
+    rye_init = default_params['rye']
+    rye_interval = default_params['rye_interval']
+    rye_spawn_count = default_params['rye_spawn_count']
+    max_ticks = default_params['max_ticks']
+    
+    # Функции для работы с сессией
+    def get_session():
+        session_cookie = request.get_cookie('competition_session')
+        if session_cookie:
+            try:
+                import pickle
+                import base64
+                return pickle.loads(base64.b64decode(session_cookie))
+            except:
+                return {}
+        return {}
 
 
 @route('/fishing', method=['GET', 'POST'])
