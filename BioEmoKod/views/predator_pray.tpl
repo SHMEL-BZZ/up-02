@@ -1,13 +1,12 @@
 % rebase('layout.tpl', title=title, year=year, active_page='predator_pray')
 
 <!-- специальный стиль для страницы Модель хищник-жертва -->
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/content/predator_pray.css" />
-</head>
+<link rel="stylesheet" type="text/css" href="/static/content/predator_pray.css" />
 
 <div class="page-header">
     <h2>Модель «Хищник-жертва»</h2>
 </div>
+
 <!-- БЛОК-ЯКОРЬ ДЛЯ БЫСТРОГО ПЕРЕХОДА К РАСЧЁТНОЙ ПАНЕЛИ -->
 <div class="calculation-jump">
     <div class="calculation-jump__content">
@@ -17,6 +16,7 @@
         </a>
     </div>
 </div>
+
 <!-- Верхняя строка: теория + картинки в колонке -->
 <div class="row">
     <div class="col-md-8">
@@ -27,7 +27,6 @@
             </div>
             <div class="panel-body">
                 <div class="panel-group" id="accordion">
-
                     <!-- 1. Модель Лотки–Вольтерры -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -160,7 +159,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div> 
             </div> 
         </div> 
@@ -170,8 +168,6 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-
-                <!-- Картинка жертвы -->
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/bunny.jpg"
@@ -180,8 +176,6 @@
                         <p class="text-muted">🐇 Жертва (заяц)</p>
                     </div>
                 </div>
-
-                <!-- Картинка хищника -->
                 <div class="row">
                     <div class="col-xs-12">
                         <img src="/static/img/fox.jpg"
@@ -190,7 +184,6 @@
                         <p class="text-muted">🦊 Хищник (лиса)</p>
                     </div>
                 </div>
-
             </div> 
         </div> 
     </div> 
@@ -204,134 +197,132 @@
                 <h3 class="panel-title text-center">Расчётная панель</h3>
             </div>
             <div class="panel-body">
-
                 <form action="/predator_pray" method="post" class="form-horizontal">
-
-                    <!-- Два столбца -->
                     <div class="row">
-
-                        <!-- ЛЕВАЯ КОЛОНКА: Начальные условия + симуляция -->
-                        <div class="col-md-6">
-
-                            <h4 class="text-center">📌 Начальные условия</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число жертв x₀:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="any" name="x0" class="form-control" value="50" required>
-                                            <span class="help-block">Диапазон: 10–100</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Столбец 1: Начальные условия -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">📌 Начальные условия</h4>
+                            <div class="form-group">
+                                <label class="control-label">Число жертв x₀ (10–100):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="x0" 
+                                       class="form-control" 
+                                       value="{{form_values.get('x0', '')}}">
+                                % if field_errors.get('x0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['x0']}}</div>
+                                % end
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число хищников y₀:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="any" name="y0" class="form-control" value="20" required>
-                                            <span class="help-block">Диапазон: 1–50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr>
-
-                            <h4 class="text-center">⏱️ Параметры симуляции</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Длительность T (лет):</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="1" name="T" class="form-control" value="50" required>
-                                            <span class="help-block">Диапазон: 5–50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Число шагов N:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="100" name="N" class="form-control" value="1000" required>
-                                            <span class="help-block">Диапазон: 200–10000</span>
-                                        </div>
-                                    </div>
-                                </div>
+    
+                            <div class="form-group">
+                                <label class="control-label">Число хищников y₀ (1–50):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="y0" 
+                                       class="form-control" 
+                                       value="{{form_values.get('y0', '')}}">
+                                % if field_errors.get('y0'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['y0']}}</div>
+                                % end
                             </div>
                         </div>
 
-                        <!-- ПРАВАЯ КОЛОНКА: Параметры модели -->
-                        <div class="col-md-6">
-
-                            <h4 class="text-center">⚙️ Параметры модели</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Рождаемость жертв α:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="alpha" class="form-control" value="0.8" required>
-                                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Столбец 2: Параметры симуляции -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⏱️ Параметры симуляции</h4>
+                            <div class="form-group">
+                                <label class="control-label">Длительность T, лет (5–50):</label>
+                                <input type="number" 
+                                       step="1" 
+                                       name="T" 
+                                       class="form-control" 
+                                       value="{{form_values.get('T', '')}}">
+                                % if field_errors.get('T'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['T']}}</div>
+                                % end
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Эффективность охоты c:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="c" class="form-control" value="0.04" required>
-                                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Смертность хищников β:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="beta" class="form-control" value="0.6" required>
-                                            <span class="help-block">Диапазон: 0.4–1.5</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label class="col-sm-6 control-label">Рост хищников d:</label>
-                                        <div class="col-sm-6">
-                                            <input type="number" step="0.01" name="d" class="form-control" value="0.02" required>
-                                            <span class="help-block">Диапазон: 0.01–0.06</span>
-                                        </div>
-                                    </div>
-                                </div>
+    
+                            <div class="form-group">
+                                <label class="control-label">Число шагов N (200–10000):</label>
+                                <input type="number" 
+                                       step="100" 
+                                       name="N" 
+                                       class="form-control" 
+                                       value="{{form_values.get('N', '')}}">
+                                % if field_errors.get('N'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['N']}}</div>
+                                % end
                             </div>
                         </div>
 
-                    </div>
+                        <!-- Столбец 3: Параметры модели (жертвы) -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⚙️ Параметры для жертв</h4>
+                            <div class="form-group">
+                                <label class="control-label">Рождаемость жертв α (0.4–1.5):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="alpha" 
+                                       class="form-control" 
+                                       value="{{form_values.get('alpha', '')}}">
+                                % if field_errors.get('alpha'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['alpha']}}</div>
+                                % end
+                            </div>
+    
+                            <div class="form-group">
+                                <label class="control-label">Эффективность охоты c (0.01–0.06):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="c" 
+                                       class="form-control" 
+                                       value="{{form_values.get('c', '')}}">
+                                % if field_errors.get('c'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['c']}}</div>
+                                % end
+                            </div>
+                        </div>
 
-                    <hr>
-
-                    <!-- Кнопка запуска -->
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-4">
-                            <button type="submit" class="btn btn-success btn-block">▶ Запустить расчёт</button>
+                        <!-- Столбец 4: Параметры модели (хищники) -->
+                        <div class="col-md-3">
+                            <h4 class="text-left">⚙️ Параметры для хищников</h4>
+                            <div class="form-group">
+                                <label class="control-label">Смертность хищников β (0.4–1.5):</label>
+                                <input type="number" 
+                                       step="0.01" 
+                                       name="beta" 
+                                       class="form-control" 
+                                       value="{{form_values.get('beta', '')}}">
+                                % if field_errors.get('beta'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['beta']}}</div>
+                                % end
+                            </div>
+    
+                            <div class="form-group">
+                                <label class="control-label">Рост хищников d (0.01–0.06):</label>
+                                <input type="number" 
+                                       step="0.01"
+                                       name="d" 
+                                       class="form-control" 
+                                       value="{{form_values.get('d', '')}}">
+                                % if field_errors.get('d'):
+                                <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['d']}}</div>
+                                % end
+                            </div>
                         </div>
                     </div>
 
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">▶ Запустить расчёт</button>
+                        <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">⟳ Сброс</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Отображение ошибок -->
+<!-- Отображение ошибок сервера -->
 % if defined('error') and error:
 <div class="row">
     <div class="col-md-12">
@@ -343,7 +334,7 @@
 </div>
 % end
 
-<!-- Результаты расчёта (если есть) -->
+<!-- Результаты расчёта -->
 % if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
@@ -367,7 +358,7 @@
                     <div class="col-md-12">
                         <div class="panel-heading">
                             <h4 class="text-center">Анализ результатов</h4>
-                        <div/>
+                        </div>
                         <div class="well">
                             <div class="row">
                                 <div class="col-md-6">
@@ -387,14 +378,18 @@
                     </div>
                 </div>
                 
-                <!-- Кнопка экспорта -->
-                <div class="text-center">
-                    <form action="/export_csv" method="post" style="display: inline;">
+                <!-- Кнопки экспорта -->
+                <div class="text-center" style="display: flex; gap: 10px; justify-content: center;">
+                    <form action="/export_csv" method="post">
                         <input type="hidden" name="data_type" value="predator_prey">
                         <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
                     </form>
+    
+                    <form action="/export_csv" method="post">
+                        <input type="hidden" name="data_type" value="predator_prey">
+                        <button type="submit" class="btn btn-primary">Экспорт графиков</button>
+                    </form>
                 </div>
-                
             </div>
         </div>
     </div>

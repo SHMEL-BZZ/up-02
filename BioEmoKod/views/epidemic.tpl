@@ -12,7 +12,7 @@
     <a href="#calculate" class="btn btn-jump">⬇ Перейти к расчётам</a>
 </div>
 
-<!-- теоретический блок -->
+<!-- теоретический блок (оставляем без изменений) -->
 <div class="row">
     <div class="col-md-7">
         <div class="panel panel-info">
@@ -21,7 +21,6 @@
             </div>
             <div class="panel-body">
                 <div class="panel-group" id="accordion">
-                    
                     <!-- 1. Описание модели -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -72,7 +71,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. Формулы расчёта (компактно) -->
+                    <!-- 3. Формулы расчёта -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -84,7 +83,7 @@
                         <div id="collapse3" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div class="formula-compact">
-                                    <h5>📊 Эпидемический порог</h5>
+                                    <h5>Эпидемический порог</h5>
                                     <div class="formula-box formula-box-green">
                                         <p class="formula-text">X̄ = (X₁+...+X₈)/8</p>
                                         <p class="formula-text">σ = √[Σ(Xᵢ-X̄)²/7]</p>
@@ -94,7 +93,7 @@
                                 </div>
 
                                 <div class="formula-compact">
-                                    <h5>💉 Эффективность вакцинации</h5>
+                                    <h5>Эффективность вакцинации</h5>
                                     <div class="formula-box formula-box-green">
                                         <p class="formula-text">Эфф = (W<sub>без</sub> - W<sub>с</sub>) / W<sub>без</sub> × 100%</p>
                                     </div>
@@ -120,23 +119,23 @@
                 <p>Эффективность вакцинации — это степень защиты привитого населения от конкретной инфекции, измеряемая в клинических (испытания) или реальных условиях. Она оценивается по показателю снижения заболеваемости среди вакцинированных по сравнению с невакцинированными.</p>
             </div>
             <div class="def-card">
-            <div class="def-title">Анализ результатов вакцинации</div>
-            <div class="analysis-badges">
-                <div class="analysis-badge badge-low">
-                    <strong>Низкая</strong>
-                    <span>&lt; 50%</span>
+                <div class="def-title">Анализ результатов вакцинации</div>
+                <div class="analysis-badges">
+                    <div class="analysis-badge badge-low">
+                        <strong>Низкая</strong>
+                        <span>&lt; 50%</span>
+                    </div>
+                    <div class="analysis-badge badge-medium">
+                        <strong>Средняя</strong>
+                        <span>50% – 80%</span>
+                    </div>
+                    <div class="analysis-badge badge-high">
+                        <strong>Высокая</strong>
+                        <span>&gt; 80%</span>
+                    </div>
                 </div>
-                <div class="analysis-badge badge-medium">
-                    <strong>Средняя</strong>
-                    <span>50% – 80%</span>
-                </div>
-                <div class="analysis-badge badge-high">
-                    <strong>Высокая</strong>
-                    <span>&gt; 80%</span>
-                </div>
+                <p class="analysis-note">Чем выше эффективность, тем меньше эпидемических недель и ниже пик заболеваемости.</p>
             </div>
-            <p class="analysis-note">Чем выше эффективность, тем меньше эпидемических недель и ниже пик заболеваемости.</p>
-        </div>
         </div>
     </div>
 </div>
@@ -149,8 +148,6 @@
                 <h3 class="panel-title text-center">🖥️ Пример работы приложения</h3>
             </div>
             <div class="panel-body">
-                
-                <!-- Ряд 1: Шаги 1, 2, 3 -->
                 <div class="step-row">
                     <div class="step-card">
                         <h5>Шаг 1. Пространственные и временные параметры</h5>
@@ -177,52 +174,55 @@
                     </div>
                 </div>
 
-                <!-- Итоговое резюме -->
                 <div class="alert alert-success" style="margin-top: 20px; font-size: 14px;">
                     <strong>✅ Итог:</strong> После выполнения всех шагов вы получите полную картину распространения эпидемии, сможете оценить эффективность вакцинации и определить пороговые значения заболеваемости.
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
 <!-- блок: расчётная панель -->
-<div class="row">
+<div id="calculate" class="row">
     <div class="col-md-12">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title text-center">🧮 Расчётная панель</h3>
             </div>
             <div class="panel-body">
-                <form action="/epidemic" method="post">
-                    
+                <form action="/epidemic" method="post" id="calculationForm">
                     <div class="row">
                         <!-- колонка 1: Пространство и время -->
                         <div class="col-md-4">
                             <h5>Пространство и время</h5>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Размер сетки n×n:</label>
+                                <label class="col-sm-12 control-label">Размер сетки n×n (2–10):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="1" name="grid_size" class="form-control" value="8" min="2" max="10" required>
-                                    <span class="help-block">n = 2..10</span>
+                                    <input type="number" step="1" name="grid_size" class="form-control" value="{{form_values.get('grid_size', '8')}}">
+                                    % if field_errors.get('grid_size'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['grid_size']}}</div>
+                                    % end
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Общее число крыс:</label>
+                                <label class="col-sm-12 control-label">Общее число крыс (2–n²×4):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="1" name="total_rats" class="form-control" value="64" min="1" max="400" required>
-                                    <span class="help-block">максимум n²·4</span>
+                                    <input type="number" step="1" name="total_rats" class="form-control" value="{{form_values.get('total_rats', '64')}}">
+                                    % if field_errors.get('total_rats'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['total_rats']}}</div>
+                                % end
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Длительность (недели):</label>
-                                <div class="col-sm-12">
-                                    <input type="number" step="1" name="weeks" class="form-control" value="52" min="8" max="260" required>
-                                    <span class="help-block">8..260</span>
+                               <label class="col-sm-12 control-label">Длительность, недели (8–260):</label>
+                               <div class="col-sm-12">
+                                    <input type="number" step="1" name="weeks" class="form-control" value="{{form_values.get('weeks', '52')}}">
+                                    % if field_errors.get('weeks'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['weeks']}}</div>
+                                    % end
                                 </div>
                             </div>
                         </div>
@@ -232,18 +232,22 @@
                             <h5>Заражение и перемещение</h5>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Вероятность заражения:</label>
+                                <label class="col-sm-12 control-label">Вероятность заражения (0.1–0.9):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="0.05" name="p_infect" class="form-control" value="0.6" min="0.1" max="0.9" required>
-                                    <span class="help-block">0.1..0.9</span>
+                                    <input type="number" step="0.1" name="p_infect" class="form-control" value="{{form_values.get('p_infect', '0.6')}}">
+                                    % if field_errors.get('p_infect'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_infect']}}</div>
+                                    % end
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Вероятность перемещения:</label>
+                                <label class="col-sm-12 control-label">Вероятность перемещения (0.1–0.9):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="0.05" name="p_move" class="form-control" value="0.5" min="0.1" max="0.9" required>
-                                    <span class="help-block">0.1..0.9</span>
+                                    <input type="number" step="0.1" name="p_move" class="form-control" value="{{form_values.get('p_move', '0.5')}}">
+                                    % if field_errors.get('p_move'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['p_move']}}</div>
+                                    % end
                                 </div>
                             </div>
                         </div>
@@ -253,37 +257,58 @@
                             <h5>Вакцинация</h5>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">День начала вакцинации:</label>
+                                <label class="col-sm-12 control-label">День начала вакцинации (≥56):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="1" name="vacc_day" class="form-control" value="56" min="56" max="364" required>
-                                    <span class="help-block">56..t·7 (максимум зависит от недель)</span>
+                                    <input type="number" step="1" name="vacc_day" class="form-control" value="{{form_values.get('vacc_day', '56')}}">
+                                    % if field_errors.get('vacc_day'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_day']}}</div>
+                                    % end
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="col-sm-12 control-label">Процент вакцинируемых крыс:</label>
+                                <label class="col-sm-12 control-label">Процент вакцинируемых крыс (1–100):</label>
                                 <div class="col-sm-12">
-                                    <input type="number" step="5" name="vacc_percent" class="form-control" value="50" min="1" max="100" required>
-                                    <span class="help-block">1%..100%</span>
+                                    <input type="number" step="1" name="vacc_percent" class="form-control" value="{{form_values.get('vacc_percent', '50')}}">
+                                    % if field_errors.get('vacc_percent'):
+                                    <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['vacc_percent']}}</div>
+                                    % end
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- кнопка запуска -->
+                    <!-- кнопка запуска и сброса -->
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <button type="submit" class="btn btn-run">
+                            <button type="submit" name="reset" value="false" class="btn btn-run">
                                 ▶ Запустить расчёт
+                            </button>
+                            <button type="submit" name="reset" value="true" class="btn btn-run" id="runButton">
+                                ⟳ Сброс данных
+                            </button>
+                            <button type="submit" name="random" value="true" class="btn btn-run">
+                                🎲 Генерация значений
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Отображение ошибок сервера -->
+% if defined('error') and error:
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger">
+            <strong>⚠️ Ошибка:</strong> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
+    </div>
+</div>
+% end
 
 <!-- блок: визуализация матрицы -->
 <div class="row">
@@ -294,12 +319,10 @@
             </div>
             <div class="panel-body">
                 <div class="matrix-layout">
-
-                    <!-- Матрица -->
                     <div class="matrix-wrapper">
                         <div class="matrix-container">
                             <table class="matrix-table">
-                                <tbody>
+                                <tbody id="matrix-body">
                                     % if results and results.get('matrix_display'):
                                         % for i in range(results['n']):
                                             <tr>
@@ -321,7 +344,6 @@
                                             </tr>
                                         % end
                                     % else:
-                                        <!-- Заглушка для отображения до расчёта (10×10 с примерами) -->
                                         % for i in range(10):
                                             <tr>
                                                 % for j in range(10):
@@ -345,7 +367,6 @@
                         </div>
                     </div>
                     
-                    <!-- Легенда -->
                     <div class="matrix-legend">
                         <div class="legend-title">Статусы</div>
                         <div class="legend-item">
@@ -363,10 +384,20 @@
                         
                         <div class="legend-divider"></div>
                         
-                        <!-- Кнопки управления -->
+                        <!-- Ползунок для выбора дня -->
+                        <div class="slider-container">
+                            <label>📅 День:</label>
+                            <input type="range" id="daySlider" min="0" max="0" value="0" step="1" style="width: 100%;">
+                            <span id="dayValue" style="font-size: 11px; display: block; text-align: center;">0</span>
+                        </div>
+                        
+                        <div class="legend-divider"></div>
+                        
+                        <!-- Кнопки управления анимацией -->
                         <div class="legend-buttons">
-                            <button class="btn btn-success btn-sm matrix-btn" disabled>▶ Старт</button>
-                            <button class="btn btn-danger btn-sm matrix-btn" disabled>🔄 Сброс</button>
+                            <button class="btn btn-success btn-sm matrix-btn" id="btnPlay">▶ Старт</button>
+                            <button class="btn btn-danger btn-sm matrix-btn" id="btnPause" style="display: none;">⏸ Пауза</button>
+                            <button class="btn btn-warning btn-sm matrix-btn" id="btnReset">🔄 Сброс</button>
                         </div>
                     </div>
                 </div>
@@ -376,6 +407,7 @@
 </div>
 
 <!-- блок: результаты симуляции -->
+% if defined('results') and results:
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-info">
@@ -394,7 +426,7 @@
                                 <span style="color: #f1c40f;">🟡 R (иммунные)</span>
                             </div>
                             <div class="graph-area">
-                                % if results and results.get('graph'):
+                                % if results.get('graph'):
                                     <img src="{{results['graph']}}" alt="График динамики SIR" style="width:100%; border-radius:8px;">
                                 % else:
                                     <svg width="100%" height="250" viewBox="0 0 600 250" preserveAspectRatio="none" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
@@ -406,25 +438,16 @@
                         </div>
                     </div>
                     
-                    <!-- Результаты -->
                     <div class="results-container">
                         <div class="result-card">
                             <div class="result-title">🧪 Эпидемический порог</div>
-                            % if results and results.get('threshold') is not None:
-                                <div class="result-value" id="epidemic-threshold">{{results['threshold']}}</div>
-                            % else:
-                                <div class="result-value" id="epidemic-threshold">—</div>
-                            % end
+                            <div class="result-value">{{results.get('threshold', '—')}}</div>
                             <div class="result-unit">заражённых в неделю</div>
                         </div>
                         
                         <div class="result-card">
                             <div class="result-title">💉 Эффективность вакцинации</div>
-                            % if results and results.get('efficacy') is not None:
-                                <div class="result-value" id="vaccine-efficacy">{{results['efficacy']}}%</div>
-                            % else:
-                                <div class="result-value" id="vaccine-efficacy">—</div>
-                            % end
+                            <div class="result-value">{{results.get('efficacy', '—')}}%</div>
                             <div class="result-description">
                                 <span class="efficiency-badge efficiency-low">Низкая &lt;50%</span>
                                 <span class="efficiency-badge efficiency-medium">Средняя 50-80%</span>
@@ -437,35 +460,177 @@
                             <div class="result-compare">
                                 <div class="compare-item">
                                     <span class="compare-label">Без вакцинации:</span>
-                                    % if results and results.get('peak_without') is not None:
-                                        <span class="compare-value" id="peak-without">{{results['peak_without']}} крыс</span>
-                                        <span class="compare-unit">(неделя {{results['week_without']}})</span>
-                                    % else:
-                                        <span class="compare-value" id="peak-without">—</span>
-                                    % end
+                                    <span class="compare-value">{{results.get('peak_without', '—')}} крыс</span>
+                                    <span class="compare-unit">(неделя {{results.get('week_without', '—')}})</span>
                                 </div>
                                 <div class="compare-item">
                                     <span class="compare-label">С вакцинацией:</span>
-                                    % if results and results.get('peak_with') is not None:
-                                        <span class="compare-value" id="peak-with">{{results['peak_with']}} крыс</span>
-                                        <span class="compare-unit">(неделя {{results['week_with']}})</span>
-                                    % else:
-                                        <span class="compare-value" id="peak-with">—</span>
-                                    % end
-                                </div>
-                                <div class="compare-item">
-                                    <span class="compare-label">Снижение пика:</span>
-                                    % if results and results.get('reduction') is not None:
-                                        <span class="compare-value reduction">{{results['reduction']}}%</span>
-                                    % else:
-                                        <span class="compare-value reduction">—</span>
-                                    % end
+                                    <span class="compare-value">{{results.get('peak_with', '—')}} крыс</span>
+                                    <span class="compare-unit">(неделя {{results.get('week_with', '—')}})</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+               <!-- Кнопки экспорта -->
+                <div class="export-buttons">
+                    <form action="/epidemic/export/csv" method="post" style="display: inline;">
+                        <!-- Передаём текущие параметры в скрытых полях -->
+                        <input type="hidden" name="grid_size" value="{{form_values.get('grid_size', '8')}}">
+                        <input type="hidden" name="total_rats" value="{{form_values.get('total_rats', '64')}}">
+                        <input type="hidden" name="weeks" value="{{form_values.get('weeks', '52')}}">
+                        <input type="hidden" name="p_infect" value="{{form_values.get('p_infect', '0.6')}}">
+                        <input type="hidden" name="p_move" value="{{form_values.get('p_move', '0.5')}}">
+                        <input type="hidden" name="vacc_day" value="{{form_values.get('vacc_day', '56')}}">
+                        <input type="hidden" name="vacc_percent" value="{{form_values.get('vacc_percent', '50')}}">
+                        <button type="submit" class="btn btn-export-csv">
+                            Экспорт данных в CSV
+                        </button>
+                    </form>
+    
+                    <form action="/epidemic/export/graph" method="post" style="display: inline;">
+                        <!-- Передаём текущие параметры в скрытых полях -->
+                        <input type="hidden" name="grid_size" value="{{form_values.get('grid_size', '8')}}">
+                        <input type="hidden" name="total_rats" value="{{form_values.get('total_rats', '64')}}">
+                        <input type="hidden" name="weeks" value="{{form_values.get('weeks', '52')}}">
+                        <input type="hidden" name="p_infect" value="{{form_values.get('p_infect', '0.6')}}">
+                        <input type="hidden" name="p_move" value="{{form_values.get('p_move', '0.5')}}">
+                        <input type="hidden" name="vacc_day" value="{{form_values.get('vacc_day', '56')}}">
+                        <input type="hidden" name="vacc_percent" value="{{form_values.get('vacc_percent', '50')}}">
+                        <button type="submit" class="btn btn-export-png">
+                            Экспорт графика
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+% end
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем данные истории из results
+    var historyMatrices = {{! results.get('history_matrices', '[]') if results else '[]' }};
+    var totalDays = {{ results.get('total_days', 0) if results else 0 }};
+    
+    // Если нет данных для анимации — не инициализируем анимацию (оставляем заглушку)
+    if (!historyMatrices || historyMatrices.length === 0) {
+        console.log('Нет данных для анимации, оставляем статическую матрицу');
+        return;
+    }
+    
+    console.log('History matrices length:', historyMatrices.length);
+    console.log('Total days:', totalDays);
+    
+    var currentIndex = totalDays;
+    var animationInterval = null;
+    var isPlaying = false;
+    
+    // Элементы управления
+    var slider = document.getElementById('daySlider');
+    var dayValue = document.getElementById('dayValue');
+    var btnPlay = document.getElementById('btnPlay');
+    var btnPause = document.getElementById('btnPause');
+    var btnReset = document.getElementById('btnReset');
+    var matrixBody = document.getElementById('matrix-body');
+    
+    // Устанавливаем максимальное значение слайдера
+    if (slider) {
+        slider.max = totalDays;
+        slider.value = totalDays;
+        if (dayValue) dayValue.innerText = 'День: ' + totalDays;
+    }
+    
+    // Функция обновления матрицы по индексу
+    function updateMatrix(dayIndex) {
+        if (!historyMatrices[dayIndex]) return;
+        
+        var matrix = historyMatrices[dayIndex];
+        var html = '';
+        
+        for (var i = 0; i < matrix.length; i++) {
+            html += '<tr>';
+            for (var j = 0; j < matrix[i].length; j++) {
+                html += '<td><div class="cell-content">';
+                var statuses = matrix[i][j];
+                for (var k = 0; k < statuses.length; k++) {
+                    var status = statuses[k];
+                    if (status === 'S') {
+                        html += '<span class="stat-s">●</span>';
+                    } else if (status === 'I') {
+                        html += '<span class="stat-i">●</span>';
+                    } else if (status === 'R') {
+                        html += '<span class="stat-r">●</span>';
+                    }
+                }
+                html += '</div></td>';
+            }
+            html += '</tr>';
+        }
+        
+        if (matrixBody) matrixBody.innerHTML = html;
+        
+        if (slider) slider.value = dayIndex;
+        if (dayValue) dayValue.innerText = 'День: ' + dayIndex;
+        
+        currentIndex = dayIndex;
+    }
+    
+    function startAnimation() {
+        if (animationInterval) clearInterval(animationInterval);
+        isPlaying = true;
+        
+        if (currentIndex >= totalDays) {
+            currentIndex = 0;
+            updateMatrix(currentIndex);
+        }
+        
+        if (btnPlay) btnPlay.style.display = 'none';
+        if (btnPause) btnPause.style.display = 'inline-block';
+        
+        animationInterval = setInterval(function() {
+            if (currentIndex < totalDays) {
+                currentIndex++;
+                updateMatrix(currentIndex);
+            } else {
+                stopAnimation();
+            }
+        }, 200);
+    }
+    
+    function stopAnimation() {
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        isPlaying = false;
+        
+        if (btnPlay) btnPlay.style.display = 'inline-block';
+        if (btnPause) btnPause.style.display = 'none';
+    }
+    
+    function resetAnimation() {
+        stopAnimation();
+        currentIndex = totalDays;
+        updateMatrix(totalDays);
+    }
+    
+    // Привязываем события
+    if (btnPlay) btnPlay.onclick = startAnimation;
+    if (btnPause) btnPause.onclick = stopAnimation;
+    if (btnReset) btnReset.onclick = resetAnimation;
+    
+    if (slider) {
+        slider.oninput = function() {
+            stopAnimation();
+            updateMatrix(parseInt(this.value));
+        };
+    }
+    
+    // Инициализируем матрицу последним днём
+    if (historyMatrices.length > 0 && totalDays > 0) {
+        updateMatrix(totalDays);
+    }
+});
+</script>
