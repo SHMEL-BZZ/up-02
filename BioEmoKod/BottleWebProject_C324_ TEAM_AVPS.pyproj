@@ -19,6 +19,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>BottleWebProject_C324_ TEAM_AVPS</Name>
     <RootNamespace>BioEmoKod</RootNamespace>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <InterpreterId>
     </InterpreterId>
     <TestFramework>unittest</TestFramework>
@@ -35,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="controller\export_pp_controller.py">
     <Compile Include="controller\epidemic_controller.py">
       <SubType>Code</SubType>
     </Compile>
@@ -52,6 +54,9 @@
     </Compile>
     <Compile Include="model\pp_model.py" />
     <Compile Include="routes.py" />
+    <Compile Include="test\test_pp.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test\__init__.py">
       <SubType>Code</SubType>
     </Compile>

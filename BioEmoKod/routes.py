@@ -8,8 +8,10 @@ import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
 import matplotlib.pyplot as plt
 import random
-import csv
-import io
+import uuid
+import os
+import json
+from io import StringIO
 
 import io
 import base64
@@ -17,9 +19,16 @@ import csv
 from datetime import datetime
 import json
 
-# Импортируем вашу модель 
-from model.pp_model import simulate_lotka_volterra, plot_dynamics
+# Импортируем модель
+from controller.pp_controller import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
+# Импортируем менеджер экспорта
+from controller.export_pp_controller import export_manager, prepare_export_data
+
+
+# Создаем глобальное хранилище для временных результатов
+temp_results = {}
+
 from model.fishing_model import FishLake
 @route('/')
 @route('/home')
@@ -33,17 +42,17 @@ def home():
 
 @route('/predator_pray', method=['GET', 'POST'])
 def predator_pray():
-    """Renders the predator_pray page and handles form submission."""
+    """Рендеринг страницы хищник-жертва"""
     title = 'Модель «Хищник-жертва»'
     results = None
     error = None
-    field_errors = {}  # Словарь для ошибок по конкретным полям
+    field_errors = {}
     form_values = {}
     
     # Значения по умолчанию
     default_form_values = {
         'x0': '50', 'y0': '20', 'alpha': '0.8', 'c': '0.04',
-        'beta': '0.6', 'd': '0.02', 'T': '50', 'N': '1000'
+        'beta': '0.6', 'd': '0.02', 'T': '50', 'N': '5000'
     }
     
     if request.method == 'POST':
@@ -51,6 +60,19 @@ def predator_pray():
         if request.forms.get('reset') == 'true':
             form_values = default_form_values.copy()
             field_errors = {}
+        elif request.forms.get('random') == 'true':
+            form_values = generate_random_values()
+            field_errors = {}
+            # Автоматически запускаем расчёт со сгенерированными значениями
+            # Преобразуем строки в числа для расчёта
+            x0 = float(form_values['x0'])
+            y0 = float(form_values['y0'])
+            alpha = float(form_values['alpha'])
+            c = float(form_values['c'])
+            beta = float(form_values['beta'])
+            d = float(form_values['d'])
+            T = float(form_values['T'])
+            N = int(form_values['N'])
         else:
             # Получаем значения из формы
             form_values = {
@@ -63,6 +85,10 @@ def predator_pray():
                 'T': request.forms.get('T', '').strip(),
                 'N': request.forms.get('N', '').strip()
             }
+            
+            # Инициализируем переменные со значениями по умолчанию
+            x0 = y0 = alpha = c = beta = d = T = None
+            N = None
             
             # Функция для преобразования в float (с поддержкой запятой)
             def to_float(value, field_name, errors, required=True):
@@ -110,8 +136,8 @@ def predator_pray():
                 field_errors['y0'] = 'Число хищников должно быть в диапазоне 1–50'
             if T is not None and 'T' not in field_errors and not (5 <= T <= 50):
                 field_errors['T'] = 'Длительность должна быть в диапазоне 5–50 лет'
-            if N is not None and 'N' not in field_errors and not (200 <= N <= 10000):
-                field_errors['N'] = 'Число шагов должно быть в диапазоне 200–10000'
+            if N is not None and 'N' not in field_errors and not (5000 <= N <= 50000):
+                field_errors['N'] = 'Число шагов должно быть в диапазоне 5000–50000'
             if alpha is not None and 'alpha' not in field_errors and not (0.4 <= alpha <= 1.5):
                 field_errors['alpha'] = 'Рождаемость жертв должна быть в диапазоне 0.4–1.5'
             if c is not None and 'c' not in field_errors and not (0.01 <= c <= 0.06):
@@ -124,6 +150,7 @@ def predator_pray():
             # Если есть ошибки - показываем их без расчёта
             if field_errors:
                 error = "Пожалуйста, исправьте ошибки в форме"
+
             else:
                 # Все проверки пройдены, выполняем расчёт
                 try:
@@ -136,19 +163,27 @@ def predator_pray():
                     
                     plot_base64 = plot_dynamics(result)
                     
+                    # Формируем результаты для отображения
+                    
                     results = {
-                        'x_star': f"{result.equilibrium_prey:.2f}",
-                        'y_star': f"{result.equilibrium_predator:.2f}",
+                        'x_star': f"{round(result.equilibrium_prey)}",           # целое
+                        'y_star': f"{round(result.equilibrium_predator)}",       # целое
                         'period': f"{result.period:.2f}",
                         'stability_type': result.stability_type,
-                        'avg_prey': f"{result.avg_prey:.2f}",
-                        'avg_predator': f"{result.avg_predator:.2f}",
-                        'min_prey': f"{min(result.prey):.2f}",
-                        'max_prey': f"{max(result.prey):.2f}",
-                        'min_predator': f"{min(result.predators):.2f}",
-                        'max_predator': f"{max(result.predators):.2f}",
+                        'avg_prey': f"{round(result.avg_prey)}",                 # целое
+                        'avg_predator': f"{round(result.avg_predator)}",         # целое
+                        'min_prey': f"{int(min(result.prey))}",                  # целое
+                        'max_prey': f"{int(max(result.prey))}",                  # целое
+                        'min_predator': f"{int(min(result.predators))}",         # целое
+                        'max_predator': f"{int(max(result.predators))}",         # целое
                         'plot_base64': plot_base64
                     }
+                    
+                    # Подготавливаем данные для экспорта
+                    from controller.export_pp_controller import prepare_export_data
+                    results = prepare_export_data(result, form_values, results)
+                    print(f"x0={x0},y0={y0},alp={alpha},c={c},beta={beta},d={d},T={T},N={N}")
+                    
                 except Exception as e:
                     error = f"Ошибка расчёта: {str(e)}"
     else:
