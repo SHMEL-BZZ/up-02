@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="controller\export_pp_controller.py">
+    <Compile Include="controller\export_pp_controller.py" />
     <Compile Include="controller\epidemic_controller.py">
       <SubType>Code</SubType>
     </Compile>
@@ -63,7 +63,7 @@
     <Compile Include="test\test_epidemic.py">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
+</ItemGroup>
   <ItemGroup>
     <Folder Include="model\" />
     <Folder Include="controller\" />
