@@ -1,276 +1,552 @@
-﻿import random
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')  # Для работы без графического интерфейса
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
-import os
-from datetime import datetime
+﻿"""
+Модуль с расчетной логикой модели "Распространение эпидемии"
+Для независимого тестирования и использования в других файлах
+"""
 
-class EpidemicSimulation:
-    def __init__(self, params):
-        """
-        Инициализация симуляции.
-        params: словарь с параметрами из формы
-        """
-        self.n = int(params['grid_size'])
-        self.total_rats = int(params['total_rats'])
-        self.weeks = int(params['weeks'])
-        self.p_infect = float(params['p_infect'])
-        self.p_move = float(params['p_move'])
-        self.vacc_day = int(params['vacc_day'])
-        self.vacc_percent = int(params['vacc_percent'])
-        
-        # Фиксированные параметры
-        self.ILL_DAYS = 6
-        self.IMMUN_DAYS = 4
-        self.MAX_PER_CELL = 4
-        
-        # Сетка и состояние крыс
-        self.grid = None
-        self.rats_data = {}
-        
-        # Результаты симуляции
-        self.history = {'S': [], 'I': [], 'R': []}
-        self.weekly_infections = []
-        
-        # Для сравнения вакцинации
-        self.efficacy = 0
-        self.peaks = {'without': 0, 'with': 0, 'week_without': 0, 'week_with': 0}
-        
-        # Запускаем основную симуляцию
-        self.run()
+import random
+import numpy as np # для математических операций
+from dataclasses import dataclass
+from typing import List, Dict, Tuple, Optional 
+
+
+@dataclass
+class SimulationResult:
+    """Результат симуляции эпидемии."""
+    history_s: List[int]          # История здоровых крыс
+    history_i: List[int]          # История зараженных крыс
+    history_r: List[int]          # История иммунных крыс
+    weekly_infections: List[int]  # Еженедельные заражения
+    threshold: float              # Эпидемический порог
+    efficacy: float               # Эффективность вакцинации (%)
+    peak_without: int             # Пик заражения без вакцинации
+    peak_with: int                # Пик заражения с вакцинацией
+    week_without: int             # Неделя пика без вакцинации
+    week_with: int                # Неделя пика с вакцинацией
+    matrix_display: List[List[List[str]]]  # Состояние сетки для отображения
+    n: int                        # Размер сетки
+    epidemic_weeks_without: int   # Количество эпидемических недель без вакцинации
+    epidemic_weeks_with: int      # Количество эпидемических недель с вакцинацией
+    history_matrices: List[List[List[List[str]]]]  # История состояний матрицы по дням
+    total_days: int               # Общее количество дней симуляции
+
+
+def calculate_epidemic_threshold(weekly_infections: List[int]) -> float:
+    """
+    Расчет эпидемического порога по первым 8 неделям.
     
-    def _init_grid(self):
-        """Инициализация пустой сетки и размещение крыс"""
-        self.grid = [[[] for _ in range(self.n)] for _ in range(self.n)]
-        self.rats_data = {}
-        
-        # Размещаем крыс случайно
-        rats_placed = 0
-        while rats_placed < self.total_rats:
-            x = random.randint(0, self.n-1)
-            y = random.randint(0, self.n-1)
-            if len(self.grid[x][y]) < self.MAX_PER_CELL:
-                rat_id = rats_placed
-                self.rats_data[rat_id] = {
-                    'status': 'S',
-                    'counter': 0,
-                    'pos': (x, y)
-                }
-                self.grid[x][y].append(rat_id)
-                rats_placed += 1
-        
-        # Заражаем одну случайную крысу
-        rat_ids = list(self.rats_data.keys())
-        if rat_ids:
-            infected_id = random.choice(rat_ids)
-            self.rats_data[infected_id]['status'] = 'I'
-            self.rats_data[infected_id]['counter'] = 1
+    Параметры:
+        weekly_infections: список еженедельных заражений
     
-    def _move_rats(self):
-        """Перемещение крыс"""
-        new_grid = [[[] for _ in range(self.n)] for _ in range(self.n)]
-        for x in range(self.n):
-            for y in range(self.n):
-                for rat_id in self.grid[x][y]:
-                    new_grid[x][y].append(rat_id)
+    Возвращает:
+        эпидемический порог (mean + 2.507 * std)
+    """
+    if len(weekly_infections) >= 8:
+        first_8 = weekly_infections[:8]
+        mean = np.mean(first_8)
+        std = np.std(first_8, ddof=1) if len(first_8) > 1 else 0
+        threshold = mean + 2.507 * std
+        return round(threshold, 1)
+    return 0
+
+
+def count_epidemic_weeks(infected_history: List[int], threshold: float) -> int:
+    """
+    Подсчёт количества эпидемических недель.
+    
+    Эпидемическая неделя - неделя, когда количество заражённых > порога.
+    
+    Параметры:
+        infected_history: история количества заражённых по неделям
+        threshold: эпидемический порог
+    
+    Возвращает:
+        количество эпидемических недель
+    """
+    return sum(1 for infected in infected_history if infected > threshold)
+
+
+def calculate_efficacy(epidemic_weeks_without: int, epidemic_weeks_with: int) -> float:
+    """
+    Расчет эффективности вакцинации на основе эпидемических недель.
+    
+    Параметры:
+        epidemic_weeks_without: количество эпидемических недель без вакцинации
+        epidemic_weeks_with: количество эпидемических недель с вакцинацией
+    
+    Возвращает:
+        эффективность в процентах
+    """
+    if epidemic_weeks_without == 0:
+        return 0.0
+    
+    efficacy = (epidemic_weeks_without - epidemic_weeks_with) / epidemic_weeks_without * 100
+    
+    # Эффективность не может быть ниже 0%
+    return round(max(0, efficacy), 1)
+
+
+def create_empty_grid(n: int) -> List[List[List[int]]]:
+    """
+    Создание пустой сетки.
+    
+    Параметры:
+        n: размер сетки
+    
+    Возвращает:
+        пустая сетка (список списков списков)
+    """
+    return [[[] for _ in range(n)] for _ in range(n)]
+
+
+def initialize_rats(
+    n: int, 
+    total_rats: int, 
+    max_per_cell: int = 4
+) -> Tuple[List[List[List[int]]], Dict[int, Dict]]:
+    """
+    Инициализация сетки и размещение крыс.
+    
+    Параметры:
+        n: размер сетки
+        total_rats: общее количество крыс
+        max_per_cell: максимальное количество крыс в одной клетке
+    
+    Возвращает:
+        (grid, rats_data) - сетка и данные о крысах
+    """
+    grid = create_empty_grid(n)
+    rats_data = {}
+    
+    rats_placed = 0
+    while rats_placed < total_rats:
+        x = random.randint(0, n-1)
+        y = random.randint(0, n-1)
+        if len(grid[x][y]) < max_per_cell:
+            rat_id = rats_placed
+            rats_data[rat_id] = {
+                'status': 'S',
+                'counter': 0,
+                'pos': (x, y)
+            }
+            grid[x][y].append(rat_id)
+            rats_placed += 1
+    
+    # Заражаем одну случайную крысу
+    rat_ids = list(rats_data.keys())
+    if rat_ids:
+        infected_id = random.choice(rat_ids)
+        rats_data[infected_id]['status'] = 'I'
+        rats_data[infected_id]['counter'] = 1
+    
+    return grid, rats_data
+
+
+def move_rats(
+    grid: List[List[List[int]]], 
+    rats_data: Dict[int, Dict], 
+    p_move: float,
+    n: int,
+    max_per_cell: int = 4
+) -> Tuple[List[List[List[int]]], Dict[int, Dict]]:
+    """
+    Перемещение крыс.
+    
+    Параметры:
+        grid: текущая сетка
+        rats_data: данные о крысах
+        p_move: вероятность перемещения
+        n: размер сетки
+        max_per_cell: максимальное количество крыс в клетке
+    
+    Возвращает:
+        (new_grid, rats_data) - обновленная сетка и данные
+    """
+    new_grid = [[[] for _ in range(n)] for _ in range(n)]
+    
+    # Копируем текущие позиции
+    for x in range(n):
+        for y in range(n):
+            for rat_id in grid[x][y]:
+                new_grid[x][y].append(rat_id)
+    
+    # Перемещаем крыс
+    for x in range(n):
+        for y in range(n):
+            for rat_id in grid[x][y]:
+                if random.random() < p_move:
+                    dx = random.randint(-1, 1)
+                    dy = random.randint(-1, 1)
+                    if dx == 0 and dy == 0:
+                        continue
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < n and 0 <= ny < n and len(new_grid[nx][ny]) < max_per_cell:
+                        new_grid[x][y].remove(rat_id)
+                        new_grid[nx][ny].append(rat_id)
+                        rats_data[rat_id]['pos'] = (nx, ny)
+    
+    return new_grid, rats_data
+
+
+def infect_rats(
+    grid: List[List[List[int]]], 
+    rats_data: Dict[int, Dict], 
+    p_infect: float
+) -> Dict[int, Dict]:
+    """
+    Процесс заражения.
+    
+    Параметры:
+        grid: текущая сетка
+        rats_data: данные о крысах
+        p_infect: вероятность заражения
+    
+    Возвращает:
+        обновленные данные о крысах
+    """
+    infected_cells = set()
+    
+    # Находим клетки с зараженными крысами
+    for x in range(len(grid)):
+        for y in range(len(grid[0])):
+            for rat_id in grid[x][y]:
+                if rats_data[rat_id]['status'] == 'I':
+                    infected_cells.add((x, y))
+    
+    # Заражение здоровых крыс в зараженных клетках
+    for x, y in infected_cells:
+        for rat_id in grid[x][y]:
+            if rats_data[rat_id]['status'] == 'S' and random.random() < p_infect:
+                rats_data[rat_id]['status'] = 'I'
+                rats_data[rat_id]['counter'] = 1
+    
+    return rats_data
+
+
+def update_statuses(
+    rats_data: Dict[int, Dict], 
+    ill_days: int = 6, 
+    immun_days: int = 4
+) -> Dict[int, Dict]:
+    """
+    Обновление статусов (болезнь, иммунитет).
+    
+    Параметры:
+        rats_data: данные о крысах
+        ill_days: длительность болезни в днях
+        immun_days: длительность иммунитета в днях
+    
+    Возвращает:
+        обновленные данные о крысах
+    """
+    for rat_id in rats_data:
+        status = rats_data[rat_id]['status']
+        counter = rats_data[rat_id]['counter']
         
-        for x in range(self.n):
-            for y in range(self.n):
-                for rat_id in self.grid[x][y]:
-                    if random.random() < self.p_move:
-                        dx = random.randint(-1, 1)
-                        dy = random.randint(-1, 1)
-                        if dx == 0 and dy == 0:
-                            continue
-                        nx, ny = x + dx, y + dy
-                        if 0 <= nx < self.n and 0 <= ny < self.n and len(new_grid[nx][ny]) < self.MAX_PER_CELL:
-                            new_grid[x][y].remove(rat_id)
-                            new_grid[nx][ny].append(rat_id)
-                            self.rats_data[rat_id]['pos'] = (nx, ny)
-        self.grid = new_grid
+        if status == 'I':
+            if counter >= ill_days:
+                rats_data[rat_id]['status'] = 'R'
+                rats_data[rat_id]['counter'] = 1
+            else:
+                rats_data[rat_id]['counter'] += 1
+        elif status == 'R':
+            if counter >= immun_days:
+                rats_data[rat_id]['status'] = 'S'
+                rats_data[rat_id]['counter'] = 0
+            else:
+                rats_data[rat_id]['counter'] += 1
     
-    def _infect_rats(self):
-        """Процесс заражения"""
-        infected_cells = set()
-        for x in range(self.n):
-            for y in range(self.n):
-                for rat_id in self.grid[x][y]:
-                    if self.rats_data[rat_id]['status'] == 'I':
-                        infected_cells.add((x, y))
+    return rats_data
+
+
+def vaccinate(
+    rats_data: Dict[int, Dict], 
+    day: int, 
+    vacc_day: int, 
+    vacc_percent: int
+) -> Dict[int, Dict]:
+    """
+    Вакцинация в заданный день.
+    
+    Параметры:
+        rats_data: данные о крысах
+        day: текущий день
+        vacc_day: день вакцинации
+        vacc_percent: процент вакцинируемых крыс
+    
+    Возвращает:
+        обновленные данные о крысах
+    """
+    if day == vacc_day:
+        healthy_ids = [rid for rid, d in rats_data.items() if d['status'] == 'S']
+        target = int(len(healthy_ids) * vacc_percent / 100)
+        if target > 0 and healthy_ids:
+            to_vacc = random.sample(healthy_ids, min(target, len(healthy_ids)))
+            for rid in to_vacc:
+                rats_data[rid]['status'] = 'R'
+                rats_data[rid]['counter'] = 1
+    
+    return rats_data
+
+
+def record_stats(
+    rats_data: Dict[int, Dict], 
+    history: Dict[str, List[int]], 
+    weekly_infections: List[int], 
+    week: int
+) -> Tuple[Dict[str, List[int]], List[int]]:
+    """
+    Запись статистики по неделям.
+    
+    Параметры:
+        rats_data: данные о крысах
+        history: история статусов
+        weekly_infections: список еженедельных заражений
+        week: номер недели
+    
+    Возвращает:
+        (history, weekly_infections) - обновленные данные
+    """
+    s = sum(1 for d in rats_data.values() if d['status'] == 'S')
+    i = sum(1 for d in rats_data.values() if d['status'] == 'I')
+    r = sum(1 for d in rats_data.values() if d['status'] == 'R')
+    
+    history['S'].append(s)
+    history['I'].append(i)
+    history['R'].append(r)
+    
+    # Расчет новых заражений за неделю
+    if week > 0 and len(history['I']) > 1:
+        infections_this_week = max(0, i - history['I'][week-1] + r - (history['R'][week-1] if len(history['R']) > 1 else 0))
+        weekly_infections.append(infections_this_week)
+    else:
+        weekly_infections.append(i)
+    
+    return history, weekly_infections
+
+def record_matrix_state(
+    grid: List[List[List[int]]],
+    rats_data: Dict[int, Dict],
+    n: int,
+    history_matrices: List[List[List[List[str]]]]
+) -> List[List[List[List[str]]]]:
+    """
+    Запись текущего состояния матрицы в историю для анимации.
+    
+    Параметры:
+        grid: текущая сетка
+        rats_data: данные о крысах
+        n: размер сетки
+        history_matrices: текущая история состояний
+    
+    Возвращает:
+        обновленная история состояний
+    """
+    matrix_state = get_matrix_state(grid, rats_data, n)
+    matrix_display = matrix_to_display(matrix_state)
+    history_matrices.append(matrix_display)
+    return history_matrices
+
+
+def get_matrix_state(
+    grid: List[List[List[int]]], 
+    rats_data: Dict[int, Dict], 
+    n: int
+) -> List[List[Dict[str, int]]]:
+    """
+    Получение текущего состояния матрицы для визуализации.
+    
+    Параметры:
+        grid: текущая сетка
+        rats_data: данные о крысах
+        n: размер сетки
+    
+    Возвращает:
+        матрица состояния (счетчики S/I/R в каждой клетке)
+    """
+    matrix = [[{'S': 0, 'I': 0, 'R': 0} for _ in range(n)] for _ in range(n)]
+    for rat_id, data in rats_data.items():
+        x, y = data['pos']
+        status = data['status']
+        matrix[x][y][status] += 1
+    return matrix
+
+
+def matrix_to_display(matrix_state: List[List[Dict[str, int]]]) -> List[List[List[str]]]:
+    """
+    Преобразует matrix_state в список статусов для отображения точек.
+    
+    Параметры:
+        matrix_state: матрица состояния
+    
+    Возвращает:
+        матрица для отображения (списки статусов в каждой клетке)
+    """
+    n = len(matrix_state)
+    matrix_display = []
+    for i in range(n):
+        row = []
+        for j in range(n):
+            cell = matrix_state[i][j]
+            statuses = []
+            for _ in range(cell['S']):
+                statuses.append('S')
+            for _ in range(cell['I']):
+                statuses.append('I')
+            for _ in range(cell['R']):
+                statuses.append('R')
+            row.append(statuses)
+        matrix_display.append(row)
+    return matrix_display
+
+
+def run_single_simulation(
+    n: int,
+    total_rats: int,
+    weeks: int,
+    p_infect: float,
+    p_move: float,
+    vacc_day: Optional[int],
+    vacc_percent: Optional[int],
+    max_per_cell: int,
+    ill_days: int,
+    immun_days: int,
+    return_matrix: bool = False,
+    record_history: bool = False  # ← НОВЫЙ ПАРАМЕТР
+) -> tuple:
+    """
+    Запуск одной симуляции с возможностью сохранения финальной матрицы и истории.
+    
+    Возвращает:
+        (history_s, history_i, history_r, weekly_infections, threshold, matrix_display, history_matrices)
+    """
+    # Инициализация
+    grid, rats_data = initialize_rats(n, total_rats, max_per_cell)
+    history = {'S': [], 'I': [], 'R': []}
+    weekly_infections = []
+    history_matrices = []  # ← Для хранения состояний по дням
+    
+    total_days = weeks * 7
+    current_week = 0
+    
+    # Записываем начальное состояние (день 0)
+    if record_history:
+        history_matrices = record_matrix_state(grid, rats_data, n, history_matrices)
+    
+    # Основной цикл симуляции
+    for day in range(total_days):
+        # Вакцинация (если включена)
+        if vacc_day is not None and vacc_percent is not None:
+            rats_data = vaccinate(rats_data, day, vacc_day, vacc_percent)
         
-        for x, y in infected_cells:
-            for rat_id in self.grid[x][y]:
-                if self.rats_data[rat_id]['status'] == 'S' and random.random() < self.p_infect:
-                    self.rats_data[rat_id]['status'] = 'I'
-                    self.rats_data[rat_id]['counter'] = 1
-    
-    def _update_statuses(self):
-        """Обновление статусов (болезнь, иммунитет)"""
-        for rat_id in self.rats_data:
-            status = self.rats_data[rat_id]['status']
-            counter = self.rats_data[rat_id]['counter']
-            
-            if status == 'I':
-                if counter >= self.ILL_DAYS:
-                    self.rats_data[rat_id]['status'] = 'R'
-                    self.rats_data[rat_id]['counter'] = 1
-                else:
-                    self.rats_data[rat_id]['counter'] += 1
-            elif status == 'R':
-                if counter >= self.IMMUN_DAYS:
-                    self.rats_data[rat_id]['status'] = 'S'
-                    self.rats_data[rat_id]['counter'] = 0
-                else:
-                    self.rats_data[rat_id]['counter'] += 1
-    
-    def _vaccinate(self, day):
-        """Вакцинация в заданный день"""
-        if day == self.vacc_day:
-            healthy_ids = [rid for rid, d in self.rats_data.items() if d['status'] == 'S']
-            target = int(len(healthy_ids) * self.vacc_percent / 100)
-            if target > 0 and healthy_ids:
-                to_vacc = random.sample(healthy_ids, min(target, len(healthy_ids)))
-                for rid in to_vacc:
-                    self.rats_data[rid]['status'] = 'R'
-                    self.rats_data[rid]['counter'] = 1
-    
-    def _record_stats(self, week):
-        """Запись статистики по неделям"""
-        s = sum(1 for d in self.rats_data.values() if d['status'] == 'S')
-        i = sum(1 for d in self.rats_data.values() if d['status'] == 'I')
-        r = sum(1 for d in self.rats_data.values() if d['status'] == 'R')
-        self.history['S'].append(s)
-        self.history['I'].append(i)
-        self.history['R'].append(r)
+        # Шаги симуляции
+        grid, rats_data = move_rats(grid, rats_data, p_move, n, max_per_cell)
+        rats_data = infect_rats(grid, rats_data, p_infect)
+        rats_data = update_statuses(rats_data, ill_days, immun_days)
         
-        if week > 0 and len(self.history['I']) > 1:
-            infections_this_week = max(0, i - self.history['I'][week-1] + r - (self.history['R'][week-1] if len(self.history['R']) > 1 else 0))
-            self.weekly_infections.append(infections_this_week)
-        else:
-            self.weekly_infections.append(i)
-    
-    def _calculate_threshold(self):
-        """Расчёт эпидемического порога"""
-        if len(self.weekly_infections) >= 8:
-            first_8 = self.weekly_infections[:8]
-            mean = np.mean(first_8)
-            std = np.std(first_8, ddof=1) if len(first_8) > 1 else 0
-            threshold = mean + 2.507 * std
-            return round(threshold, 1)
-        return 0
-    
-    def _run_single(self, with_vacc=True):
-        """Запуск одной симуляции (с вакцинацией или без)"""
-        self._init_grid()
-        self.history = {'S': [], 'I': [], 'R': []}
-        self.weekly_infections = []
+        # Записываем состояние каждый день для анимации
+        if record_history:
+            history_matrices = record_matrix_state(grid, rats_data, n, history_matrices)
         
-        total_days = self.weeks * 7
-        current_week = 0
-        
-        for day in range(total_days):
-            if with_vacc:
-                self._vaccinate(day)
-            self._move_rats()
-            self._infect_rats()
-            self._update_statuses()
-            
-            if day % 7 == 0:
-                self._record_stats(current_week)
-                current_week += 1
-        
-        i_vals = self.history['I']
-        peak = max(i_vals) if i_vals else 0
-        peak_week = i_vals.index(peak) if peak in i_vals else 0
-        return peak, peak_week, self._calculate_threshold()
+        # Запись статистики по неделям
+        if day % 7 == 0:
+            history, weekly_infections = record_stats(
+                rats_data, history, weekly_infections, current_week
+            )
+            current_week += 1
     
-    def _run_comparison(self):
-        """Запуск сравнения (с вакцинацией и без)"""
-        peak_with, week_with, threshold = self._run_single(with_vacc=True)
-        
-        peak_without, week_without, _ = self._run_single(with_vacc=False)
-        
-        self.peaks = {
-            'with': peak_with,
-            'week_with': week_with,
-            'without': peak_without,
-            'week_without': week_without
-        }
-        
-        if peak_without > 0:
-            self.efficacy = max(0, round((peak_without - peak_with) / peak_without * 100, 1))
-        else:
-            self.efficacy = 0
-        
-        return threshold
+    # Расчет порога
+    threshold = calculate_epidemic_threshold(weekly_infections)
     
-    def run(self):
-        """Основной метод запуска"""
-        threshold = self._run_comparison()
-        self.threshold = threshold
-        self.matrix_state = self._get_matrix_state()
+    # Получаем матрицу для отображения (если нужно)
+    matrix_display = None
+    if return_matrix:
+        matrix_state = get_matrix_state(grid, rats_data, n)
+        matrix_display = matrix_to_display(matrix_state)
     
-    def _get_matrix_state(self):
-        """Получение текущего состояния матрицы для визуализации"""
-        matrix = [[{'S': 0, 'I': 0, 'R': 0} for _ in range(self.n)] for _ in range(self.n)]
-        for rat_id, data in self.rats_data.items():
-            x, y = data['pos']
-            status = data['status']
-            matrix[x][y][status] += 1
-        return matrix
+    if record_history:
+        return (
+            history['S'], history['I'], history['R'],
+            weekly_infections, threshold, matrix_display, history_matrices
+        )
+    else:
+        return (
+            history['S'], history['I'], history['R'],
+            weekly_infections, threshold, matrix_display
+        )
+
+
+def simulate_epidemic(
+    n: int,
+    total_rats: int,
+    weeks: int,
+    p_infect: float,
+    p_move: float,
+    vacc_day: int,
+    vacc_percent: int,
+    max_per_cell: int = 4,
+    ill_days: int = 6,
+    immun_days: int = 4,
+    record_history: bool = False
+) -> SimulationResult:
+    """
+    Основная функция симуляции эпидемии.
+    """
+    # Сохраняем начальное состояние для идентичных условий
+    saved_random_state = random.getstate()
+    saved_np_state = np.random.get_state()
     
-    def _get_matrix_display(self):
-        """Преобразует matrix_state в список статусов для отображения точек"""
-        matrix_display = []
-        for i in range(self.n):
-            row = []
-            for j in range(self.n):
-                cell = self.matrix_state[i][j]
-                statuses = []
-                for _ in range(cell['S']):
-                    statuses.append('S')
-                for _ in range(cell['I']):
-                    statuses.append('I')
-                for _ in range(cell['R']):
-                    statuses.append('R')
-                row.append(statuses)
-            matrix_display.append(row)
-        return matrix_display
+    # ===== СИМУЛЯЦИЯ БЕЗ вакцинации (для статистики, без истории) =====
+    s_without, i_without, r_without, weekly_without, threshold_without, _ = run_single_simulation(
+        n, total_rats, weeks, p_infect, p_move,
+        None, None,
+        max_per_cell, ill_days, immun_days,
+        False, False
+    )
     
-    def get_graph(self):
-        """Генерация графика в base64"""
-        weeks = list(range(len(self.history['S'])))
-        plt.figure(figsize=(10, 6))
-        plt.plot(weeks, self.history['S'], 'g-', label='S (здоровые)', linewidth=2)
-        plt.plot(weeks, self.history['I'], 'r-', label='I (заражённые)', linewidth=2)
-        plt.plot(weeks, self.history['R'], 'y-', label='R (иммунные)', linewidth=2)
-        plt.axvline(x=self.vacc_day/7, color='purple', linestyle='--', label='Вакцинация')
-        plt.xlabel('Недели')
-        plt.ylabel('Количество крыс')
-        plt.title('Динамика SIR')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        
-        buffer = BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        buffer.seek(0)
-        image_base64 = base64.b64encode(buffer.getvalue()).decode()
-        plt.close()
-        return f"data:image/png;base64,{image_base64}"
+    epidemic_weeks_without = count_epidemic_weeks(i_without, threshold_without)
     
-    def get_results(self):
-        """Возвращает все результаты для шаблона"""
-        return {
-            'graph': self.get_graph(),
-            'threshold': self.threshold,
-            'efficacy': self.efficacy,
-            'peak_without': self.peaks['without'],
-            'peak_with': self.peaks['with'],
-            'week_without': self.peaks['week_without'],
-            'week_with': self.peaks['week_with'],
-            'matrix_display': self._get_matrix_display(),
-            'n': self.n
-        }
+    # Восстанавливаем состояние
+    random.setstate(saved_random_state)
+    np.random.set_state(saved_np_state)
+    
+    # ===== СИМУЛЯЦИЯ С вакцинацией (с сохранением истории для анимации) =====
+    result = run_single_simulation(
+        n, total_rats, weeks, p_infect, p_move,
+        vacc_day, vacc_percent,
+        max_per_cell, ill_days, immun_days,
+        True, record_history
+    )
+    
+    if record_history:
+        s_with, i_with, r_with, weekly_with, threshold_with, matrix_display, history_matrices = result
+    else:
+        s_with, i_with, r_with, weekly_with, threshold_with, matrix_display = result
+        history_matrices = []
+    
+    epidemic_weeks_with = count_epidemic_weeks(i_with, threshold_with)
+    
+    peak_without = max(i_without) if i_without else 0
+    peak_with = max(i_with) if i_with else 0
+    week_without = i_without.index(peak_without) if peak_without in i_without else 0
+    week_with = i_with.index(peak_with) if peak_with in i_with else 0
+    
+    efficacy = calculate_efficacy(epidemic_weeks_without, epidemic_weeks_with)
+    
+    return SimulationResult(
+        history_s=s_with,
+        history_i=i_with,
+        history_r=r_with,
+        weekly_infections=weekly_with,
+        threshold=threshold_with,
+        efficacy=efficacy,
+        peak_without=peak_without,
+        peak_with=peak_with,
+        week_without=week_without,
+        week_with=week_with,
+        matrix_display=matrix_display,
+        n=n,
+        epidemic_weeks_without=epidemic_weeks_without,
+        epidemic_weeks_with=epidemic_weeks_with,
+        history_matrices=history_matrices,
+        total_days=weeks * 7
+    )

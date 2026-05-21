@@ -22,14 +22,12 @@ class FishLake:
         
         # Сетка озера: 0 — пусто, 1 — рыба
         self.grid = [[0] * M for _ in range(N)]
-        
-        # Случайное равномерное размещение K рыб без повторений
         all_cells = [(i, j) for i in range(N) for j in range(M)]
-        chosen = random.sample(all_cells, K)
+        chosen = random.sample(all_cells, min(K, N * M))
         for i, j in chosen:
             self.grid[i][j] = 1
+        self.population = len(chosen)
             
-        self.population = K   # текущая численность
     
     def step(self):
         """
@@ -70,12 +68,11 @@ class FishLake:
         
         #  2. Размножение 
         #  Собираем всех рыб после движения
-        current_fishes = [(i, j) for i in range(self.N) for j in range(self.M) 
-                          if self.grid[i][j] == 1]
-        random.shuffle(current_fishes)  
+        fishes = [(i, j) for i in range(self.N) for j in range(self.M) if self.grid[i][j] == 1]
+        random.shuffle(fishes)
         newborns = []   # список клеток, выбранных для потомков
         
-        for r, c in current_fishes:
+        for r, c in fishes:
             if random.random() < self.prepro:
                 # Ищем все свободные соседние клетки 
                 free_neighbors = []
@@ -91,44 +88,37 @@ class FishLake:
                     newborns.append(chosen_cell)
         
         # Добавляем потомков 
-        for cell in set(newborns):
-            r, c = cell
+        for r, c in set(newborns):
             if self.grid[r][c] == 0:
                 self.grid[r][c] = 1
         
         #  3. Естественная гибель 
         for i in range(self.N):
             for j in range(self.M):
-                if self.grid[i][j] == 1:
-                    if random.random() < self.pdeath:
-                        self.grid[i][j] = 0
+                if self.grid[i][j] == 1 and random.random() < self.pdeath:
+                    self.grid[i][j] = 0
         
         #  4. Промысловый вылов 
         catch = 0
         for i in range(self.N):
             for j in range(self.M):
-                if self.grid[i][j] == 1:
-                    if random.random() < self.q:
-                        self.grid[i][j] = 0
-                        catch += 1
+                if self.grid[i][j] == 1 and random.random() < self.q:
+                    self.grid[i][j] = 0
+                    catch += 1
         
         # Обновляем общую численность
         self.population = sum(sum(row) for row in self.grid)
         return catch
     
-    def simulate(self, T):
-        """
-        Запуск модели на T шагов.
-        Возвращает:
-            pop_history  — список численности (начальная + после каждого шага)
-            catch_history — список уловов на каждом шаге
-        """
+    def simulate_with_frames(self, total_steps, record_every=1):
+        """Возвращает список кадров (сеток) и историю численности."""
+        frames = []
         pop_history = [self.population]
-        catch_history = []
-        for _ in range(T):
-            catch = self.step()
+        for step in range(total_steps):
+            self.step()
+            if step % record_every == 0:
+                frames.append([row[:] for row in self.grid])
             pop_history.append(self.population)
-            catch_history.append(catch)
-        return pop_history, catch_history
+        return frames, pop_history
 
 

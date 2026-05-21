@@ -2,7 +2,7 @@
 Routes and views for the bottle application.
 """
 
-from bottle import route, view, request, template, response
+from bottle import route, view, request, template, response, static_file
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')  # Для работы без графического интерфейса
@@ -10,10 +10,14 @@ import matplotlib.pyplot as plt
 import random
 import uuid
 import os
-import base64
 import json
-import csv
 from io import StringIO
+
+import io
+import base64
+import csv
+from datetime import datetime
+import json
 
 # Импортируем модель
 from controller.pp_controller import simulate_lotka_volterra, plot_dynamics
@@ -25,6 +29,7 @@ from controller.export_pp_controller import export_manager, prepare_export_data
 # Создаем глобальное хранилище для временных результатов
 temp_results = {}
 
+from model.fishing_model import FishLake
 @route('/')
 @route('/home')
 @view('index')
@@ -193,61 +198,8 @@ def predator_pray():
                    form_values=form_values,
                    field_errors=field_errors)
 
-def generate_random_values():
-    """Генерирует случайные значения в допустимых диапазонах"""
-    return {
-        'x0': str(random.randint(10, 100)),           # жертвы 10-100
-        'y0': str(random.randint(1, 50)),             # хищники 1-50
-        'alpha': f"{random.uniform(0.4, 1.5):.2f}",   # рождаемость жертв 0.4-1.5
-        'c': f"{random.uniform(0.01, 0.06):.3f}",     # эффективность охоты 0.01-0.06
-        'beta': f"{random.uniform(0.4, 1.5):.2f}",    # смертность хищников 0.4-1.5
-        'd': f"{random.uniform(0.01, 0.06):.3f}",     # рост хищников 0.01-0.06
-        'T': str(random.randint(5, 50)),              # длительность 5-50
-        'N': str(random.randint(200, 10000))          # шаги 200-10000
-    }
-
-@route('/export_csv', method='POST')
-def export_csv():
-    """Экспорт данных в CSV"""
-    results_id = request.forms.get('results_id', '')
-    
-    csv_data = export_manager.export_to_csv(results_id)
-    if csv_data is None:
-        response.status = 404
-        return "Данные не найдены"
-    
-    filename = export_manager.generate_filename('predator_prey_data', 'csv')
-    
-    response.headers['Content-Type'] = 'text/csv; charset=utf-8'
-    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
-    
-    return csv_data
-
-
-@route('/export_plot', method='POST')
-def export_plot():
-    """Экспорт графиков в PNG"""
-    plot_id = request.forms.get('plot_id', '')
-    
-    plot_bytes = export_manager.get_plot_bytes(plot_id)
-    if plot_bytes is None:
-        response.status = 404
-        return "График не найден"
-    
-    filename = export_manager.generate_filename('predator_prey_plot', 'png')
-    
-    response.headers['Content-Type'] = 'image/png'
-    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
-    
-    return plot_bytes
-
-
-
-from model.epidemic import EpidemicSimulation
-
 @route('/epidemic', method=['GET', 'POST'])
 def epidemic():
-    """Renders the epidemic page and handles form submission."""
     title = 'Модель «Распространение эпидемии»'
     results = None
     error = None
@@ -266,8 +218,65 @@ def epidemic():
     }
     
     if request.method == 'POST':
+        # Генерация случайных значений
+        if request.forms.get('random') == 'true':
+            import random
+            # Генерируем случайные значения с учётом зависимостей
+            grid_size = random.randint(2, 10)
+            max_rats = grid_size * grid_size * 4
+            total_rats = random.randint(2, max_rats)
+            weeks = random.randint(8, 260)
+            p_infect = round(random.uniform(0.1, 0.9), 1)
+            p_move = round(random.uniform(0.1, 0.9), 1)
+            max_vacc_day = weeks * 7
+            vacc_day = random.randint(56, max_vacc_day)
+            vacc_percent = random.randint(1, 100)
+            
+            form_values = {
+                'grid_size': str(grid_size),
+                'total_rats': str(total_rats),
+                'weeks': str(weeks),
+                'p_infect': str(p_infect),
+                'p_move': str(p_move),
+                'vacc_day': str(vacc_day),
+                'vacc_percent': str(vacc_percent)
+            }
+            field_errors = {}
+
+            # Выполняем расчёт для сгенерированных значений
+            try:
+                analysis = analyze_epidemic_scenario(
+                    n=grid_size,
+                    total_rats=total_rats,
+                    weeks=weeks,
+                    p_infect=p_infect,
+                    p_move=p_move,
+                    vacc_day=vacc_day,
+                    vacc_percent=vacc_percent,
+                )
+                
+                results = {
+                    'graph': analysis['graph'],
+                    'threshold': analysis['results']['Эпидемический порог'],
+                    'efficacy': float(analysis['evaluation']['Эффективность вакцинации'].rstrip('%')),
+                    'peak_without': analysis['results']['Пик заражения (без вакцинации)'],
+                    'peak_with': analysis['results']['Пик заражения (с вакцинацией)'],
+                    'week_without': analysis['results']['Неделя пика (без вакцинации)'],
+                    'week_with': analysis['results']['Неделя пика (с вакцинацией)'],
+                    'matrix_display': analysis['simulation_result'].matrix_display,
+                    'n': analysis['simulation_result'].n,
+                    'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
+                    'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)'],
+                    'history_matrices': analysis['simulation_result'].history_matrices,
+                    'total_days': analysis['simulation_result'].total_days
+                }
+            except Exception as e:
+                error = f"Ошибка расчёта: {str(e)}"
+                import traceback
+                traceback.print_exc()
+
         # Сброс формы
-        if request.forms.get('reset') == 'true':
+        elif request.forms.get('reset') == 'true':
             form_values = default_form_values.copy()
             field_errors = {}
         else:
@@ -297,20 +306,93 @@ def epidemic():
                         return None
                 return None
             
-            # Функция для преобразования в int
+            # Функция для преобразования в int с валидацией
             def to_int(value, field_name, errors, required=True):
                 if not value and required:
                     errors[field_name] = 'Поле обязательно для заполнения'
                     return None
                 if value:
+                    # Проверка на отрицательные числа и буквы в начале
+                    value = value.strip()
+                    if value.startswith('-'):
+                        errors[field_name] = 'Значение не может быть отрицательным'
+                        return None
+                    
+                    # Проверка на буквы и другие символы
+                    import re
+                    if not re.match(r'^[\d]+$', value.replace(',', '').replace('.', '')):
+                        errors[field_name] = 'Значение должно быть целым положительным числом'
+                        return None
+                    
                     try:
+                        # Заменяем запятую на точку и преобразуем
                         value = value.replace(',', '.')
-                        return int(float(value))
+                        # Проверяем, что после преобразования нет дробной части
+                        float_val = float(value)
+                        if float_val != int(float_val):
+                            errors[field_name] = 'Значение должно быть целым числом (без дробной части)'
+                            return None
+                        int_val = int(float_val)
+                        if int_val < 0:
+                            errors[field_name] = 'Значение не может быть отрицательным'
+                            return None
+                        return int_val
                     except (ValueError, TypeError):
-                        errors[field_name] = f'Некорректное целое число: {value}'
+                        errors[field_name] = 'Некорректное число'
                         return None
                 return None
+
+            # 1. Валидация размера сетки (2-10)
+            grid_size = to_int(form_values['grid_size'], 'grid_size', field_errors)
+            if grid_size is not None and 'grid_size' not in field_errors:
+                if not (2 <= grid_size <= 10):
+                    field_errors['grid_size'] = 'Размер сетки должен быть в диапазоне от 2 до 10'
             
+            # 2. Валидация количества крыс (2 до n*n*4)
+            total_rats = to_int(form_values['total_rats'], 'total_rats', field_errors)
+            if total_rats is not None and 'total_rats' not in field_errors:
+                if grid_size is not None and 'grid_size' not in field_errors:
+                    max_rats = grid_size * grid_size * 4
+                    if not (2 <= total_rats <= max_rats):
+                        field_errors['total_rats'] = f'Число крыс должно быть в диапазоне от 2 до {max_rats} (при размере сетки {grid_size}x{grid_size})'
+            
+            # 3. Валидация длительности в неделях (8-260)
+            weeks = to_int(form_values['weeks'], 'weeks', field_errors)
+            if weeks is not None and 'weeks' not in field_errors:
+                if not (8 <= weeks <= 260):
+                    field_errors['weeks'] = 'Длительность должна быть в диапазоне от 8 до 260 недель'
+            
+            # 4. Валидация вероятности заражения (0.1-0.9, 2 знака)
+            p_infect = to_float(form_values['p_infect'], 'p_infect', field_errors)
+            if p_infect is not None and 'p_infect' not in field_errors:
+                if not (0.1 <= p_infect <= 0.9):
+                    field_errors['p_infect'] = 'Вероятность заражения должна быть в диапазоне от 0.1 до 0.9'
+            
+            # 5. Валидация вероятности перемещения (0.1-0.9, 2 знака)
+            p_move = to_float(form_values['p_move'], 'p_move', field_errors)
+            if p_move is not None and 'p_move' not in field_errors:
+                if not (0.1 <= p_move <= 0.9):
+                    field_errors['p_move'] = 'Вероятность перемещения должна быть в диапазоне от 0.1 до 0.9'
+            
+            # 6. Валидация дня начала вакцинации (56 - weeks*7)
+            vacc_day = to_int(form_values['vacc_day'], 'vacc_day', field_errors)
+            if vacc_day is not None and 'vacc_day' not in field_errors:
+                if weeks is not None and 'weeks' not in field_errors:
+                    max_day = weeks * 7
+                    min_day = 56
+                    if not (min_day <= vacc_day <= max_day):
+                        field_errors['vacc_day'] = f'День начала вакцинации должен быть в диапазоне от {min_day} до {max_day} дней (с 8-й недели до конца симуляции)'
+                else:
+                    # Если недели еще не валидированы, но день вакцинации задан
+                    if not (1 <= vacc_day <= 1820):  # 260 * 7
+                        field_errors['vacc_day'] = 'День вакцинации должен быть положительным числом'
+            
+            # 7. Валидация процента вакцинируемых крыс (1-100)
+            vacc_percent = to_int(form_values['vacc_percent'], 'vacc_percent', field_errors)
+            if vacc_percent is not None and 'vacc_percent' not in field_errors:
+                if not (1 <= vacc_percent <= 100):
+                    field_errors['vacc_percent'] = 'Процент вакцинации должен быть в диапазоне от 1 до 100%'
+
             # Преобразуем все значения
             grid_size = to_int(form_values['grid_size'], 'grid_size', field_errors)
             total_rats = to_int(form_values['total_rats'], 'total_rats', field_errors)
@@ -319,38 +401,7 @@ def epidemic():
             p_move = to_float(form_values['p_move'], 'p_move', field_errors)
             vacc_day = to_int(form_values['vacc_day'], 'vacc_day', field_errors)
             vacc_percent = to_int(form_values['vacc_percent'], 'vacc_percent', field_errors)
-            
-            # Валидация диапазонов (только если поле не пустое и нет ошибок преобразования)
-            if grid_size is not None and 'grid_size' not in field_errors and not (2 <= grid_size <= 15):
-                field_errors['grid_size'] = 'Размер сетки должен быть в диапазоне 2–15'
-            
-            # Максимальное количество крыс = n² × 4
-            if grid_size is not None and total_rats is not None and 'total_rats' not in field_errors:
-                max_rats = grid_size * grid_size * 4
-                if not (1 <= total_rats <= max_rats):
-                    field_errors['total_rats'] = f'Число крыс должно быть в диапазоне 1–{max_rats} (максимум n² × 4)'
-            elif total_rats is not None and 'total_rats' not in field_errors and not (1 <= total_rats <= 400):
-                field_errors['total_rats'] = 'Число крыс должно быть в диапазоне 1–400'
-            
-            if weeks is not None and 'weeks' not in field_errors and not (10 <= weeks <= 520):
-                field_errors['weeks'] = 'Длительность должна быть в диапазоне 10–520 недель'
-            
-            if p_infect is not None and 'p_infect' not in field_errors and not (0.1 <= p_infect <= 1.0):
-                field_errors['p_infect'] = 'Вероятность заражения должна быть в диапазоне 0.1–1.0'
-            
-            if p_move is not None and 'p_move' not in field_errors and not (0.1 <= p_move <= 0.9):
-                field_errors['p_move'] = 'Вероятность перемещения должна быть в диапазоне 0.1–0.9'
-            
-            # День вакцинации должен быть не меньше 7 и не больше общего количества дней
-            if vacc_day is not None and weeks is not None and 'vacc_day' not in field_errors:
-                max_day = weeks * 7
-                if not (7 <= vacc_day <= max_day):
-                    field_errors['vacc_day'] = f'День вакцинации должен быть в диапазоне 7–{max_day} (дней симуляции)'
-            elif vacc_day is not None and 'vacc_day' not in field_errors and not (7 <= vacc_day <= 3640):
-                field_errors['vacc_day'] = 'День вакцинации должен быть не меньше 7'
-            
-            if vacc_percent is not None and 'vacc_percent' not in field_errors and not (1 <= vacc_percent <= 100):
-                field_errors['vacc_percent'] = 'Процент вакцинации должен быть в диапазоне 1–100%'
+          
             
             # Если есть ошибки - показываем их без расчёта
             if field_errors:
@@ -358,38 +409,35 @@ def epidemic():
             else:
                 # Все проверки пройдены, выполняем расчёт
                 try:
-                    params = {
-                        'grid_size': grid_size,
-                        'total_rats': total_rats,
-                        'weeks': weeks,
-                        'p_infect': p_infect,
-                        'p_move': p_move,
-                        'vacc_day': vacc_day,
-                        'vacc_percent': vacc_percent
-                    }
-                    sim = EpidemicSimulation(params)
-                    sim_results = sim.get_results()
+                    analysis = analyze_epidemic_scenario(
+                        n=grid_size,
+                        total_rats=total_rats,
+                        weeks=weeks,
+                        p_infect=p_infect,
+                        p_move=p_move,
+                        vacc_day=vacc_day,
+                        vacc_percent=vacc_percent,
+                    )
                     
-                    # Вычисляем снижение пика
-                    peak_without = sim_results['peak_without']
-                    peak_with = sim_results['peak_with']
-                    reduction = round((peak_without - peak_with) / peak_without * 100, 1) if peak_without > 0 else 0
-                    
-                    # Формируем результаты
                     results = {
-                        'graph': sim_results['graph'],
-                        'threshold': sim_results['threshold'],
-                        'efficacy': sim_results['efficacy'],
-                        'peak_without': peak_without,
-                        'peak_with': peak_with,
-                        'week_without': sim_results['week_without'],
-                        'week_with': sim_results['week_with'],
-                        'reduction': reduction,
-                        'matrix_display': sim_results['matrix_display'],
-                        'n': sim_results['n']
+                        'graph': analysis['graph'],
+                        'threshold': analysis['results']['Эпидемический порог'],
+                        'efficacy': float(analysis['evaluation']['Эффективность вакцинации'].rstrip('%')),
+                        'peak_without': analysis['results']['Пик заражения (без вакцинации)'],
+                        'peak_with': analysis['results']['Пик заражения (с вакцинацией)'],
+                        'week_without': analysis['results']['Неделя пика (без вакцинации)'],
+                        'week_with': analysis['results']['Неделя пика (с вакцинацией)'],
+                        'matrix_display': analysis['simulation_result'].matrix_display,
+                        'n': analysis['simulation_result'].n,
+                        'epidemic_weeks_without': analysis['results']['Эпидемические недели (без вакцинации)'],
+                        'epidemic_weeks_with': analysis['results']['Эпидемические недели (с вакцинацией)'],
+                        'history_matrices': analysis['simulation_result'].history_matrices,
+                        'total_days': analysis['simulation_result'].total_days
                     }
                 except Exception as e:
                     error = f"Ошибка расчёта: {str(e)}"
+                    import traceback
+                    traceback.print_exc()
     else:
         # GET запрос - устанавливаем значения по умолчанию
         form_values = default_form_values.copy()
@@ -401,6 +449,158 @@ def epidemic():
                    error=error,
                    form_values=form_values,
                    field_errors=field_errors)
+
+@route('/epidemic/export/csv', method='POST')
+def export_epidemic_csv():
+    """Экспорт данных симуляции в CSV"""
+    try:
+        # Получаем параметры из POST запроса и преобразуем в нужные имена
+        params = {
+            'n': int(request.forms.get('grid_size', 8)),
+            'total_rats': int(request.forms.get('total_rats', 64)),
+            'weeks': int(request.forms.get('weeks', 52)),
+            'p_infect': float(request.forms.get('p_infect', 0.6)),
+            'p_move': float(request.forms.get('p_move', 0.5)),
+            'vacc_day': int(request.forms.get('vacc_day', 56)),
+            'vacc_percent': int(request.forms.get('vacc_percent', 50))
+        }
+        
+        # Запускаем симуляцию
+        analysis = analyze_epidemic_scenario(**params)
+        result = analysis['simulation_result']
+        
+        # Создаём CSV файл
+        output = io.StringIO()
+        writer = csv.writer(output, delimiter=';')
+        
+        # Заголовок
+        writer.writerow(['Модель распространения эпидемии'])
+        writer.writerow(['Параметры симуляции:'])
+        writer.writerow(['Параметр', 'Значение'])
+        writer.writerow(['Размер сетки', params['n']])
+        writer.writerow(['Общее число крыс', params['total_rats']])
+        writer.writerow(['Длительность (недели)', params['weeks']])
+        writer.writerow(['Вероятность заражения', params['p_infect']])
+        writer.writerow(['Вероятность перемещения', params['p_move']])
+        writer.writerow(['День начала вакцинации', params['vacc_day']])
+        writer.writerow(['Процент вакцинации', f"{params['vacc_percent']}%"])
+        writer.writerow([])
+        
+        # Результаты
+        writer.writerow(['Результаты симуляции:'])
+        writer.writerow(['Показатель', 'Значение'])
+        writer.writerow(['Эпидемический порог', result.threshold])
+        writer.writerow(['Эффективность вакцинации', f"{result.efficacy}%"])
+        writer.writerow(['Пик заражения (без вакцинации)', result.peak_without])
+        writer.writerow(['Неделя пика (без вакцинации)', result.week_without])
+        writer.writerow(['Пик заражения (с вакцинацией)', result.peak_with])
+        writer.writerow(['Неделя пика (с вакцинацией)', result.week_with])
+        writer.writerow(['Эпидемические недели (без вакцинации)', result.epidemic_weeks_without])
+        writer.writerow(['Эпидемические недели (с вакцинацией)', result.epidemic_weeks_with])
+        writer.writerow([])
+        
+        # Еженедельные данные
+        writer.writerow(['Неделя', 'Здоровые (S)', 'Заражённые (I)', 'Иммунные (R)', 'Новые заражения'])
+        for week in range(len(result.history_s)):
+            new_infections = result.weekly_infections[week] if week < len(result.weekly_infections) else 0
+            writer.writerow([
+                week + 1,
+                result.history_s[week],
+                result.history_i[week],
+                result.history_r[week],
+                new_infections
+            ])
+        
+        # Отправляем CSV файл
+        response.content_type = 'text/csv; charset=utf-8'
+        response.headers['Content-Disposition'] = 'attachment; filename="epidemic_data.csv"'
+        
+        # Добавляем BOM для корректного открытия в Excel
+        csv_content = output.getvalue()
+        return csv_content.encode('utf-8-sig')
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        response.status = 500
+        return f"Ошибка экспорта: {str(e)}"
+
+
+@route('/epidemic/export/graph', method='POST')
+def export_epidemic_graph():
+    """Экспорт графика в PNG"""
+    try:
+        import matplotlib.pyplot as plt
+        from io import BytesIO
+        
+        # Получаем параметры из формы и преобразуем в нужные имена
+        params = {
+            'n': int(request.forms.get('grid_size', 8)),
+            'total_rats': int(request.forms.get('total_rats', 64)),
+            'weeks': int(request.forms.get('weeks', 52)),
+            'p_infect': float(request.forms.get('p_infect', 0.6)),
+            'p_move': float(request.forms.get('p_move', 0.5)),
+            'vacc_day': int(request.forms.get('vacc_day', 56)),
+            'vacc_percent': int(request.forms.get('vacc_percent', 50))
+        }
+        
+        # Запускаем симуляцию
+        analysis = analyze_epidemic_scenario(**params)
+        result = analysis['simulation_result']
+        
+        # Создаём улучшенный график для экспорта
+        plt.figure(figsize=(14, 8))
+        
+        weeks_range = list(range(len(result.history_s)))
+        vacc_week = params['vacc_day'] / 7
+        
+        # График S, I, R
+        plt.plot(weeks_range, result.history_s, 'g-', label='Здоровые (S)', linewidth=2)
+        plt.plot(weeks_range, result.history_i, 'r-', label='Заражённые (I)', linewidth=2)
+        plt.plot(weeks_range, result.history_r, 'orange', label='Иммунные (R)', linewidth=2)
+        
+        # Линия вакцинации
+        if 0 <= vacc_week <= params['weeks']:
+            plt.axvline(x=vacc_week, color='purple', linestyle='--', linewidth=2, 
+                       label=f'Вакцинация (день {params["vacc_day"]})')
+        
+        # Отметка пика
+        peak_week = result.week_with
+        peak_value = result.peak_with
+        plt.plot(peak_week, peak_value, 'ro', markersize=10, 
+                label=f'Пик заражения: нед. {peak_week}, {peak_value} крыс')
+        
+        # Добавляем информацию о пороге на график
+        if result.threshold > 0:
+            plt.axhline(y=result.threshold, color='gray', linestyle=':', linewidth=1.5,
+                       label=f'Эпидемический порог: {result.threshold}')
+        
+        # Настройка графика
+        plt.xlabel('Недели', fontsize=12)
+        plt.ylabel('Количество крыс', fontsize=12)
+        plt.title(f'Динамика распространения эпидемии\nЭффективность вакцинации: {result.efficacy}%', 
+                 fontsize=14, fontweight='bold')
+        plt.legend(loc='best', fontsize=10)
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        # Сохраняем в буфер
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300, bbox_inches='tight')
+        buf.seek(0)
+        plt.close()
+        
+        # Отправляем PNG файл
+        response.content_type = 'image/png'
+        response.headers['Content-Disposition'] = 'attachment; filename="epidemic_graph.png"'
+        
+        return buf.getvalue()
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        response.status = 500
+        return f"Ошибка экспорта: {str(e)}"
 
 @route('/competition')
 @view('competition')
@@ -417,96 +617,115 @@ def fishing():
     title = 'Динамика рыбного промысла'
     results = None
     error = None
-    field_errors = {}
-    form_values = {}
-    
-    default_form_values = {
-        'N': '15',
-        'M': '15',
-        'K': '50',
-        'p_repro': '0.25',
-        'p_death': '0.1'
-    }
-    
+    graph_base64 = None
+    frames_json = None
+    q_opt = None
+    frames_by_q = None
+    q_animation_list = [] 
+    table_data = [] 
+    n, m = None, None
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") 
+
     if request.method == 'POST':
-        if request.forms.get('reset') == 'true':
-            form_values = default_form_values.copy()
-            field_errors = {}
-        else:
-            # Получаем параметры из формы
-            form_values = {
-                'N': request.forms.get('N', '').strip(),
-                'M': request.forms.get('M', '').strip(),
-                'K': request.forms.get('K', '').strip(),
-                'p_repro': request.forms.get('p_repro', '').strip(),
-                'p_death': request.forms.get('p_death', '').strip()
+        try:
+            N = int(request.forms.get('N', 15))
+            M = int(request.forms.get('M', 15))
+            K = int(request.forms.get('K', 50))
+            pRepro = float(request.forms.get('prepro', 0.2))
+            pDeath = float(request.forms.get('pdeath', 0.1))
+
+            # Валидация 
+            if not (10 <= N <= 100):
+                raise ValueError("N должно быть 10-100")
+            if not (10 <= M <= 100):
+                raise ValueError("M должно быть 10-100")
+            if not (1 <= K <= N * M):
+                raise ValueError(f"K должно быть 1-{N*M}")
+            if not (0.0 <= pRepro <= 1.0):
+                raise ValueError("prepro от 0 до 1")
+            if not (0.0 <= pDeath <= 1.0):
+                raise ValueError("pdeath от 0 до 1")
+
+            # 1. Оптимизация
+            results_raw, q_opt = find_optimal_q(
+                N, M, K, pRepro, pDeath,
+                steps_warmup=50, steps_eval=50, trials=3
+            )
+
+            # Подготовка данных для таблицы и графика
+            table_data = []
+            q_vals = sorted(results_raw.keys())
+            avg_catch = [results_raw[q][0] for q in q_vals]
+            avg_pop = [results_raw[q][1] for q in q_vals]
+            for q, (catch, pop) in results_raw.items():
+                table_data.append({'q': q, 'avg_catch': catch, 'avg_pop': pop})
+            
+
+            # 2. Построение графика
+            fig, ax1 = plt.subplots(figsize=(8, 5))
+            ax1.set_xlabel('Вероятность вылова q')
+            ax1.set_ylabel('Средняя численность', color='tab:blue')
+            ax1.plot(q_vals, avg_pop, 'b-o', label='Численность')
+            ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+            ax2 = ax1.twinx()
+            ax2.set_ylabel('Средний улов', color='tab:red')
+            ax2.plot(q_vals, avg_catch, 'r-s', label='Улов')
+            ax2.tick_params(axis='y', labelcolor='tab:red')
+
+            plt.title('Зависимость средней численности и улова от q')
+            fig.tight_layout()
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            graph_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            plt.close(fig)
+
+            # 3. Анимация 
+            q_animation_list = [round(i/20, 2) for i in range(21)]
+            frames_by_q = {}
+            total_steps = 60
+            record_every = 2
+
+            for q_val in q_animation_list:
+                lake = FishLake(N, M, K, pRepro, pDeath, q_val)
+                frames, _ = lake.simulate_with_frames(total_steps, record_every)
+                key = "{:.2f}".format(q_val)
+                frames_by_q[str(key)] = [
+                    [[int(cell) for cell in row] for row in frame] for frame in frames
+                ]
+            n, m = N, M
+
+            # Результаты для отображения
+            results = {
+                'q_opt': f"{q_opt:.2f}" if q_opt is not None else "Не найден",
+                'avg_catch_opt': f"{results_raw[q_opt][0]:.2f}" if q_opt else "—",
+                'avg_pop_opt': f"{results_raw[q_opt][1]:.2f}" if q_opt else "—"
             }
-            
-            # Проверка обязательных полей
-            for field in ['N', 'M', 'K', 'p_repro', 'p_death']:
-                if not form_values[field]:
-                    field_errors[field] = 'Поле обязательно для заполнения'
-            
-            if not field_errors:
-                try:
-                    # Преобразование в числа
-                    N = int(form_values['N'])
-                    M = int(form_values['M'])
-                    K = int(form_values['K'])
-                    p_repro = float(form_values['p_repro'].replace(',', '.'))
-                    p_death = float(form_values['p_death'].replace(',', '.'))
-                    
-                    # Валидация
-                    if not (1 <= N <= 50):
-                        field_errors['N'] = "Размер популяции N должен быть в диапазоне 1–50"
-                    if not (1 <= M <= 50):
-                        field_errors['M'] = "Размер популяции M должен быть в диапазоне 1–50"
-                    if not (10 <= K <= 200):
-                        field_errors['K'] = "Емкость среды K должна быть в диапазоне 10–200"
-                    if not (0.1 <= p_repro <= 0.5):
-                        field_errors['p_repro'] = "Вероятность размножения должна быть в диапазоне 0.1–0.5"
-                    if not (0.05 <= p_death <= 0.3):
-                        field_errors['p_death'] = "Вероятность смерти должна быть в диапазоне 0.05–0.3"
-                    
-                    if field_errors:
-                        error = "Пожалуйста, исправьте ошибки в форме"
-                    else:
-                        # Вызов оптимизации 
-                        results_raw, q_opt = find_optimal_q(
-                            N, M, K, p_repro, p_death,
-                            steps_warmup=300,
-                            steps_eval=300,
-                            trials=3
-                        )
-                        
-                        # Преобразование результатов для удобства отображения
-                        q_vals = sorted(results_raw.keys())
-                        catches = [results_raw[q][0] for q in q_vals]
-                        pops = [results_raw[q][1] for q in q_vals]
-                        
-                        results = {
-                            'q_vals': q_vals,
-                            'catches': catches,
-                            'pops': pops,
-                            'q_opt': q_opt
-                        }
-                    
-                except ValueError as e:
-                    field_errors['general'] = f"Ошибка преобразования данных: {str(e)}"
-                    error = "Пожалуйста, исправьте ошибки в форме"
-                except Exception as e:
-                    error = f"Ошибка расчёта: {str(e)}"
-    else:
-        form_values = default_form_values.copy()
-    
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        except ValueError as e:
+            error = str(e)
+        except Exception as e:
+            error = f"Ошибка расчёта: {str(e)}"
+
+    table_data_json = json.dumps(table_data)
+
     return template('fishing',
                    title=title,
                    year=datetime.now().year,
                    results=results,
                    error=error,
-                   form_values=form_values,
-                   field_errors=field_errors)
-
+                   graph_base64=graph_base64,
+                   frames_by_q=frames_by_q,
+                   q_animation_list_json=json.dumps(q_animation_list),
+                   frames_by_q_json=json.dumps(frames_by_q),
+                   q_opt=q_opt,
+                   table_data_json=table_data_json,
+                   N=n, M=m,
+                   timestamp=timestamp)
 
 @route('/about')
 @view('about')
