@@ -11,20 +11,16 @@ import random
 import csv
 import io
 
-# Импортир модели "Хищник-жертва" 
+import io
+import base64
+import csv
+from datetime import datetime
+import json
+
+# Импортируем вашу модель 
 from model.pp_model import simulate_lotka_volterra, plot_dynamics
 from controller.fishing_controller import find_optimal_q
-
-# Импорт модели "Развитие эпидемии"
-from model.epidemic import SimulationResult
-from controller.epidemic_controller import plot_epidemic_dynamics, plot_comparison_chart, analyze_epidemic_scenario
-
-# Обработчик статических файлов
-@route('/static/<filepath:path>')
-def server_static(filepath):
-    """Serve static files."""
-    return static_file(filepath, root='static/')
-
+from model.fishing_model import FishLake
 @route('/')
 @route('/home')
 @view('index')
@@ -586,96 +582,115 @@ def fishing():
     title = 'Динамика рыбного промысла'
     results = None
     error = None
-    field_errors = {}
-    form_values = {}
-    
-    default_form_values = {
-        'N': '15',
-        'M': '15',
-        'K': '50',
-        'p_repro': '0.25',
-        'p_death': '0.1'
-    }
-    
+    graph_base64 = None
+    frames_json = None
+    q_opt = None
+    frames_by_q = None
+    q_animation_list = [] 
+    table_data = [] 
+    n, m = None, None
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") 
+
     if request.method == 'POST':
-        if request.forms.get('reset') == 'true':
-            form_values = default_form_values.copy()
-            field_errors = {}
-        else:
-            # Получаем параметры из формы
-            form_values = {
-                'N': request.forms.get('N', '').strip(),
-                'M': request.forms.get('M', '').strip(),
-                'K': request.forms.get('K', '').strip(),
-                'p_repro': request.forms.get('p_repro', '').strip(),
-                'p_death': request.forms.get('p_death', '').strip()
+        try:
+            N = int(request.forms.get('N', 15))
+            M = int(request.forms.get('M', 15))
+            K = int(request.forms.get('K', 50))
+            pRepro = float(request.forms.get('prepro', 0.2))
+            pDeath = float(request.forms.get('pdeath', 0.1))
+
+            # Валидация 
+            if not (10 <= N <= 100):
+                raise ValueError("N должно быть 10-100")
+            if not (10 <= M <= 100):
+                raise ValueError("M должно быть 10-100")
+            if not (1 <= K <= N * M):
+                raise ValueError(f"K должно быть 1-{N*M}")
+            if not (0.0 <= pRepro <= 1.0):
+                raise ValueError("prepro от 0 до 1")
+            if not (0.0 <= pDeath <= 1.0):
+                raise ValueError("pdeath от 0 до 1")
+
+            # 1. Оптимизация
+            results_raw, q_opt = find_optimal_q(
+                N, M, K, pRepro, pDeath,
+                steps_warmup=50, steps_eval=50, trials=3
+            )
+
+            # Подготовка данных для таблицы и графика
+            table_data = []
+            q_vals = sorted(results_raw.keys())
+            avg_catch = [results_raw[q][0] for q in q_vals]
+            avg_pop = [results_raw[q][1] for q in q_vals]
+            for q, (catch, pop) in results_raw.items():
+                table_data.append({'q': q, 'avg_catch': catch, 'avg_pop': pop})
+            
+
+            # 2. Построение графика
+            fig, ax1 = plt.subplots(figsize=(8, 5))
+            ax1.set_xlabel('Вероятность вылова q')
+            ax1.set_ylabel('Средняя численность', color='tab:blue')
+            ax1.plot(q_vals, avg_pop, 'b-o', label='Численность')
+            ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+            ax2 = ax1.twinx()
+            ax2.set_ylabel('Средний улов', color='tab:red')
+            ax2.plot(q_vals, avg_catch, 'r-s', label='Улов')
+            ax2.tick_params(axis='y', labelcolor='tab:red')
+
+            plt.title('Зависимость средней численности и улова от q')
+            fig.tight_layout()
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            graph_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            plt.close(fig)
+
+            # 3. Анимация 
+            q_animation_list = [round(i/20, 2) for i in range(21)]
+            frames_by_q = {}
+            total_steps = 60
+            record_every = 2
+
+            for q_val in q_animation_list:
+                lake = FishLake(N, M, K, pRepro, pDeath, q_val)
+                frames, _ = lake.simulate_with_frames(total_steps, record_every)
+                key = "{:.2f}".format(q_val)
+                frames_by_q[str(key)] = [
+                    [[int(cell) for cell in row] for row in frame] for frame in frames
+                ]
+            n, m = N, M
+
+            # Результаты для отображения
+            results = {
+                'q_opt': f"{q_opt:.2f}" if q_opt is not None else "Не найден",
+                'avg_catch_opt': f"{results_raw[q_opt][0]:.2f}" if q_opt else "—",
+                'avg_pop_opt': f"{results_raw[q_opt][1]:.2f}" if q_opt else "—"
             }
-            
-            # Проверка обязательных полей
-            for field in ['N', 'M', 'K', 'p_repro', 'p_death']:
-                if not form_values[field]:
-                    field_errors[field] = 'Поле обязательно для заполнения'
-            
-            if not field_errors:
-                try:
-                    # Преобразование в числа
-                    N = int(form_values['N'])
-                    M = int(form_values['M'])
-                    K = int(form_values['K'])
-                    p_repro = float(form_values['p_repro'].replace(',', '.'))
-                    p_death = float(form_values['p_death'].replace(',', '.'))
-                    
-                    # Валидация
-                    if not (1 <= N <= 50):
-                        field_errors['N'] = "Размер популяции N должен быть в диапазоне 1–50"
-                    if not (1 <= M <= 50):
-                        field_errors['M'] = "Размер популяции M должен быть в диапазоне 1–50"
-                    if not (10 <= K <= 200):
-                        field_errors['K'] = "Емкость среды K должна быть в диапазоне 10–200"
-                    if not (0.1 <= p_repro <= 0.5):
-                        field_errors['p_repro'] = "Вероятность размножения должна быть в диапазоне 0.1–0.5"
-                    if not (0.05 <= p_death <= 0.3):
-                        field_errors['p_death'] = "Вероятность смерти должна быть в диапазоне 0.05–0.3"
-                    
-                    if field_errors:
-                        error = "Пожалуйста, исправьте ошибки в форме"
-                    else:
-                        # Вызов оптимизации 
-                        results_raw, q_opt = find_optimal_q(
-                            N, M, K, p_repro, p_death,
-                            steps_warmup=300,
-                            steps_eval=300,
-                            trials=3
-                        )
-                        
-                        # Преобразование результатов для удобства отображения
-                        q_vals = sorted(results_raw.keys())
-                        catches = [results_raw[q][0] for q in q_vals]
-                        pops = [results_raw[q][1] for q in q_vals]
-                        
-                        results = {
-                            'q_vals': q_vals,
-                            'catches': catches,
-                            'pops': pops,
-                            'q_opt': q_opt
-                        }
-                    
-                except ValueError as e:
-                    field_errors['general'] = f"Ошибка преобразования данных: {str(e)}"
-                    error = "Пожалуйста, исправьте ошибки в форме"
-                except Exception as e:
-                    error = f"Ошибка расчёта: {str(e)}"
-    else:
-        form_values = default_form_values.copy()
-    
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        except ValueError as e:
+            error = str(e)
+        except Exception as e:
+            error = f"Ошибка расчёта: {str(e)}"
+
+    table_data_json = json.dumps(table_data)
+
     return template('fishing',
                    title=title,
                    year=datetime.now().year,
                    results=results,
                    error=error,
-                   form_values=form_values,
-                   field_errors=field_errors)
-
+                   graph_base64=graph_base64,
+                   frames_by_q=frames_by_q,
+                   q_animation_list_json=json.dumps(q_animation_list),
+                   frames_by_q_json=json.dumps(frames_by_q),
+                   q_opt=q_opt,
+                   table_data_json=table_data_json,
+                   N=n, M=m,
+                   timestamp=timestamp)
 
 @route('/about')
 @view('about')
