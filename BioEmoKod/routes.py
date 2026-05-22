@@ -602,14 +602,560 @@ def export_epidemic_graph():
         response.status = 500
         return f"Ошибка экспорта: {str(e)}"
 
-@route('/competition')
-@view('competition')
-def competition():
-    """Renders the competition page."""
-    return dict(
-        title='Competition',
-        year=datetime.now().year
-    )
+
+from controller.competition_controller import SimulationService, validate_parameters, prepare_display_data
+from bottle import route, view, request, template, response, redirect
+import time
+
+# Глобальный сервис для симуляции
+simulation_service = SimulationService()
+
+
+@route('/competition', method=['GET', 'POST'])
+def competition_page():
+    """
+    Главная страница симуляции конкуренции видов.
+    Обрабатывает как GET (отображение), так и POST (действия) запросы.
+    
+    GET параметры:
+        auto=1   - включить автоматический режим
+        chart=1  - показать график динамики популяций
+        speed=X  - скорость авто-режима в секундах (0.1-2.0)
+    
+    POST действия (action):
+        randomize  - генерация случайных валидных параметров
+        reset      - сброс симуляции с новыми параметрами
+        auto_on    - включение автоматического режима
+        auto_off   - выключение автоматического режима
+        csv        - экспорт истории в CSV файл
+        chart      - построение графика динамики популяций
+    
+    Returns:
+        str: HTML страница с результатами симуляции
+    """
+    global simulation_service
+    
+    # Значения по умолчанию
+    default_params = {
+        'n': 4,
+        'gray': 5,
+        'white': 5,
+        'rye': 8,
+        'rye_interval': 3,
+        'rye_spawn_count': 2,
+        'max_ticks': 100
+    }
+    
+    error = None
+    csv_msg = None
+    chart_path = None
+    auto_mode = False
+    speed = 0.5
+    show_chart = False
+    
+    # Функция для генерации случайных валидных параметров
+    def generate_random_params(self):
+        """
+        Генерирует случайные, но валидные параметры симуляции.
+        
+        Учитываются все ограничения:
+        - Размер поля от 2 до 10
+        - Крыс минимум 2 каждого вида
+        - Сумма крыс не более total_cells - 1
+        - Рожь не более total_cells - 4
+        - Интервал и количество ржи в допустимых диапазонах
+        
+        Returns:
+            dict: Словарь со случайными параметрами:
+                - n: размер поля
+                - gray: количество серых крыс
+                - white: количество белых крыс
+                - rye: количество ржи
+                - rye_interval: интервал появления ржи
+                - rye_spawn_count: количество новой ржи за раз
+                - max_ticks: максимальное количество тактов
+                - speed: скорость авто-режима
+        """
+        import random
+    
+        n = random.randint(2, 10)
+        total_cells = n * n
+    
+        max_single_species = total_cells - 2
+        max_total_rats = total_cells - 1
+    
+        if max_single_species < 2:
+            max_single_species = 2
+    
+        gray = random.randint(2, min(max_single_species, 30))
+    
+        max_white = min(max_single_species, total_cells - 1 - gray)
+        if max_white < 2:
+            max_white = 2
+            if gray + 2 > total_cells - 1:
+                gray = max(2, total_cells - 1 - 2)
+                max_white = 2
+    
+        white = random.randint(2, max_white)
+    
+        total_occupied = gray + white
+        max_rye = min(total_cells - 4, total_cells - total_occupied)
+        if max_rye < 1:
+            max_rye = 1
+        rye = random.randint(1, max_rye)
+    
+        rye_interval = random.randint(1, 20)
+        rye_spawn_count = random.randint(1, 5)
+        max_ticks = random.randint(1, 200)  
+        speed = round(random.uniform(0.1, 2.0), 1)
+    
+        return {
+            'n': n,
+            'gray': gray,
+            'white': white,
+            'rye': rye,
+            'rye_interval': rye_interval,
+            'rye_spawn_count': rye_spawn_count,
+            'max_ticks': max_ticks,
+            'speed': speed
+        }
+    
+    # Инициализируем параметры значениями по умолчанию
+    n = default_params['n']
+    gray_init = default_params['gray']
+    white_init = default_params['white']
+    rye_init = default_params['rye']
+    rye_interval = default_params['rye_interval']
+    rye_spawn_count = default_params['rye_spawn_count']
+    max_ticks = default_params['max_ticks']
+    
+    # Функции для работы с сессией
+    def get_session():
+        """
+        Восстанавливает данные сессии из HTTP-куки 'competition_session'.
+        
+        Формат хранения: pickle → base64 → строка ASCII.
+        
+        Returns:
+            dict: Словарь с параметрами сессии или пустой словарь при ошибке
+        """
+        session_cookie = request.get_cookie('competition_session')
+        if session_cookie:
+            try:
+                import pickle
+                import base64
+                return pickle.loads(base64.b64decode(session_cookie))
+            except:
+                return {}
+        return {}
+
+    def set_session(data):
+        """
+        Сохраняет данные сессии в HTTP-куку 'competition_session'.
+        
+        Формат хранения: pickle (сериализация) → base64 (ASCII) → кука.
+        
+        Args:
+            data (dict): Словарь с параметрами для сохранения
+        """
+        import pickle
+        import base64
+        serialized = base64.b64encode(pickle.dumps(data)).decode()
+        response.set_cookie('competition_session', serialized, path='/')
+    
+    session = get_session()
+    
+    # Получаем параметры из GET запроса
+    if request.query.get('auto') == '1':
+        auto_mode = True
+    
+    if request.query.get('chart') == '1':
+        show_chart = True
+    
+    speed_param = request.query.get('speed', '')
+    if speed_param:
+        try:
+            speed = float(speed_param.replace(',', '.'))
+            if speed < 0.1:
+                speed = 0.1
+            elif speed > 2.0:
+                speed = 2.0
+        except:
+            speed = 0.5
+    
+    # Обработка POST запросов
+    if request.method == 'POST':
+        action = request.forms.get('action', '')
+        
+        # Обработка генерации случайных значений
+        if action == 'randomize':
+            random_params = generate_random_params()
+            n = random_params['n']
+            gray_init = random_params['gray']
+            white_init = random_params['white']
+            rye_init = random_params['rye']
+            rye_interval = random_params['rye_interval']
+            rye_spawn_count = random_params['rye_spawn_count']
+            max_ticks = random_params['max_ticks']
+            speed = random_params['speed']
+            
+            session['n'] = n
+            session['gray'] = gray_init
+            session['white'] = white_init
+            session['rye'] = rye_init
+            session['rye_interval'] = rye_interval
+            session['rye_spawn_count'] = rye_spawn_count
+            session['max_ticks'] = max_ticks
+            session['speed'] = speed
+            set_session(session)
+            
+            simulation_service.reset()
+            simulation_service.init_world(
+                n, gray_init, white_init, rye_init,
+                rye_interval, rye_spawn_count, max_ticks
+            )
+            auto_mode = False
+            show_chart = False
+            error = None
+        
+        # Обычная обработка параметров из формы
+        else:
+            n_str = request.forms.get('n', '').strip()
+            if n_str:
+                try:
+                    n = int(n_str)
+                except ValueError:
+                    error = "Некорректное значение для размера поля"
+            
+            gray_str = request.forms.get('gray', '').strip()
+            if gray_str:
+                try:
+                    gray_init = int(gray_str)
+                except ValueError:
+                    error = "Некорректное значение для количества серых крыс"
+            
+            white_str = request.forms.get('white', '').strip()
+            if white_str:
+                try:
+                    white_init = int(white_str)
+                except ValueError:
+                    error = "Некорректное значение для количества белых крыс"
+            
+            rye_str = request.forms.get('rye', '').strip()
+            if rye_str:
+                try:
+                    rye_init = int(rye_str)
+                except ValueError:
+                    error = "Некорректное значение для количества ржи"
+            
+            rye_interval_str = request.forms.get('rye_interval', '').strip()
+            if rye_interval_str:
+                try:
+                    rye_interval = int(rye_interval_str)
+                except ValueError:
+                    error = "Некорректное значение для частоты ржи"
+            
+            rye_spawn_count_str = request.forms.get('rye_spawn_count', '').strip()
+            if rye_spawn_count_str:
+                try:
+                    rye_spawn_count = int(rye_spawn_count_str)
+                except ValueError:
+                    error = "Некорректное значение для количества новой ржи"
+            
+            max_ticks_str = request.forms.get('max_ticks', '').strip()
+            if max_ticks_str:
+                try:
+                    max_ticks = int(max_ticks_str)
+                except ValueError:
+                    error = "Некорректное значение для максимума тактов"
+            
+            speed_input = request.forms.get('speed', '')
+            if speed_input:
+                try:
+                    speed = float(speed_input.replace(',', '.'))
+                    if speed < 0.1:
+                        speed = 0.1
+                    elif speed > 2.0:
+                        speed = 2.0
+                except:
+                    speed = 0.5
+            
+            # Сохраняем параметры в сессию (кроме action=reset)
+            if action != 'reset':
+                session['n'] = n
+                session['gray'] = gray_init
+                session['white'] = white_init
+                session['rye'] = rye_init
+                session['rye_interval'] = rye_interval
+                session['rye_spawn_count'] = rye_spawn_count
+                session['max_ticks'] = max_ticks
+                session['speed'] = speed
+                set_session(session)
+            
+            # Валидация параметров
+            if not error:
+                total_cells = n * n
+                
+                if not (2 <= n <= 10):
+                    error = "Размер поля n должен быть в диапазоне от 2 до 10"
+                elif gray_init < 2:
+                    error = f"Количество серых крыс должно быть не менее 2 (было {gray_init})"
+                elif gray_init > total_cells - 2:
+                    error = f"Количество серых крыс не может превышать {total_cells - 2}"
+                elif white_init < 2:
+                    error = f"Количество белых крыс должно быть не менее 2 (было {white_init})"
+                elif white_init > total_cells - 2:
+                    error = f"Количество белых крыс не может превышать {total_cells - 2}"
+                elif gray_init + white_init > total_cells - 1:
+                    error = f"Сумма крыс ({gray_init + white_init}) не должна превышать {total_cells - 1}"
+                elif rye_init < 1:
+                    error = f"Количество ржи должно быть не менее 1 (было {rye_init})"
+                elif rye_init > total_cells - 4:
+                    error = f"Количество ржи не может превышать {total_cells - 4}"
+                elif not (1 <= rye_interval <= 20):
+                    error = "Частота появления ржи должна быть в диапазоне от 1 до 20"
+                elif not (1 <= rye_spawn_count <= 5):
+                    error = "Количество новой ржи за раз должно быть в диапазоне от 1 до 5"
+                elif not (1 <= max_ticks <= 200):
+                    error = "Максимум тактов должен быть в диапазоне от 1 до 200"
+            
+            # Обработка действий
+            if action == 'reset' and not error:
+                simulation_service.reset()
+                simulation_service.init_world(
+                    n, gray_init, white_init, rye_init,
+                    rye_interval, rye_spawn_count, max_ticks
+                )
+                auto_mode = False
+                show_chart = False
+                session['n'] = n
+                session['gray'] = gray_init
+                session['white'] = white_init
+                session['rye'] = rye_init
+                session['rye_interval'] = rye_interval
+                session['rye_spawn_count'] = rye_spawn_count
+                session['max_ticks'] = max_ticks
+                session['speed'] = speed
+                set_session(session)
+
+            elif action == 'auto_on' and not error:
+                auto_mode = True
+                show_chart = False
+                if not simulation_service.world:
+                    simulation_service.init_world(
+                        n, gray_init, white_init, rye_init,
+                        rye_interval, rye_spawn_count, max_ticks
+                    )
+                if simulation_service.world and not simulation_service.world.is_simulation_over():
+                    simulation_service.run_tick()
+            
+            elif action == 'auto_off':
+                auto_mode = False
+                show_chart = False
+            
+            elif action == 'csv' and not error:
+                if simulation_service.world:
+                    filename = simulation_service.export_csv()
+                    if filename:
+                        csv_msg = f"CSV файл сохранён: {filename}"
+                    else:
+                        error = "Нет данных для экспорта"
+                else:
+                    error = "Нет данных для экспорта"
+                show_chart = False
+            
+            elif action == 'chart' and not error:
+                if simulation_service.world:
+                    chart_path = simulation_service.get_chart()
+                    if chart_path:
+                        show_chart = True
+                    else:
+                        error = "Недостаточно данных для построения графика (нужно хотя бы 2 такта)"
+                else:
+                    error = "Нет данных для построения графика"
+    else:
+        # GET запрос - загружаем параметры из сессии, если они есть
+        if 'n' in session:
+            n = session.get('n', default_params['n'])
+            gray_init = session.get('gray', default_params['gray'])
+            white_init = session.get('white', default_params['white'])
+            rye_init = session.get('rye', default_params['rye'])
+            rye_interval = session.get('rye_interval', default_params['rye_interval'])
+            rye_spawn_count = session.get('rye_spawn_count', default_params['rye_spawn_count'])
+            max_ticks = session.get('max_ticks', default_params['max_ticks'])
+            speed = session.get('speed', 0.5)
+    
+    # Если авторежим включён и это GET запрос, делаем шаг
+    if auto_mode and request.method == 'GET' and not error:
+        if simulation_service.world:
+            if not simulation_service.world.is_simulation_over() and simulation_service.world.tick < max_ticks:
+                simulation_service.run_tick()
+    
+    # Если мир не инициализирован, создаём с текущими параметрами
+    if not simulation_service.world:
+        simulation_service.init_world(
+            n, gray_init, white_init, rye_init,
+            rye_interval, rye_spawn_count, max_ticks
+        )
+    
+    # ДОБАВЛЯЕМ РОЖЬ ЕСЛИ ЕЁ НЕТ (для стимуляции размножения)
+    if simulation_service.world and simulation_service.world.rye_count == 0 and simulation_service.world.tick > 0:
+        import random
+        empty_cells = [(i, j) for i in range(simulation_service.world.n) 
+                      for j in range(simulation_service.world.n)
+                      if not simulation_service.world.grid[i][j].rats 
+                      and not simulation_service.world.grid[i][j].rye]
+        for _ in range(min(3, len(empty_cells))):
+            if empty_cells:
+                x, y = random.choice(empty_cells)
+                simulation_service.world.grid[x][y].rye = True
+                simulation_service.world.rye_count += 1
+                empty_cells.remove((x, y))
+        print(f"DEBUG: Added emergency rye, now rye_count={simulation_service.world.rye_count}")
+    
+    # Получаем состояние мира
+    world_state = simulation_service.get_world_state()
+    extinct = world_state.get('is_extinct', False) if world_state else False
+
+    if extinct and auto_mode:
+        auto_mode = False
+
+    cell_class, cell_content = prepare_display_data(world_state)
+
+    if world_state:
+        tick = world_state.get('tick', 0)
+        gray_count = world_state.get('gray', 0)
+        white_count = world_state.get('white', 0)
+        rye_count = world_state.get('rye', 0)
+        fights = world_state.get('fights', 0)
+        deaths = world_state.get('deaths', 0)
+    else:
+        tick = 0
+        gray_count = gray_init
+        white_count = white_init
+        rye_count = rye_init
+        fights = 0
+        deaths = 0
+    
+    K = (n * n) // 2
+    
+    if gray_count > 0 and white_count > 0:
+        alpha = round(white_count / K if K > 0 else 1, 3)
+        beta = round(gray_count / K if K > 0 else 1, 3)
+    else:
+        alpha = 0
+        beta = 0
+    
+    if alpha * beta != 1 and K > 0:
+        denominator = 1 - alpha * beta
+        if denominator != 0:
+            g_star = round(K * (1 - alpha) / denominator, 2)
+            w_star = round(K * (1 - beta) / denominator, 2)
+        else:
+            g_star = 0
+            w_star = 0
+    else:
+        g_star = 0
+        w_star = 0
+    
+    if show_chart and not chart_path and simulation_service.world:
+        chart_path = simulation_service.get_chart()
+    
+    template_data = {
+        'year': datetime.now().year,
+        'n': n,
+        'gray': gray_init,
+        'white': white_init,
+        'rye': rye_init,
+        'rye_interval': rye_interval,
+        'rye_spawn_count': rye_spawn_count,
+        'max_ticks': max_ticks,
+        'auto': auto_mode,
+        'speed': speed,
+        'error': error,
+        'csv_msg': csv_msg,
+        'chart': chart_path if show_chart else None,
+        'show_chart': show_chart,
+        'extinct': extinct,
+        'tick': tick,
+        'gray_count': gray_count,
+        'white_count': white_count,
+        'rye_count': rye_count,
+        'fights': fights,
+        'deaths': deaths,
+        'verdict': simulation_service.get_verdict() if simulation_service.world else "Нет данных",
+        'cell_class': cell_class,
+        'cell_content': cell_content,
+        'K': K,
+        'alpha': alpha,
+        'beta': beta,
+        'g_star': g_star,
+        'w_star': w_star
+    }
+    
+    return template('competition', **template_data)
+
+@route('/competition/export/csv', method=['POST'])
+def export_competition_csv():
+    """Экспорт данных симуляции в CSV"""
+    global simulation_service
+    
+    if simulation_service.world:
+        filename = simulation_service.export_csv()
+        if filename:
+            # Отправляем файл пользователю
+            from bottle import static_file
+            import os
+            return static_file(os.path.basename(filename), root='logs', download=True)
+        else:
+            return "Нет данных для экспорта"
+    else:
+        return "Симуляция не инициализирована"
+
+
+@route('/competition/export/chart', method=['POST'])
+def export_competition_chart():
+    """Экспорт графика в PNG"""
+    chart_path = request.forms.get('chart_path', '')
+    
+    if chart_path and chart_path.startswith('/static/charts/'):
+        import os
+        filename = os.path.basename(chart_path)
+        from bottle import static_file
+        return static_file(filename, root='static/charts', download=f"competition_chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+    else:
+        # Если нет сохранённого графика, генерируем новый
+        global simulation_service
+        if simulation_service.world:
+            chart_path = simulation_service.get_chart()
+            if chart_path:
+                import os
+                filename = os.path.basename(chart_path)
+                from bottle import static_file
+                return static_file(filename, root='static/charts', download=f"competition_chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+        return "Нет графика для экспорта"
+
+
+
+    # Подготовка данных для отображения поля
+    cell_class, cell_content = prepare_display_data(world_state)
+    
+    # Отладка - проверка размеров
+    if len(cell_class) != n:
+        print(f"Warning: cell_class size ({len(cell_class)}) != n ({n})")
+        # Дополняем до нужного размера
+        while len(cell_class) < n:
+            cell_class.append(['cell-empty'] * n)
+            cell_content.append(['⬜'] * n)
+    
+    for i in range(len(cell_class)):
+        if len(cell_class[i]) != n:
+            print(f"Warning: cell_class[{i}] size ({len(cell_class[i])}) != n ({n})")
+            while len(cell_class[i]) < n:
+                cell_class[i].append('cell-empty')
+                cell_content[i].append('⬜')
+
+
 
 
 @route('/fishing', method=['GET', 'POST'])

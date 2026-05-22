@@ -36,6 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="controller\competition_controller.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="controller\export_pp_controller.py" />
     <Compile Include="controller\epidemic_controller.py">
       <SubType>Code</SubType>
@@ -44,6 +47,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="controller\pp_controller.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="model\competition_model.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="model\epidemic.py">
