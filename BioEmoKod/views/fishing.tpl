@@ -11,7 +11,7 @@
 <!-- Аккордеон с раскрывающимися разделами -->
 <div class="panel-group" id="fishing-accordion">
 
-    <!-- Раздел программа  -->
+    <!-- Блок расчёта -->
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">
@@ -31,12 +31,12 @@
                                 <div class="col-sm-6">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            <input type="number" name="N" class="form-control" value="15" placeholder="N">
-                                            <span class="help-block">10–200</span>
+                                            <input type="number" name="N" class="form-control" value="15" placeholder="N" required>
+                                            <span class="help-block">10–100</span>
                                         </div>
                                         <div class="col-xs-6">
-                                            <input type="number" name="M" class="form-control" value="15" placeholder="M">
-                                            <span class="help-block">10–200</span>
+                                            <input type="number" name="M" class="form-control" value="15" placeholder="M" required>
+                                            <span class="help-block">10–100</span>
                                         </div>
                                     </div>
                                 </div>
@@ -45,73 +45,84 @@
                                 <label class="col-sm-6 control-label">Начальная численность (K):</label>
                                 <div class="col-sm-6">
                                     <input type="number" name="K" class="form-control" value="50" required>
-                                    <span class="help-block">10–200</span>
+                                    <span class="help-block">1–N*M</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <h4 class="text-center">Вероятности процессов</h4>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Размножение (p_repro):</label>
+                                <label class="col-sm-6 control-label">Размножение (prepro):</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="p_repro" class="form-control" value="0.25" step="0.01" required>
-                                    <span class="help-block">от 0 до 1</span>
+                                    <input type="number" name="prepro" class="form-control" value="0.2" step="0.01" required>
+                                    <span class="help-block">0.0 – 1.0</span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Гибель (p_death):</label>
+                                <label class="col-sm-6 control-label">Гибель (pdeath):</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="p_death" class="form-control" value="0.1" step="0.01" required>
-                                    <span class="help-block">от 0 до 1</span>
+                                    <input type="number" name="pdeath" class="form-control" value="0.1" step="0.01" required>
+                                    <span class="help-block">0.0 – 1.0</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-4">
-                            <button type="submit" class="btn btn-fishing btn-block">Найти оптимальный q</button>
+                        <hr>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-4">
+                                <button type="submit" class="btn btn-fishing btn-block">Найти оптимальный q</button>
+                            </div>
                         </div>
                     </div>
+
+                    % if defined('error') and error:
+                    <div class="alert alert-danger">
+                        <strong>Ошибка:</strong> {{ error }}
+                    </div>
+                    % end
                 </form>
 
-                <!-- Блок результатов -->
-                % if defined('grid') and grid:
+                % if graph_base64:
                 <div class="well">
-                    % if defined('q'):
-                    <p class="text-center">
-                        <strong>Текущий q: {{ q }}</strong>
-                    </p>
-                    % end
+                    <h4 class="text-center">Результаты оптимизации</h4>
+                    <p><strong>Оптимальная вероятность вылова (q_opt):</strong> {{ results['q_opt'] }}</p>
+                    <p><strong>Средний улов при q_opt:</strong> {{ results['avg_catch_opt'] }}</p>
+                    <p><strong>Средняя численность при q_opt:</strong> {{ results['avg_pop_opt'] }}</p>
 
+                    <div class="chart-title">График зависимости:</div>
+                    <img src="data:image/png;base64,{{ graph_base64 }}" class="img-responsive" style="width:100%; max-width:800px; margin:0 auto;">
+
+                    <div class="text-center" style="margin: 20px 0;">
+                        <button id="downloadPngBtn" class="btn btn-save-accent">Скачать график (PNG)</button>
+                        <button id="downloadCsvBtn" class="btn btn-save-accent">Скачать данные (CSV)</button>
+                    </div>
+                </div>
+                % end
+
+                % if frames_by_q and q_animation_list_json and N and M:
+                <div class="well">
+                    <h4 class="text-center">Анимация модели для всех q (от 0.0 до 1.0)</h4>
                     <div class="grid-container">
-                        <table class="grid-table">
-                            % for row in grid:
+                        <table class="grid-table" id="animation-grid">
+                            % for i in range(N):
                             <tr>
-                                % for cell in row:
-                                <td class="{{'fish-cell' if cell else 'empty-cell'}}">
-                                    % if cell:
-                                    <span class="fish-icon">&bull;</span>
-                                    % end
-                                </td>
+                                % for j in range(M):
+                                <td id="cell-{{ i }}-{{ j }}" class="empty-cell"></td>
                                 % end
                             </tr>
                             % end
                         </table>
                     </div>
-
-                    <div class="col-sm-6 chart-title">
-                        <label>Средняя популяция в зависимости от q:</label>
-                    </div>
-                    <!-- График-заглушка -->
-                    <div class="chart-placeholder">
-                        График зависимости среднего значения популяции от вылова
-                    </div>
-
-                    <div class="text-center" style="margin-top: 20px;">
-                        <button type="button" class="btn btn-save-accent btn-block">
-                            Сохранить результаты симуляции
-                        </button>
+                    <div class="text-center">
+                        <p>Текущее значение q: <strong><span id="currentQ">0.00</span></strong></p>
+                        <button id="startSeriesBtn" class="btn btn-fishing">▶ Старт серии</button>
+                        <button id="pauseSeriesBtn" class="btn btn-fishing">⏸ Пауза</button>
+                        <button id="resetSeriesBtn" class="btn btn-fishing">⟳ Сброс</button>
+                        <div style="margin-top: 10px;">
+                            <label>Скорость анимации (мс):
+                                <input type="range" id="seriesSpeedSlider" min="50" max="500" value="200" step="10">
+                                <span id="speedValue">200</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 % end
@@ -176,3 +187,166 @@
     </div>
 
 </div>
+
+<script>
+// Данные от сервера 
+var qList = {{! q_animation_list_json }};
+var framesByQ = {{! frames_by_q_json }};
+var N = {{ N if N else 0 }};
+var M = {{ M if M else 0 }};
+
+// Состояние анимации
+var currentQIndex = 0;
+var currentFrameIndex = 0;
+var intervalId = null;
+var speed = 200;
+var framesForCurrentQ = [];
+
+// Обновление отображения сетки
+function renderCurrentFrame() {
+    if (!framesForCurrentQ || framesForCurrentQ.length === 0) return;
+    var frame = framesForCurrentQ[currentFrameIndex];
+    for (var i = 0; i < N; i++) {
+        for (var j = 0; j < M; j++) {
+            var cell = document.getElementById('cell-' + i + '-' + j);
+            if (!cell) continue;
+            var hasFish = frame[i][j] === 1;
+            if (hasFish) {
+                cell.className = 'fish-cell';
+                cell.innerHTML = '<span class="fish-icon">&bull;</span>';
+            } else {
+                cell.className = 'empty-cell';
+                cell.innerHTML = '';
+            }
+        }
+    }
+}
+
+// Загрузить анимацию для q с индексом index
+function loadQ(index) {
+    if (index >= qList.length) {
+        stopSeries();
+        alert("Анимация завершена для всех значений q");
+        return false;
+    }
+    var qVal = qList[index];
+    document.getElementById('currentQ').innerText = qVal;
+    //  Число в строку 
+    var key = qVal.toFixed(2);
+    framesForCurrentQ = framesByQ[key];
+    currentFrameIndex = 0;
+    if (framesForCurrentQ && framesForCurrentQ.length) {
+        renderCurrentFrame();
+        updateProgress();
+        return true;
+    }
+    return false;
+}
+
+// Один шаг анимации 
+function stepAnimation() {
+    if (!framesForCurrentQ) return;
+    if (currentFrameIndex + 1 < framesForCurrentQ.length) {
+        currentFrameIndex++;
+        renderCurrentFrame();
+        updateProgress();
+    } else {
+        // переход к следующему q
+        currentQIndex++;
+        if (!loadQ(currentQIndex)) {
+            stopSeries();
+        } else {
+            updateProgress();
+        }
+    }
+}
+
+function startSeries() {
+    if (intervalId) clearInterval(intervalId);
+    if (currentQIndex === 0 && currentFrameIndex === 0) {
+        if (!loadQ(0)) return;
+    }
+    intervalId = setInterval(stepAnimation, speed);
+}
+
+function stopSeries() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
+function resetSeries() {
+    stopSeries();
+    currentQIndex = 0;
+    loadQ(0);
+}
+
+function updateProgress() {
+    if (!framesForCurrentQ || framesForCurrentQ.length === 0) return;
+    var totalFramesForCurrent = framesForCurrentQ.length;
+    var currentFrame = currentFrameIndex;
+    var totalQ = qList.length;
+    var completedFrames = currentQIndex * totalFramesForCurrent + currentFrame;
+    var totalFramesAll = totalQ * totalFramesForCurrent;
+    var percent = Math.floor((completedFrames / totalFramesAll) * 100);
+    var progressBar = document.getElementById('animationProgress');
+    if (progressBar) {
+        progressBar.style.width = percent + '%';
+        progressBar.innerText = percent + '%';
+    }
+}
+
+// Обработчики кнопок
+document.getElementById('startSeriesBtn').addEventListener('click', startSeries);
+document.getElementById('pauseSeriesBtn').addEventListener('click', stopSeries);
+document.getElementById('resetSeriesBtn').addEventListener('click', resetSeries);
+
+// Кнопка сохранения PNG
+document.getElementById('downloadPngBtn').addEventListener('click', function() {
+    const imgSrc = document.querySelector('img[src^="data:image/png;base64,"]')?.src;
+    if (imgSrc) {
+        const link = document.createElement('a');
+        link.href = imgSrc;
+        link.download = 'graph.png';
+        link.click();
+    } else {
+        alert('График ещё не сгенерирован');
+    }
+});
+
+// Кнопка сохранения CSV
+document.getElementById('downloadCsvBtn').addEventListener('click', function() {
+    const tableData = {{! table_data_json }};
+    if (!tableData.length) {
+        alert('Нет данных для сохранения');
+        return;
+    }
+    let csvContent = "q,avg_catch,avg_pop\n";
+    tableData.forEach(row => {
+        csvContent += `${row.q},${row.avg_catch},${row.avg_pop}\n`;
+    });
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'fishing_results.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+});
+
+var speedSlider = document.getElementById('seriesSpeedSlider');
+if (speedSlider) {
+    speedSlider.addEventListener('input', function(e) {
+        speed = parseInt(e.target.value);
+        document.getElementById('speedValue').innerText = speed;
+        if (intervalId) {
+            stopSeries();
+            startSeries();
+        }
+    });
+}
+
+if (qList.length && framesByQ) {
+    loadQ(0);
+}
+</script>

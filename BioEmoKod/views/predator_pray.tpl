@@ -209,6 +209,7 @@
                                        name="x0" 
                                        class="form-control" 
                                        value="{{form_values.get('x0', '')}}">
+                                       <!--Динамическая отрисовка блока  с ошибкой-->
                                 % if field_errors.get('x0'):
                                 <div class="help-block" style="color: #e74c3c;">⚠️ {{field_errors['x0']}}</div>
                                 % end
@@ -243,9 +244,9 @@
                             </div>
     
                             <div class="form-group">
-                                <label class="control-label">Число шагов N (200–10000):</label>
+                                <label class="control-label">Число шагов N (5000–50000):</label>
                                 <input type="number" 
-                                       step="100" 
+                                       step="1" 
                                        name="N" 
                                        class="form-control" 
                                        value="{{form_values.get('N', '')}}">
@@ -257,7 +258,7 @@
 
                         <!-- Столбец 3: Параметры модели (жертвы) -->
                         <div class="col-md-3">
-                            <h4 class="text-left">⚙️ Параметры для жертв</h4>
+                            <h4 class="text-left">⚙️Параметры для жертв</h4>
                             <div class="form-group">
                                 <label class="control-label">Рождаемость жертв α (0.4–1.5):</label>
                                 <input type="number" 
@@ -285,7 +286,7 @@
 
                         <!-- Столбец 4: Параметры модели (хищники) -->
                         <div class="col-md-3">
-                            <h4 class="text-left">⚙️ Параметры для хищников</h4>
+                            <h4 class="text-left">⚙️Параметры для хищников</h4>
                             <div class="form-group">
                                 <label class="control-label">Смертность хищников β (0.4–1.5):</label>
                                 <input type="number" 
@@ -314,6 +315,7 @@
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-lg">▶ Запустить расчёт</button>
+                        <button type="submit" name="random" value="true" class="btn btn-info btn-lg">🎲 Генерация значений</button>
                         <button type="submit" name="reset" value="true" class="btn btn-default btn-lg">⟳ Сброс</button>
                     </div>
                 </form>
@@ -377,17 +379,45 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Предупреждение об особенностях модели -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning" style="margin-bottom: 20px;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="float: right;">&times;</button>
+                            <strong>⚠️ Важная информация о модели</strong>
+
+                            <p>Модель Лотки—Вольтерры является <strong>математической абстракцией</strong> и имеет следующие ограничения:</p>
+                            <ul style="margin-bottom: 5px;">
+                                <li>📐 <strong>Непрерывность:</strong> при расчете допускаются дробные значения численности (например, 0.3 особи)</li>
+                                <li>🔄 <strong>Восстановление от нуля:</strong> модель допускает «возрождение» популяции после почти полного вымирания</li>
+                                <li>🎲 <strong>Детерминированность:</strong> не учитываются случайные факторы (болезни, погода, катастрофы)</li>
+                                <li>📈 <strong>Отсутствие ограничений:</strong> нет внутривидовой конкуренции и других сдерживающих факторов</li>
+                            </ul>
+                            <p class="small" style="margin-top: 10px; margin-bottom: 0;">
+                                💡 <strong>Пояснение:</strong> При экстремальных параметрах (особенно при низкой рождаемости жертв и высокой эффективности хищников) 
+                                модель может показывать вымирание с последующим «возрождением» — это <strong>математический артефакт непрерывности</strong>, 
+                                а не отражение биологической реальности. В природе полное вымирание необратимо.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Кнопки экспорта -->
                 <div class="text-center" style="display: flex; gap: 10px; justify-content: center;">
-                    <form action="/export_csv" method="post">
+                    <form action="/export_csv" method="post" target="_blank">
                         <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">Экспорт данных в CSV</button>
+                        <input type="hidden" name="results_id" value="{{results.get('id', '')}}">
+                        <button type="submit" class="btn btn-primary">
+                            📊 Экспорт данных в CSV
+                        </button>
                     </form>
-    
-                    <form action="/export_csv" method="post">
-                        <input type="hidden" name="data_type" value="predator_prey">
-                        <button type="submit" class="btn btn-primary">Экспорт графиков</button>
+
+                    <form action="/export_plot" method="post" target="_blank">
+                        <input type="hidden" name="plot_id" value="{{results.get('plot_id', '')}}">
+                        <button type="submit" class="btn btn-primary">
+                            🖼️ Сохранить график
+                        </button>
                     </form>
                 </div>
             </div>
